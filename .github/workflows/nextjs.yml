@@ -49,6 +49,8 @@ jobs:
           #
           # You may remove this line if you want to manage the configuration yourself.
           static_site_generator: next
+          # Create and configure the Pages site when it has not been enabled yet.
+          enablement: true
       - name: Restore cache
         uses: actions/cache@v4
         with:
