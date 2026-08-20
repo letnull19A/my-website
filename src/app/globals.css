@@ -103,7 +103,7 @@
   --chart-3: #519528;
   --chart-4: #005803;
   --chart-5: #e1ff8c;
-  --radius: 0.625rem;
+  --radius: 0rem;
   --sidebar: #0b0c09;
   --sidebar-foreground: #ffffff;
   --sidebar-primary: #9ad000;
@@ -150,6 +150,7 @@
   --chart-3: #519528;
   --chart-4: #005803;
   --chart-5: #e1ff8c;
+  --radius: 0rem;
   --sidebar: #0b0c09;
   --sidebar-foreground: #ffffff;
   --sidebar-primary: #9ad000;
@@ -158,6 +159,22 @@
   --sidebar-accent-foreground: #e1ff8c;
   --sidebar-border: #454645;
   --sidebar-ring: #9ad000;
+}
+
+@utility bg-hatch {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 4px,
+    rgba(225, 255, 140, 0.55) 4px 5px
+  );
+}
+
+@utility bg-hatch-dark {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 4px,
+    rgba(225, 255, 140, 0.22) 4px 5px
+  );
 }
 
 @layer base {
