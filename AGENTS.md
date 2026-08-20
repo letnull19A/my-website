@@ -10,15 +10,20 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Project facts
 
-- **Package manager**: pnpm (lockfile: `pnpm-lock.yaml`). Use `pnpm install`, not `npm install`.
+- **Package manager**: pnpm 11 (lockfile: `pnpm-lock.yaml`, pinned as `pnpm@11` in `Dockerfile:6`). Use `pnpm install`, not `npm install`.
 - **Next.js 16.3** — check `node_modules/next/dist/docs/` for API changes.
 - **Deployment**: Static export to GitHub Pages. CI pushes `./out` via `.github/workflows/nextjs.yml`. Do not add server-side features or API routes that require a Node server.
 - **Tailwind v4**: Uses `@tailwindcss/postcss` plugin. There is no `tailwind.config.js` — config lives in CSS via `@theme` directives and in `components.json`.
 - **shadcn/ui**: Config at `components.json`. Style: `base-nova`, RSC + TSX, icons from `lucide`. Add components with `npx shadcn@latest add <component>`.
-- **Path alias**: `@/*` → `./src/*` (set in `tsconfig.json`).
+- **Path aliases**: `@/*` → `./src/*` (set in `tsconfig.json:22-24` + `components.json:15-21`).
+  - `@/components` → `src/components`, `@/components/ui` → `src/components/ui`, `@/lib` → `src/lib`, `@/lib/utils` → `src/lib/utils.ts`, `@/hooks` → `src/hooks`.
+  - Обращение к компонентам — через `@/components/${componentName}` (например, `import { Button } from "@/components/ui/button"`).
+  - Всегда используй алиас `@/` вместо относительных путей (`../`, `./`). Пример: `import { cn } from "@/lib/utils"` вместо `from "../../lib/utils"`.
+  - Алиас резолвится через `baseUrl: "."` + `paths` в `tsconfig.json`; дополнительной настройки bundler не требуется (Next.js подхватывает автоматически).
 - **Entry points**: `src/app/layout.tsx` (root layout), `src/app/page.tsx` (home), `src/app/about/page.tsx` (about).
 - **UI library**: `@base-ui/react` + `class-variance-authority` for component variants.
 - **Design files**: `docs/design/*.pen` (Penpot references for portfolio/shadcn designs).
+- **Theme**: Dark-only — светлой темы нет. `src/app/globals.css:67-161` defines `:root` and `.dark` with identical dark tokens (`--background: #0C0D0A`, `color-scheme: dark`). Не добавлять светлую тему, переключатель темы или `light` варианты — сайт всегда в тёмной теме.
 
 ## Commands
 
@@ -27,6 +32,7 @@ pnpm dev          # Start dev server (http://localhost:3000)
 pnpm build        # Build static export to ./out
 pnpm start        # Serve production build (not used in Pages deploy)
 pnpm lint         # ESLint (flat config in eslint.config.mjs)
+pnpm storybook    # Storybook on http://localhost:6006
 ```
 
 ## Conventions
