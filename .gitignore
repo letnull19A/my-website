@@ -39,6 +39,9 @@ yarn-error.log*
 # opencode - contains local secrets (Figma API key etc.)
 opencode.json
 
+# storybook
+/storybook-static
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

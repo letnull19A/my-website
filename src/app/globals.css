@@ -8,7 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-sans);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -39,6 +39,15 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  /* Figma custom palette — web2bizz (Copy) */
+  --color-lime: var(--lime);
+  --color-lime-light: var(--lime-light);
+  --color-lime-soft: var(--lime-soft);
+  --color-green-dark: var(--green-dark);
+  --color-green-mid: var(--green-mid);
+  --color-green-deep: var(--green-deep);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -48,73 +57,107 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Figma: web2bizz (Copy) — presentation & materials / UI KIT #223:5447
+   Source colors sampled via Figma MCP (fills):
+   #0C0D0A bg, #0B0C09 header, #141414 card/surface, #102211 surface-alt,
+   #454645 border, #9AD000 lime, #E1FF8C lime-light, #CAF05F lime-soft,
+   #005803 green-dark, #519528 green-mid, #243000 green-deep, #FFFFFF fg
+*/
+
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  color-scheme: dark;
+  /* custom figma tokens */
+  --lime: #9ad000;
+  --lime-light: #e1ff8c;
+  --lime-soft: #caf05f;
+  --green-dark: #005803;
+  --green-mid: #519528;
+  --green-deep: #243000;
+  --surface: #141414;
+  --surface-alt: #102211;
+  /* font — Figma uses PT Mono 400/700, 0.95 lh, -0.07em tracking */
+  --font-sans: "PT Mono", ui-monospace, monospace;
+  --font-mono: "PT Mono", ui-monospace, monospace;
+
+  /* shadcn mapping — dark-only (светлой темы нет, Figma #0C0D0A) */
+  --background: #0c0d0a;
+  --foreground: #ffffff;
+  --card: #141414;
+  --card-foreground: #ffffff;
+  --popover: #141414;
+  --popover-foreground: #ffffff;
+  --primary: #9ad000;
+  --primary-foreground: #005803;
+  --secondary: #141414;
+  --secondary-foreground: #e1ff8c;
+  --muted: #1a1d1a;
+  --muted-foreground: #8a8f8a;
+  --accent: #e1ff8c;
+  --accent-foreground: #005803;
+  --destructive: #ff3b30;
+  --border: #454645;
+  --input: #454645;
+  --ring: #9ad000;
+  --chart-1: #9ad000;
+  --chart-2: #caf05f;
+  --chart-3: #519528;
+  --chart-4: #005803;
+  --chart-5: #e1ff8c;
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: #0b0c09;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #9ad000;
+  --sidebar-primary-foreground: #005803;
+  --sidebar-accent: #141414;
+  --sidebar-accent-foreground: #e1ff8c;
+  --sidebar-border: #454645;
+  --sidebar-ring: #9ad000;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  color-scheme: dark;
+  --lime: #9ad000;
+  --lime-light: #e1ff8c;
+  --lime-soft: #caf05f;
+  --green-dark: #005803;
+  --green-mid: #519528;
+  --green-deep: #243000;
+  --surface: #141414;
+  --surface-alt: #102211;
+  --font-sans: "PT Mono", ui-monospace, monospace;
+  --font-mono: "PT Mono", ui-monospace, monospace;
+
+  --background: #0c0d0a;
+  --foreground: #ffffff;
+  --card: #141414;
+  --card-foreground: #ffffff;
+  --popover: #141414;
+  --popover-foreground: #ffffff;
+  --primary: #9ad000;
+  --primary-foreground: #005803;
+  --secondary: #141414;
+  --secondary-foreground: #e1ff8c;
+  --muted: #1a1d1a;
+  --muted-foreground: #8a8f8a;
+  --accent: #e1ff8c;
+  --accent-foreground: #005803;
+  --destructive: #ff3b30;
+  --border: #454645;
+  --input: #454645;
+  --ring: #9ad000;
+  --chart-1: #9ad000;
+  --chart-2: #caf05f;
+  --chart-3: #519528;
+  --chart-4: #005803;
+  --chart-5: #e1ff8c;
+  --sidebar: #0b0c09;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #9ad000;
+  --sidebar-primary-foreground: #005803;
+  --sidebar-accent: #141414;
+  --sidebar-accent-foreground: #e1ff8c;
+  --sidebar-border: #454645;
+  --sidebar-ring: #9ad000;
 }
 
 @layer base {
