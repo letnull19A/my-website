@@ -11,11 +11,29 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "outline", "secondary", "ghost", "destructive", "link"],
+      options: [
+        "default",
+        "lime-light",
+        "outline",
+        "secondary",
+        "ghost",
+        "destructive",
+        "link",
+      ],
     },
     size: {
       control: "select",
-      options: ["default", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"],
+      options: [
+        "default",
+        "xs",
+        "sm",
+        "lg",
+        "hero",
+        "icon",
+        "icon-xs",
+        "icon-sm",
+        "icon-lg",
+      ],
     },
     disabled: { control: "boolean" },
   },
@@ -29,10 +47,18 @@ type Story = StoryObj<typeof Button>;
 
 export const Default: Story = {};
 
+export const LimeLight: Story = {
+  args: {
+    variant: "lime-light",
+    children: "LET'S WORK TOGETHER",
+  },
+};
+
 export const Variants: Story = {
   render: () => (
     <div className="flex flex-wrap gap-3">
       <Button variant="default">Default</Button>
+      <Button variant="lime-light">Lime Light</Button>
       <Button variant="outline">Outline</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="ghost">Ghost</Button>
@@ -63,14 +89,22 @@ export const Disabled: Story = {
 
 export const AllVariantsGrid: Story = {
   render: () => (
-    <div className="grid grid-cols-3 gap-3">
-      {(["default", "outline", "secondary", "ghost", "destructive", "link"] as const).map(
-        (v) => (
-          <Button key={v} variant={v}>
-            {v}
-          </Button>
-        )
-      )}
+    <div className="grid grid-cols-4 gap-3">
+      {(
+        [
+          "default",
+          "lime-light",
+          "outline",
+          "secondary",
+          "ghost",
+          "destructive",
+          "link",
+        ] as const
+      ).map((v) => (
+        <Button key={v} variant={v}>
+          {v}
+        </Button>
+      ))}
     </div>
   ),
 };
