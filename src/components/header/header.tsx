@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useId } from 'react';
+import { Menu, X } from 'lucide-react';
 
 export interface NavItem {
   id: string;
@@ -40,12 +41,10 @@ export const Header: React.FC<HeaderProps> = ({
   // 1. Определение активной секции при скролле
   useEffect(() => {
     const handleScroll = () => {
-      // Линия триггера (1/3 от верха окна)
       const triggerY = window.scrollY + window.innerHeight * 0.35;
       const actionId = action.href.replace('#', '');
       const actionEl = document.getElementById(actionId);
 
-      // Если доскроллили до футера/экшена в самом низу
       if (
         actionEl &&
         (triggerY >= actionEl.offsetTop ||
@@ -55,7 +54,6 @@ export const Header: React.FC<HeaderProps> = ({
         return;
       }
 
-      // Проверяем секции в обратном порядке (снизу вверх)
       for (let i = items.length - 1; i >= 0; i--) {
         const item = items[i];
         const el = document.getElementById(item.id);
@@ -65,7 +63,6 @@ export const Header: React.FC<HeaderProps> = ({
         }
       }
 
-      // Если в самом верху страницы
       if (window.scrollY < 120) {
         const brandTargetId = brand.href.replace('#', '');
         setActiveId(brandTargetId || items[0]?.id || '');
@@ -123,7 +120,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header
       ref={headerRef}
-      className={`sticky z-40 top-0 z-sticky w-full bg-background text-foreground font-mono select-none ${className}`}
+      className={`sticky z-40 top-0 w-full bg-background text-foreground font-mono select-none ${className}`}
     >
       {/* Главная панель */}
       <div className="grid grid-cols-[1fr_auto] md:grid-cols-[1.2fr_2fr_1fr] items-stretch border-b border-border">
@@ -187,7 +184,7 @@ export const Header: React.FC<HeaderProps> = ({
           </a>
         </div>
 
-        {/* Mobile Меню Тоггл */}
+        {/* Mobile Меню Тоггл с Lucide иконками */}
         <div className="flex md:hidden items-center justify-center px-4">
           <button
             type="button"
@@ -195,23 +192,13 @@ export const Header: React.FC<HeaderProps> = ({
             aria-expanded={isMobileMenuOpen}
             aria-controls={mobileMenuId}
             onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-            className="flex flex-col gap-1.5 p-2 bg-transparent border-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="p-2 text-foreground hover:text-lime transition-colors bg-transparent border-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <span
-              className={`w-6 h-[1.5px] bg-foreground transition-transform duration-200 ${
-                isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''
-              }`}
-            />
-            <span
-              className={`w-6 h-[1.5px] bg-foreground transition-opacity duration-200 ${
-                isMobileMenuOpen ? 'opacity-0' : ''
-              }`}
-            />
-            <span
-              className={`w-6 h-[1.5px] bg-foreground transition-transform duration-200 ${
-                isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''
-              }`}
-            />
+            {isMobileMenuOpen ? (
+              <X className="w-6 h-6 stroke-[1.75]" />
+            ) : (
+              <Menu className="w-6 h-6 stroke-[1.75]" />
+            )}
           </button>
         </div>
       </div>
@@ -219,9 +206,8 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Шкала с насечками */}
       <div
         aria-hidden="true"
-        className="relative h-4 w-full border-b border-border bg-[repeating-linear-gradient(90deg,transparent_0_4px,color-mix(in_srgb,var(--lime-light)_22%,transparent)_4px_5px)]"
+        className="relative h-4 w-full border-b border-border bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px)] bg-[length:16px_100%] bg-repeat-x"
       >
-        {/* Индикатор ромбика: скрыт на мобильных (hidden), виден только на md+ */}
         {sliderLeft !== null && (
           <div
             className="hidden md:flex absolute top-0 -translate-x-1/2 flex-col items-center pointer-events-none transition-[left] duration-300 ease-out"

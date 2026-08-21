@@ -11,6 +11,7 @@ export interface FloatingCardProps {
   height?: number;
   desktopPos: { x: number; y: number };
   mobilePos: { x: number; y: number };
+  alignRightOnMobile?: boolean; // прижать к правому краю на мобилке
   bounceDelay?: string;
   isVisible: boolean;
   onClose: (id: string) => void;
@@ -25,6 +26,7 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
   height = 240,
   desktopPos,
   mobilePos,
+  alignRightOnMobile = false,
   bounceDelay = '0s',
   isVisible,
   onClose,
@@ -42,7 +44,6 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
   const lastPointerPosRef = useRef<{ x: number; y: number; time: number }>({ x: 0, y: 0, time: 0 });
   const momentumRafRef = useRef<number | null>(null);
 
-  // Инициализация координат выполняется строго один раз при появлении карточки
   useEffect(() => {
     if (!isVisible) {
       isInitializedRef.current = false;
@@ -54,12 +55,19 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
       const isMobile = window.innerWidth < 768;
       const targetPercent = isMobile ? mobilePos : desktopPos;
 
-      const initialX = (parent.width * targetPercent.x) / 100;
-      const initialY = (parent.height * targetPercent.y) / 100;
+      // Реальная ширина элемента с запасом
+      const actualCardWidth = cardRef.current.offsetWidth || (isMobile ? 180 : width);
+      const actualCardHeight = cardRef.current.offsetHeight || (isMobile ? 180 : height);
 
-      const card = cardRef.current.getBoundingClientRect();
-      const safeX = Math.max(8, Math.min(initialX, parent.width - (card.width || width) - 8));
-      const safeY = Math.max(8, Math.min(initialY, parent.height - (card.height || height) - 8));
+      let initialX = (parent.width * targetPercent.x) / 100;
+      let initialY = (parent.height * targetPercent.y) / 100;
+
+      if (isMobile && alignRightOnMobile) {
+        initialX = parent.width - actualCardWidth - 8;
+      }
+
+      const safeX = Math.max(8, Math.min(initialX, parent.width - actualCardWidth - 8));
+      const safeY = Math.max(8, Math.min(initialY, parent.height - actualCardHeight - 8));
 
       posRef.current = { x: safeX, y: safeY };
       setPos({ x: safeX, y: safeY });
@@ -69,9 +77,8 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
     return () => {
       if (momentumRafRef.current) cancelAnimationFrame(momentumRafRef.current);
     };
-  }, [isVisible, desktopPos, mobilePos, width, height]);
+  }, [isVisible, desktopPos, mobilePos, alignRightOnMobile, width, height]);
 
-  // Физика инерции после отпускания
   const runMomentum = useCallback(() => {
     if (!cardRef.current?.parentElement) return;
     const parent = cardRef.current.parentElement.getBoundingClientRect();
@@ -118,9 +125,7 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('[data-close-trigger]')) return;
 
-    if (momentumRafRef.current) {
-      cancelAnimationFrame(momentumRafRef.current);
-    }
+    if (momentumRafRef.current) cancelAnimationFrame(momentumRafRef.current);
 
     const card = cardRef.current;
     const parent = card?.parentElement;
@@ -211,7 +216,7 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
           height={height}
           unoptimized
           draggable={false}
-          className="pointer-events-none block h-auto w-[150px] sm:w-[190px] md:w-[240px] lg:w-[270px] object-contain"
+          className="pointer-events-none block h-auto w-[160px] sm:w-[200px] md:w-[260px] object-contain"
         />
 
         <button
