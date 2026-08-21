@@ -123,7 +123,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header
       ref={headerRef}
-      className={`sticky top-0 z-sticky w-full bg-background text-foreground font-mono select-none ${className}`}
+      className={`sticky z-40 top-0 z-sticky w-full bg-background text-foreground font-mono select-none ${className}`}
     >
       {/* Главная панель */}
       <div className="grid grid-cols-[1fr_auto] md:grid-cols-[1.2fr_2fr_1fr] items-stretch border-b border-border">
@@ -134,7 +134,7 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <a
             href={brand.href}
-            className="text-sm md:text-base font-normal tracking-wide text-foreground hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="text-xl md:text-base font-normal tracking-wide text-foreground hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {brand.title}
           </a>
@@ -156,7 +156,7 @@ export const Header: React.FC<HeaderProps> = ({
                       else navItemRefs.current.delete(item.id);
                     }}
                     href={item.href}
-                    className={`text-sm tracking-wide transition-all py-1 px-2.5 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    className={`text-xl tracking-wide transition-all py-1 px-2.5 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       isActive
                         ? 'bg-lime text-background font-semibold'
                         : 'text-muted-foreground hover:text-foreground'
@@ -177,7 +177,7 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <a
             href={action.href}
-            className={`text-sm tracking-wide transition-all py-1 px-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+            className={`text-xl tracking-wide transition-all py-1 px-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               isActionActive
                 ? 'bg-lime text-background font-semibold'
                 : 'text-foreground hover:opacity-80'

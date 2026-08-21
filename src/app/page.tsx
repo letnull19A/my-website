@@ -1,4 +1,5 @@
 import { Header } from "@/components/header";
+import { HeroSection } from "@/sections/hero/hero";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -19,6 +20,12 @@ export default function Home() {
    <div className="min-h-screen bg-background text-foreground font-mono">
       <Header {...navData} />
       <main className="divide-y divide-border">
+        <section id="hero" className="min-h-[90vh]  ">
+          <HeroSection/>
+        </section>
+        <section id="cases" className="min-h-[90vh] p-8 md:p-16">
+          <h2 className="text-3xl font-bold">Cases</h2>
+        </section>
         <section id="cases" className="min-h-[90vh] p-8 md:p-16">
           <h2 className="text-3xl font-bold">Cases</h2>
         </section>
