@@ -1,0 +1,100 @@
+// =============================================================================
+// Input — SCSS Module
+// Миграция с Tailwind-утилит (src/components/input/input.tsx) на SCSS
+// Токены синхронизированы с src/app/globals.css и src/styles/_variables.scss
+// Figma: UI KIT #223:5525 (empty) bg #005803 + #223:5534 (filled) bg #519528
+//        invalid empty #7f1d1d → filled #991b1b → disabled темнеет
+// =============================================================================
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
+@use "../../styles/functions" as *;
+
+.input {
+  width: 100%;
+  min-width: 0;
+  height: 2.25rem; // h-9
+  padding: spacing(2) spacing(3); // py-2 px-3
+  border: 1px solid var(--lime-soft); // #CAF05F
+  border-radius: $radius; // 0rem — Figma без скруглений
+  background: var(--green-dark); // #005803
+  color: var(--lime-light); // #E1FF8C
+  font-family: var(--font-sans);
+  font-size: 1rem; // text-base
+  line-height: 1.5;
+  outline: none;
+  transition:
+    color $transition-fast,
+    background-color $transition-fast,
+    border-color $transition-fast,
+    box-shadow $transition-fast;
+
+  // placeholder — Figma #519528
+  &::placeholder {
+    color: var(--green-mid);
+    opacity: 1;
+  }
+
+  // filled (не placeholder-shown) — Figma #223:5534 bg #519528
+  &:not(:placeholder-shown) {
+    background: var(--green-mid);
+  }
+
+  // file input
+  &::file-selector-button {
+    display: inline-flex;
+    height: calc(var(--spacing) * 6);
+    border: 0;
+    background: transparent;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--foreground);
+  }
+
+  // focus — Figma border #9AD000 + ring
+  &:focus-visible {
+    border-color: var(--lime);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--lime) 40%, transparent);
+  }
+
+  // disabled — повторяет систему empty/filled, только приглушается
+  &:disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  // invalid — Figma: empty #7f1d1d → filled #991b1b
+  &[aria-invalid="true"] {
+    border-color: var(--destructive);
+    background: #7f1d1d;
+    color: #fff;
+    // placeholder в invalid — белый 60%
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    &:not(:placeholder-shown) {
+      background: #991b1b;
+    }
+
+    &:focus-visible {
+      // ring для invalid
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--destructive) 40%, transparent);
+    }
+
+    // invalid + disabled — темнеет как обычный: empty #450a0a, filled #7f1d1d, без прозрачности
+    &:disabled {
+      background: #450a0a !important;
+      opacity: 1 !important;
+
+      &:not(:placeholder-shown) {
+        background: #7f1d1d !important;
+      }
+    }
+  }
+
+  // md breakpoint — как в Tailwind md:text-sm
+  @include respond-to("md") {
+    font-size: 0.875rem;
+  }
+}

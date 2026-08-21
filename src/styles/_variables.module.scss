@@ -1,0 +1,11 @@
+// SCSS-переменные, экспортируемые в JS (пример из docs/app/guides/sass)
+// Использование: import vars from "@/styles/_variables.module.scss"
+$primary-color: #9ad000;
+$lime-light: #e1ff8c;
+$surface: #141414;
+
+:export {
+  primaryColor: $primary-color;
+  limeLight: $lime-light;
+  surface: $surface;
+}

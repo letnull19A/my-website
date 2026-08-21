@@ -1,0 +1,25 @@
+// =============================================================================
+// Utilities — Hatch (дублирует @utility из globals.css, но на SCSS)
+// Оставлено для примера миксина; Tailwind-утилиты остаются в globals.css
+// =============================================================================
+@use "../mixins" as *;
+
+.u-hatch {
+  @include hatch;
+}
+
+.u-hatch-dark {
+  @include hatch-dark;
+}
+
+.u-container {
+  @include container;
+}
+
+.u-flex-center {
+  @include flex-center;
+}
+
+.u-truncate {
+  @include truncate;
+}

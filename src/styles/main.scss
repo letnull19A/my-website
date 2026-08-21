@@ -1,0 +1,50 @@
+// =============================================================================
+// SCSS Entry Point — глобальные стили на современном SCSS (Dart Sass 1.103+)
+// Импортируется в src/app/layout.tsx рядом с globals.css
+//
+// Архитектура: variables/mixins/functions (src/styles/_*.scss) → base → utilities
+// Tailwind остаётся в globals.css — здесь только SCSS-специфика,
+// чтобы не дублировать @theme / @import tailwind.
+// =============================================================================
+
+// Abstracts не эмитит CSS, только переменные/миксины/функции (src/styles/_variables.scss и т.д.)
+@use "variables" as *;
+@use "mixins" as *;
+@use "functions" as *;
+
+// Base — глобальные стили
+@use "base/base";
+@use "base/typography";
+
+// Utilities — атомарные хелперы на SCSS
+@use "utilities/hatch";
+
+// -----------------------------------------------------------------------------
+// Пример глобального блока на SCSS (Figma — карточка)
+// Демонстрирует вложенность, & и использование CSS-переменных + SCSS-миксинов
+// -----------------------------------------------------------------------------
+.card-scss {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: spacing(4);
+  transition: border-color $transition-normal;
+
+  &:hover {
+    border-color: var(--lime);
+  }
+
+  &__title {
+    @extend .h1;
+    font-size: rem(20);
+    color: var(--foreground);
+  }
+
+  &__meta {
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+
+    @include respond-to("md") {
+      font-size: 0.875rem;
+    }
+  }
+}

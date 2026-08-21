@@ -1,0 +1,40 @@
+// =============================================================================
+// Base — глобальные базовые стили (дополняет globals.css)
+// Импортируется через src/styles/main.scss
+// =============================================================================
+@use "../variables" as *;
+
+* {
+  // Tailwind уже даёт border-border / outline-ring, здесь только SCSS-специфика
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+// Кастомный скроллбар для WebKit
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+::selection {
+  background: var(--lime);
+  color: var(--green-dark);
+}

@@ -7,6 +7,17 @@ const config: StorybookConfig = {
   core: {
     disableTelemetry: true,
   },
+  viteFinal: async (config) => {
+    config.css ??= {};
+    config.css.preprocessorOptions ??= {};
+    // @ts-expect-error — vite types allow index signature
+    config.css.preprocessorOptions.scss = {
+      // Дублирует sassOptions.includePaths из next.config.ts для Storybook/Vite
+      includePaths: ["src/styles", "src"],
+      silenceDeprecations: ["legacy-js-api", "import", "color-4-api"],
+    };
+    return config;
+  },
 };
 
 export default config;

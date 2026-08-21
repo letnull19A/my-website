@@ -1,0 +1,74 @@
+// Пример CSS Module на современном SCSS
+// Next.js: *.module.scss автоматически скоупится
+// SCSS-переменные теперь лежат в src/styles/_variables.scss (а не abstracts/)
+// Можно писать `@use "variables"` благодаря sassOptions.includePaths, но для надёжности в Turbopack используем относительный путь
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
+@use "../../styles/functions" as *;
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: spacing(6);
+  display: flex;
+  flex-direction: column;
+  gap: spacing(3);
+  transition:
+    border-color $transition-normal,
+    transform $transition-fast;
+
+  &:hover {
+    border-color: var(--lime);
+    transform: translateY(-1px);
+  }
+
+  // Модификаторы — BEM-утилита через &
+  &--highlighted {
+    border-color: var(--lime-light);
+    background: var(--surface-alt);
+  }
+
+  &__title {
+    font-family: var(--font-sans);
+    font-size: rem(18);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+    @include truncate;
+  }
+
+  &__description {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    @include line-clamp(3);
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: spacing(3);
+    border-top: 1px solid var(--border);
+  }
+
+  // Адаптив через миксин
+  @include respond-to("md") {
+    padding: spacing(8);
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  background: var(--lime);
+  color: var(--green-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}

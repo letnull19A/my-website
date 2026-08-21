@@ -1,0 +1,38 @@
+// =============================================================================
+// Abstracts — Functions
+// =============================================================================
+@use "sass:map";
+@use "sass:math";
+@use "variables" as vars;
+
+// Получить breakpoint
+@function breakpoint($key) {
+  $value: map.get(vars.$breakpoints, $key);
+
+  @if $value == null {
+    @error 'Breakpoint `#{$key}` не найден.';
+  }
+
+  @return $value;
+}
+
+// Получить z-index
+@function z($key) {
+  $value: map.get(vars.$z-index, $key);
+
+  @if $value == null {
+    @error 'z-index `#{$key}` не найден.';
+  }
+
+  @return $value;
+}
+
+// px → rem (база 16px)
+@function rem($px, $base: 16) {
+  @return math.div($px, $base) * 1rem;
+}
+
+// spacing multiplier → rem (4px = 0.25rem)
+@function spacing($multiplier) {
+  @return vars.$spacing-unit * $multiplier;
+}
