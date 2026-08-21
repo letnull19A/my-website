@@ -6,10 +6,10 @@ export interface TaskbarLink {
   id: string;
   label: string;
   href: string;
-  iconSrc: string; // путь к белому .svg, например '/icons/github.svg'
+  iconSrc: string; // путь к белому монохромному .svg, например '/icons/github.svg'
 }
 
-export const TerminalTaskbar: React.FC<{ links: TaskbarLink[] }> = ({ links }) => {
+const Clock: React.FC<{ className?: string }> = ({ className = '' }) => {
   const [timeStr, setTimeStr] = useState('21:03:04');
   const [dateStr, setDateStr] = useState('18.08.2026');
 
@@ -40,8 +40,16 @@ export const TerminalTaskbar: React.FC<{ links: TaskbarLink[] }> = ({ links }) =
   }, []);
 
   return (
+    <div className={`flex flex-col text-right font-mono ${className}`}>
+      <div>{timeStr}</div>
+      <div className="text-lime/80">{dateStr}</div>
+    </div>
+  );
+};
+
+export const TerminalTaskbar: React.FC<{ links: TaskbarLink[] }> = ({ links }) => {
+  return (
     <footer className="w-full border-t sm:border border-lime text-lime font-mono select-none bg-background">
-      {/* 1. Мобильная раскладка (сетка 3x2 + полоса PORTFOLIO/Часы) */}
       <div className="flex lg:hidden flex-col">
         <div className="grid grid-cols-3 divide-x divide-y divide-lime border-b border-lime">
           {links.map((link) => (
@@ -71,10 +79,7 @@ export const TerminalTaskbar: React.FC<{ links: TaskbarLink[] }> = ({ links }) =
           <div className="font-bold tracking-wider text-lg leading-tight">
             PORT<br />FOLIO
           </div>
-          <div className="flex flex-col text-right text-lg leading-tight font-mono">
-            <div>{timeStr}</div>
-            <div className="text-lime/80">{dateStr}</div>
-          </div>
+          <Clock className="text-lg leading-tight" />
         </div>
       </div>
 
@@ -105,10 +110,7 @@ export const TerminalTaskbar: React.FC<{ links: TaskbarLink[] }> = ({ links }) =
           ))}
         </div>
 
-        <div className="px-4 py-1 border-l border-lime flex flex-col justify-center text-right font-mono text-sm leading-tight shrink-0">
-          <div>{timeStr}</div>
-          <div className="text-lime/80">{dateStr}</div>
-        </div>
+        <Clock className="px-4 py-1 border-l border-lime justify-center text-sm leading-tight shrink-0" />
       </div>
     </footer>
   );

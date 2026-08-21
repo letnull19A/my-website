@@ -1,1 +1,0 @@
-export { DesktopIcon } from './image-button'

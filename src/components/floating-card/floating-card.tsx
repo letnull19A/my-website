@@ -11,7 +11,7 @@ export interface FloatingCardProps {
   height?: number;
   desktopPos: { x: number; y: number };
   mobilePos: { x: number; y: number };
-  alignRightOnMobile?: boolean; // прижать к правому краю на мобилке
+  alignRightOnMobile?: boolean;
   bounceDelay?: string;
   isVisible: boolean;
   onClose: (id: string) => void;
@@ -60,7 +60,7 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
       const actualCardHeight = cardRef.current.offsetHeight || (isMobile ? 180 : height);
 
       let initialX = (parent.width * targetPercent.x) / 100;
-      let initialY = (parent.height * targetPercent.y) / 100;
+      const initialY = (parent.height * targetPercent.y) / 100;
 
       if (isMobile && alignRightOnMobile) {
         initialX = parent.width - actualCardWidth - 8;
@@ -80,46 +80,51 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
   }, [isVisible, desktopPos, mobilePos, alignRightOnMobile, width, height]);
 
   const runMomentum = useCallback(() => {
-    if (!cardRef.current?.parentElement) return;
-    const parent = cardRef.current.parentElement.getBoundingClientRect();
-    const card = cardRef.current.getBoundingClientRect();
+    const parentEl = cardRef.current?.parentElement;
+    const cardEl = cardRef.current;
+    if (!parentEl || !cardEl) return;
 
-    const friction = 0.92;
-    const bounceFriction = 0.4;
-
-    velocityRef.current.vx *= friction;
-    velocityRef.current.vy *= friction;
-
-    let nextX = posRef.current.x + velocityRef.current.vx;
-    let nextY = posRef.current.y + velocityRef.current.vy;
-
+    const parent = parentEl.getBoundingClientRect();
+    const card = cardEl.getBoundingClientRect();
     const minX = 4;
     const maxX = parent.width - card.width - 4;
     const minY = 4;
     const maxY = parent.height - card.height - 4;
+    const friction = 0.92;
+    const bounceFriction = 0.4;
 
-    if (nextX <= minX) {
-      nextX = minX;
-      velocityRef.current.vx = -velocityRef.current.vx * bounceFriction;
-    } else if (nextX >= maxX) {
-      nextX = maxX;
-      velocityRef.current.vx = -velocityRef.current.vx * bounceFriction;
-    }
+    const step = () => {
+      velocityRef.current.vx *= friction;
+      velocityRef.current.vy *= friction;
 
-    if (nextY <= minY) {
-      nextY = minY;
-      velocityRef.current.vy = -velocityRef.current.vy * bounceFriction;
-    } else if (nextY >= maxY) {
-      nextY = maxY;
-      velocityRef.current.vy = -velocityRef.current.vy * bounceFriction;
-    }
+      let nextX = posRef.current.x + velocityRef.current.vx;
+      let nextY = posRef.current.y + velocityRef.current.vy;
 
-    posRef.current = { x: nextX, y: nextY };
-    setPos({ x: nextX, y: nextY });
+      if (nextX <= minX) {
+        nextX = minX;
+        velocityRef.current.vx = -velocityRef.current.vx * bounceFriction;
+      } else if (nextX >= maxX) {
+        nextX = maxX;
+        velocityRef.current.vx = -velocityRef.current.vx * bounceFriction;
+      }
 
-    if (Math.abs(velocityRef.current.vx) > 0.1 || Math.abs(velocityRef.current.vy) > 0.1) {
-      momentumRafRef.current = requestAnimationFrame(runMomentum);
-    }
+      if (nextY <= minY) {
+        nextY = minY;
+        velocityRef.current.vy = -velocityRef.current.vy * bounceFriction;
+      } else if (nextY >= maxY) {
+        nextY = maxY;
+        velocityRef.current.vy = -velocityRef.current.vy * bounceFriction;
+      }
+
+      posRef.current = { x: nextX, y: nextY };
+      setPos({ x: nextX, y: nextY });
+
+      if (Math.abs(velocityRef.current.vx) > 0.1 || Math.abs(velocityRef.current.vy) > 0.1) {
+        momentumRafRef.current = requestAnimationFrame(step);
+      }
+    };
+
+    momentumRafRef.current = requestAnimationFrame(step);
   }, []);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -224,10 +229,11 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
           data-close-trigger="true"
           onClick={(e) => {
             e.stopPropagation();
+            if (window.innerWidth < 1024) return;
             onClose(id);
           }}
           aria-label={`Close ${imageAlt}`}
-          className="absolute top-0 right-0 z-40 h-8 w-8 sm:h-9 sm:w-9 cursor-pointer bg-transparent border-none opacity-0 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-lime"
+          className="hidden lg:block absolute top-0 right-0 z-40 h-8 w-8 sm:h-9 sm:w-9 cursor-pointer bg-transparent border-none opacity-0 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-lime"
         />
       </div>
     </div>

@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { FloatingCard } from '@/components/floating-card';
-import { DesktopIcon } from '@/components/image-button';
+import { DesktopIcon } from '@/components/desctop-icon';
 import { Button } from '@/components/button';
 import { TaskbarLink, TerminalTaskbar } from '@/components/terminal-taskbar/terminal-taskbar';
 
@@ -19,6 +19,14 @@ export interface HeroSectionProps {
   headerHeight?: string;
 }
 
+const taskbarLinks: TaskbarLink[] = [
+  { id: 'github', label: 'github.html', href: 'https://github.com', iconSrc: '/icons/github.svg' },
+  { id: 'linkedin', label: 'linkedin.html', href: 'https://linkedin.com', iconSrc: '/icons/linkedin.svg' },
+  { id: 'telegram', label: 'telegram.exe', href: 'https://t.me', iconSrc: '/icons/telegram.svg' },
+  { id: 'whatsapp', label: 'whatsapp.exe', href: 'https://wa.me', iconSrc: '/icons/whatsapp.svg' },
+  { id: 'email', label: 'email.exe', href: 'mailto:contact@example.com', iconSrc: '/icons/email.svg' },
+];
+
 export const HeroSection: React.FC<HeroSectionProps> = ({
   cvUrl = '#cv',
   contactUrl = '#contact',
@@ -28,9 +36,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     philosophy: true,
     developer: true,
   });
-
-  const [timeStr, setTimeStr] = useState<string>('21:03:04');
-  const [dateStr, setDateStr] = useState<string>('18.08.2026');
 
   const actions: ActionItem[] = useMemo(
     () => [
@@ -50,43 +55,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     [cvUrl, contactUrl]
   );
 
- const taskbarLinks = [
-  { id: 'github', label: 'github.html', href: 'https://github.com', iconSrc: '/icons/github.svg' },
-  { id: 'linkedin', label: 'linkedin.html', href: 'https://linkedin.com', iconSrc: '/icons/linkedin.svg' },
-  { id: 'telegram', label: 'telegram.exe', href: 'https://t.me', iconSrc: '/icons/telegram.svg' },
-  { id: 'whatsapp', label: 'whatsapp.exe', href: 'https://wa.me', iconSrc: '/icons/whatsapp.svg' },
-  { id: 'email', label: 'email.exe', href: 'mailto:contact@example.com', iconSrc: '/icons/email.svg' },
-];
-
   const handleActionClick = (url: string) => {
-    window.location.href = url;
+    const targetId = url.startsWith('#') ? url.slice(1) : null;
+    if (targetId) {
+      document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.location.assign(url);
+    }
   };
-
-  useEffect(() => {
-    const updateClock = () => {
-      const now = new Date();
-      setTimeStr(
-        now.toLocaleTimeString('ru-RU', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        })
-      );
-      setDateStr(
-        now
-          .toLocaleDateString('ru-RU', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-          })
-          .replace(/\//g, '.')
-      );
-    };
-
-    updateClock();
-    const interval = setInterval(updateClock, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const handleClose = (id: string) => {
     setOpenCards((prev) => ({ ...prev, [id]: false }));
@@ -123,29 +99,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         onClose={handleClose}
       />
       <FloatingCard
-  id="developer"
-  imageSrc="/images/developer.png"
-  imageAlt="Developer Photo Window"
-  width={260}
-  height={260}
-  desktopPos={{ x: 75, y: 32 }}
-  mobilePos={{ x: 100, y: 46 }}
-  alignRightOnMobile={true}
-  bounceDelay="-2.2s"
-  isVisible={openCards.developer}
-  onClose={handleClose}
-/>
+        id="developer"
+        imageSrc="/images/developer.png"
+        imageAlt="Developer Photo Window"
+        width={260}
+        height={260}
+        desktopPos={{ x: 75, y: 32 }}
+        mobilePos={{ x: 100, y: 46 }}
+        alignRightOnMobile={true}
+        bounceDelay="-2.2s"
+        isVisible={openCards.developer}
+        onClose={handleClose}
+      />
 
-      {/* Центральный заголовок */}
       <div className="z-20 flex-1 flex flex-col items-center justify-center my-auto px-2 text-center w-full max-w-4xl mx-auto pointer-events-none">
-        <h1 className="w-[90%] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-lime-light leading-[0.98] select-text drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+        <h1 className="w-[90%] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-lime-light leading-[0.98] select-text text-balance drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
           I BUILD WEB PRODUCTS WHERE TECHNICAL STATE STAYS VISIBLE TO BOTH OPERATORS AND DECISION-MAKERS.
         </h1>
       </div>
 
-      {/* Нижняя часть (Кнопки + Иконки + Таскбар) */}
       <div className="z-20 w-full flex flex-col items-center">
-        {/* Иконки файлов слева (только десктоп) */}
         <div className="hidden lg:flex flex-col gap-2 absolute left-6 bottom-24">
           <DesktopIcon
             label="DEVELOPER.JPEG"
@@ -161,8 +134,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             label="CASES"
             img="/icons/cases.png"
             onClick={() => {
-              const el = document.getElementById('cases');
-              el?.scrollIntoView({ behavior: 'smooth' });
+              document.getElementById('cases')?.scrollIntoView({ behavior: 'smooth' });
             }}
           />
         </div>
@@ -182,7 +154,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           ))}
         </div>
 
-        {/* Нижний терминальный таскбар */}
         <TerminalTaskbar links={taskbarLinks} />
       </div>
     </section>

@@ -37,10 +37,11 @@ export const Header: React.FC<HeaderProps> = ({
   const brandRef = useRef<HTMLDivElement>(null);
   const navItemRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
   const actionRef = useRef<HTMLDivElement>(null);
+  const activeIdRef = useRef<string>(items[0]?.id || '');
 
-  // 1. Определение активной секции при скролле
+  // Active section + slider indicator, rAF-throttled on scroll/resize
   useEffect(() => {
-    const handleScroll = () => {
+    const computeActiveId = (prev: string): string => {
       const triggerY = window.scrollY + window.innerHeight * 0.35;
       const actionId = action.href.replace('#', '');
       const actionEl = document.getElementById(actionId);
@@ -50,69 +51,80 @@ export const Header: React.FC<HeaderProps> = ({
         (triggerY >= actionEl.offsetTop ||
           window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50)
       ) {
-        setActiveId(actionId);
-        return;
+        return actionId;
       }
 
       for (let i = items.length - 1; i >= 0; i--) {
-        const item = items[i];
-        const el = document.getElementById(item.id);
-        if (el && triggerY >= el.offsetTop) {
-          setActiveId(item.id);
-          return;
-        }
+        const el = document.getElementById(items[i].id);
+        if (el && triggerY >= el.offsetTop) return items[i].id;
       }
 
       if (window.scrollY < 120) {
         const brandTargetId = brand.href.replace('#', '');
-        setActiveId(brandTargetId || items[0]?.id || '');
+        return brandTargetId || items[0]?.id || '';
       }
+
+      return prev;
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [items, action.href, brand.href]);
-
-  // 2. Расчет позиции индикатора по центру активного элемента (только Desktop)
-  useEffect(() => {
-    const updateSliderPosition = () => {
-      if (!headerRef.current || window.innerWidth < 768) {
-        setSliderLeft(null);
-        return;
-      }
+    const computeSlider = (currentActiveId: string): number | null => {
+      if (!headerRef.current || window.innerWidth < 768) return null;
 
       const headerRect = headerRef.current.getBoundingClientRect();
       const actionId = action.href.replace('#', '');
       const brandId = brand.href.replace('#', '');
 
       let targetEl: HTMLElement | null = null;
-
-      if (navItemRefs.current.has(activeId)) {
-        targetEl = navItemRefs.current.get(activeId) || null;
-      } else if (activeId === actionId && actionRef.current) {
+      if (navItemRefs.current.has(currentActiveId)) {
+        targetEl = navItemRefs.current.get(currentActiveId) || null;
+      } else if (currentActiveId === actionId && actionRef.current) {
         targetEl = actionRef.current;
-      } else if (activeId === brandId && brandRef.current) {
+      } else if (currentActiveId === brandId && brandRef.current) {
         targetEl = brandRef.current;
       }
 
       if (targetEl) {
         const targetRect = targetEl.getBoundingClientRect();
-        const centerPos = targetRect.left - headerRect.left + targetRect.width / 2;
-        setSliderLeft(centerPos);
+        return targetRect.left - headerRect.left + targetRect.width / 2;
       }
+      return null;
     };
 
-    updateSliderPosition();
-    window.addEventListener('resize', updateSliderPosition);
-    window.addEventListener('scroll', updateSliderPosition, { passive: true });
+    let rafId = 0;
+    const handleScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const nextActiveId = computeActiveId(activeIdRef.current);
+        if (nextActiveId !== activeIdRef.current) {
+          activeIdRef.current = nextActiveId;
+          setActiveId(nextActiveId);
+        }
+        const nextSlider = computeSlider(nextActiveId);
+        setSliderLeft((prev) => (prev === nextSlider ? prev : nextSlider));
+      });
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
 
     return () => {
-      window.removeEventListener('resize', updateSliderPosition);
-      window.removeEventListener('scroll', updateSliderPosition);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
     };
-  }, [activeId, action.href, brand.href]);
+  }, [items, action.href, brand.href]);
+
+  // Close mobile menu on Escape
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isMobileMenuOpen]);
 
   const actionId = action.href.replace('#', '');
   const isActionActive = activeId === actionId;
@@ -122,9 +134,7 @@ export const Header: React.FC<HeaderProps> = ({
       ref={headerRef}
       className={`sticky z-40 top-0 w-full bg-background text-foreground font-mono select-none ${className}`}
     >
-      {/* Главная панель */}
       <div className="grid grid-cols-[1fr_auto] md:grid-cols-[1.2fr_2fr_1fr] items-stretch border-b border-border">
-        {/* Бренд */}
         <div
           ref={brandRef}
           className="flex items-center px-4 md:px-6 py-4 border-r border-border"
@@ -137,7 +147,6 @@ export const Header: React.FC<HeaderProps> = ({
           </a>
         </div>
 
-        {/* Desktop Навигация */}
         <nav
           aria-label="Main Navigation"
           className="hidden md:flex items-center justify-center border-r border-border px-2"
@@ -153,6 +162,7 @@ export const Header: React.FC<HeaderProps> = ({
                       else navItemRefs.current.delete(item.id);
                     }}
                     href={item.href}
+                    aria-current={isActive ? 'true' : undefined}
                     className={`text-xl tracking-wide transition-all py-1 px-2.5 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       isActive
                         ? 'bg-lime text-background font-semibold'
@@ -167,13 +177,13 @@ export const Header: React.FC<HeaderProps> = ({
           </ul>
         </nav>
 
-        {/* Desktop Action */}
         <div
           ref={actionRef}
           className="hidden md:flex items-center justify-center px-6"
         >
           <a
             href={action.href}
+            aria-current={isActionActive ? 'true' : undefined}
             className={`text-xl tracking-wide transition-all py-1 px-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               isActionActive
                 ? 'bg-lime text-background font-semibold'
@@ -184,7 +194,6 @@ export const Header: React.FC<HeaderProps> = ({
           </a>
         </div>
 
-        {/* Mobile Меню Тоггл с Lucide иконками */}
         <div className="flex md:hidden items-center justify-center px-4">
           <button
             type="button"
@@ -203,7 +212,6 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Шкала с насечками */}
       <div
         aria-hidden="true"
         className="relative h-4 w-full border-b border-border bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px)] bg-[length:16px_100%] bg-repeat-x"
@@ -230,7 +238,6 @@ export const Header: React.FC<HeaderProps> = ({
         )}
       </div>
 
-      {/* Выпадающее мобильное меню */}
       {isMobileMenuOpen && (
         <nav
           id={mobileMenuId}
@@ -243,6 +250,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <a
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
+                  aria-current={activeId === item.id ? 'true' : undefined}
                   className={`block py-1.5 px-2 text-sm transition-colors ${
                     activeId === item.id
                       ? 'bg-lime text-background font-semibold'
@@ -258,6 +266,7 @@ export const Header: React.FC<HeaderProps> = ({
             <a
               href={action.href}
               onClick={() => setIsMobileMenuOpen(false)}
+              aria-current={isActionActive ? 'true' : undefined}
               className={`text-sm block py-1.5 px-2 transition-colors ${
                 isActionActive
                   ? 'bg-lime text-background font-semibold'
