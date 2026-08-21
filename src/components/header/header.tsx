@@ -242,7 +242,7 @@ export const Header: React.FC<HeaderProps> = ({
         <nav
           id={mobileMenuId}
           aria-label="Mobile Navigation"
-          className="md:hidden border-b border-border bg-surface px-6 py-4 flex flex-col gap-4"
+          className="absolute top-full left-0 right-0 z-50 md:hidden border-b border-border bg-background/95 backdrop-blur-md px-6 py-4 flex flex-col gap-4 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150"
         >
           <ul className="flex flex-col gap-3 list-none m-0 p-0">
             {items.map((item) => (
@@ -251,7 +251,7 @@ export const Header: React.FC<HeaderProps> = ({
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   aria-current={activeId === item.id ? 'true' : undefined}
-                  className={`block py-1.5 px-2 text-sm transition-colors ${
+                  className={`block py-2 px-2.5 text-sm font-medium transition-colors ${
                     activeId === item.id
                       ? 'bg-lime text-background font-semibold'
                       : 'text-muted-foreground hover:text-foreground'
@@ -267,7 +267,7 @@ export const Header: React.FC<HeaderProps> = ({
               href={action.href}
               onClick={() => setIsMobileMenuOpen(false)}
               aria-current={isActionActive ? 'true' : undefined}
-              className={`text-sm block py-1.5 px-2 transition-colors ${
+              className={`text-sm block py-2 px-2.5 font-medium transition-colors ${
                 isActionActive
                   ? 'bg-lime text-background font-semibold'
                   : 'text-foreground hover:text-lime'
