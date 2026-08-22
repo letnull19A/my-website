@@ -74,6 +74,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   return (
     <section
+      id='portfolio'
       style={{
         height: `calc(100dvh - ${headerHeight})`,
         minHeight: `calc(100dvh - ${headerHeight})`,
@@ -84,7 +85,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         `,
         backgroundSize: '24px 24px',
       }}
-      className="relative w-full overflow-hidden bg-background text-foreground font-mono flex flex-col justify-between p-0 sm:p-4 md:p-8 border-b border-border select-none"
+      className="min-h-[90vh] relative w-full overflow-hidden bg-background text-foreground font-mono flex flex-col justify-between p-0 select-none mb-20"
     >
       <FloatingCard
         id="philosophy"
@@ -139,7 +140,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           />
         </div>
 
-        <div className="w-full md:max-w-[660px] grid grid-cols-2 mx-auto md:mb-8 shadow-[0_0_24px_rgba(0,0,0,0.8)]">
+        <div className="w-full md:max-w-165 grid grid-cols-2 mx-auto md:mb-8 shadow-[0_0_24px_rgba(0,0,0,0.8)]">
           {actions.map((action, idx) => (
             <Button
               key={action.id}
