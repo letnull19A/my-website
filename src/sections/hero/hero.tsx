@@ -74,6 +74,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   return (
     <section
+      id='hero'
       style={{
         height: `calc(100dvh - ${headerHeight})`,
         minHeight: `calc(100dvh - ${headerHeight})`,
@@ -84,7 +85,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         `,
         backgroundSize: '24px 24px',
       }}
-      className="relative w-full overflow-hidden bg-background text-foreground font-mono flex flex-col justify-between p-0 sm:p-4 md:p-8 border-b border-border select-none"
+      className="min-h-[90vh] relative w-full overflow-hidden bg-background text-foreground font-mono flex flex-col justify-between p-0 select-none mb-20"
     >
       <FloatingCard
         id="philosophy"

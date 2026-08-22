@@ -214,7 +214,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       <div
         aria-hidden="true"
-        className="relative h-4 w-full border-b border-border bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px)] bg-[length:16px_100%] bg-repeat-x"
+        className="relative h-4 w-full border-b border-border bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px)] bg-size-[16px_100%] bg-repeat-x"
       >
         {sliderLeft !== null && (
           <div
