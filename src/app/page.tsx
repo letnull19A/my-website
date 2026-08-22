@@ -2,9 +2,10 @@ import { Header } from "@/components/header";
 import { AboutStackSection } from "@/sections/about";
 import { CasesSection } from "@/sections/cases";
 import { HeroSection } from "@/sections/hero";
+import { WorkProcessSection } from "@/sections/process";
 
 const navData = {
-  brand: { title: 'Letnull19A Portfolio', href: '#cases' },
+  brand: { title: 'Letnull19A Portfolio', href: '#portfolio' },
   items: [
     { id: 'cases', label: 'Cases', href: '#cases' },
     { id: 'about', label: 'About', href: '#about' },
@@ -23,12 +24,7 @@ export default function Home() {
         <HeroSection/>
         <CasesSection/>
         <AboutStackSection/>
-        <section id="about" className="min-h-[90vh] p-8 md:p-16">
-          <h2 className="text-3xl font-bold">About</h2>
-        </section>
-        <section id="process" className="min-h-[90vh] p-8 md:p-16">
-          <h2 className="text-3xl font-bold">Process</h2>
-        </section>
+        <WorkProcessSection/>
         <section id="ask" className="min-h-[90vh] p-8 md:p-16">
           <h2 className="text-3xl font-bold">Ask</h2>
         </section>

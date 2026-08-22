@@ -74,7 +74,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   return (
     <section
-      id='hero'
+      id='portfolio'
       style={{
         height: `calc(100dvh - ${headerHeight})`,
         minHeight: `calc(100dvh - ${headerHeight})`,

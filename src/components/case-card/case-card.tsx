@@ -42,7 +42,7 @@ export const CaseCard: React.FC<CaseCardProps> = ({
         `,
         backgroundSize: '30px 30px',
       }}
-      className={`relative border border-border/80 bg-background/90 p-4 sm:p-5 flex flex-col justify-between font-mono select-none ${className}`}
+      className={`relative bg-card border border-border/80 p-4 sm:p-5 flex flex-col justify-between font-mono select-none ${className}`}
     >
       {/* Контейнер с логотипом */}
       <div className="relative w-full aspect-16/8 sm:aspect-16/7.5 border border-lime-light flex items-center justify-center bg-card overflow-hidden px-4">

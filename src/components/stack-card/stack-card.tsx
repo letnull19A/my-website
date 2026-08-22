@@ -26,19 +26,19 @@ export const StackCard: React.FC<StackCardProps> = ({
     <article
       style={{
         backgroundImage: `
-          linear-gradient(to right, rgba(154, 208, 0, 0.08) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(154, 208, 0, 0.08) 1px, transparent 1px)
+          linear-gradient(to right, rgba(255, 255, 255, 0.045) 2px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 2px, transparent 1px)
         `,
-        backgroundSize: '16px 16px',
+        backgroundSize: '30px 30px',
       }}
-      className={`relative border border-lime/40 bg-background/95 p-4 sm:p-5 flex flex-col justify-between font-mono select-none ${className}`}
+      className={`relative bg-card border border-lime/40 p-4 sm:p-5 flex flex-col justify-between font-mono select-none ${className}`}
     >
       {/* Шапка карточки: Заголовок + Номер */}
       <div className="flex items-center justify-between pb-3">
-        <h3 className="text-3xl sm:text-4xl font-bold tracking-tight text-lime-light uppercase">
+        <h3 className="text-3xl sm:text-4xl font-bold tracking-tight text-lime-soft uppercase">
           {title}
         </h3>
-        <span className="text-xl font-bold text-lime tracking-widest opacity-90">
+        <span className="text-xl font-bold text-lime-soft tracking-widest opacity-90">
           {number}
         </span>
       </div>
@@ -62,7 +62,7 @@ export const StackCard: React.FC<StackCardProps> = ({
 
       {/* Список технологий (теги) */}
       <div className="mt-2 pt-3 h-27.5 overflow-hidden b-2">
-        <p className="text-justify [text-align-last:justify] leading-5 text-xl font-bold tracking-wide text-lime uppercase m-0">
+        <p className="text-justify [text-align-last:justify] leading-5 text-xl font-bold tracking-wide text-lime-soft uppercase m-0">
           {tags.join(' ')}
         </p>
       </div>
