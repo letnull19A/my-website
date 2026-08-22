@@ -140,7 +140,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           />
         </div>
 
-        <div className="w-full md:max-w-[660px] grid grid-cols-2 mx-auto md:mb-8 shadow-[0_0_24px_rgba(0,0,0,0.8)]">
+        <div className="w-full md:max-w-165 grid grid-cols-2 mx-auto md:mb-8 shadow-[0_0_24px_rgba(0,0,0,0.8)]">
           {actions.map((action, idx) => (
             <Button
               key={action.id}

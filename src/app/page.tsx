@@ -1,6 +1,7 @@
 import { Header } from "@/components/header";
+import { AboutStackSection } from "@/sections/about";
 import { CasesSection } from "@/sections/cases";
-import { HeroSection } from "@/sections/hero/hero";
+import { HeroSection } from "@/sections/hero";
 
 const navData = {
   brand: { title: 'Letnull19A Portfolio', href: '#cases' },
@@ -21,6 +22,7 @@ export default function Home() {
       <main className="divide-y divide-border">
         <HeroSection/>
         <CasesSection/>
+        <AboutStackSection/>
         <section id="about" className="min-h-[90vh] p-8 md:p-16">
           <h2 className="text-3xl font-bold">About</h2>
         </section>
