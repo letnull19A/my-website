@@ -169,6 +169,15 @@
   );
 }
 
+
+@utility bg-hatch-light {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 4px,
+    var(--lime) 4px 5px
+  );
+}
+
 @utility bg-hatch-dark {
   background-image: repeating-linear-gradient(
     90deg,
