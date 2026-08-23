@@ -43,7 +43,7 @@ const defaultArticles: ArticleCardProps[] = [
 
 export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
   title = 'ARTICLES.',
-  readMoreHref = '#articles',
+  readMoreHref = '/articles',
   articles = defaultArticles,
   className = '',
 }) => {
