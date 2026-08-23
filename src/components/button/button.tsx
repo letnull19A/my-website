@@ -9,11 +9,11 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-lime text-green-dark hover:bg-hatch hover:text-background active:bg-lime/80",
+          "bg-lime text-green-dark hover:bg-hatch active:bg-lime/80",
         "lime-light":
-          "bg-lime-light text-green-dark hover:bg-hatch-light hover:text-background active:bg-lime-light/80",
+          "bg-lime-light text-green-dark hover:bg-hatch-light active:bg-lime-light/80",
         outline:
-          "border border-lime bg-transparent text-lime hover:bg-hatch-dark hover:text-lime active:bg-lime/10 aria-expanded:bg-muted aria-expanded:text-foreground",
+          "border border-lime bg-transparent text-lime hover:bg-hatch-dark hover:text-lime-light active:bg-lime/10 aria-expanded:bg-muted aria-expanded:text-foreground",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-hatch-dark",
         ghost:
