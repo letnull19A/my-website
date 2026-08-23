@@ -15,6 +15,37 @@ export interface ContactSectionProps {
   className?: string;
 }
 
+const EmailLink: React.FC<{ email: string; className?: string }> = ({
+  email,
+  className = '',
+}) => (
+  <p className={`font-bold uppercase tracking-wide text-lime-light break-keep ${className}`}>
+    YOU CAN ALSO WRITE AN EMAIL ON{' '}
+    <a href={`mailto:${email.toLowerCase()}`} className="underline hover:text-lime-soft transition-colors ">
+      {email}
+    </a>
+  </p>
+);
+
+const StatusBadgeImage: React.FC<{
+  src: string | StaticImageData;
+  width: number;
+  height: number;
+  className?: string;
+}> = ({ src, width, height, className = '' }) => (
+  <div className={`shrink-0 overflow-hidden ${className}`}>
+    <Image
+      src={src}
+      alt="Ready for collaboration badge"
+      width={width}
+      height={height}
+      unoptimized
+      draggable={false}
+      className="w-full h-auto object-contain pointer-events-none block"
+    />
+  </div>
+);
+
 export const ContactSection: React.FC<ContactSectionProps> = ({
   title = "LET'S WORK TOGETHER",
   subtitle = 'A new product, an unfinished system or something that needs fixing? Tell me about your project!',
@@ -24,39 +55,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   onSubmit,
   className = '',
 }) => {
-  const EmailLink = ({ className = '' }: { className?: string }) => (
-    <p className={`font-bold uppercase tracking-wide text-lime-light break-keep ${className}`}>
-      YOU CAN ALSO WRITE AN EMAIL ON{' '}
-      <a
-        href={`mailto:${directEmail.toLowerCase()}`}
-        className="underline hover:text-lime-soft transition-colors "
-      >
-        {directEmail}
-      </a>
-    </p>
-  );
-
-  const StatusBadgeImage = ({
-    width,
-    height,
-    className = '',
-  }: {
-    width: number;
-    height: number;
-    className?: string;
-  }) => (
-    <div className={`shrink-0 overflow-hidden ${className}`}>
-      <Image
-        src={statusBadgeSrc}
-        alt="Ready for collaboration badge"
-        width={width}
-        height={height}
-        unoptimized
-        draggable={false}
-        className="w-full h-auto object-contain pointer-events-none block"
-      />
-    </div>
-  );
 
   return (
     <section
@@ -87,8 +85,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
               }}
               className="mt-6 border border-lime/50 p-3 sm:p-4 grid grid-cols-[1fr_auto] gap-3 items-center lg:hidden"
             >
-              <EmailLink className="text-2xl leading-snug pr-2" />
-              <StatusBadgeImage width={130} height={80} className="w-40 sm:w-32.5" />
+              <EmailLink email={directEmail} className="text-2xl leading-snug pr-2" />
+              <StatusBadgeImage src={statusBadgeSrc} width={130} height={80} className="w-40 sm:w-32.5" />
             </div>
           </div>
         </div>
@@ -106,6 +104,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
         >
           {/* Виджет Ready for collaboration */}
           <StatusBadgeImage
+            src={statusBadgeSrc}
             width={240}
             height={140}
             className="relative z-10 self-end w-full max-w-55"
@@ -128,7 +127,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
 
           {/* Email внизу */}
           <div className="relative z-10 pt-6 mt-auto mx-auto">
-            <EmailLink className="text-xl" />
+            <EmailLink email={directEmail} className="text-xl" />
           </div>
         </div>
       </div>

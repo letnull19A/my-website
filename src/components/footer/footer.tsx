@@ -13,7 +13,7 @@ export interface FooterSectionProps {
 }
 
 const navLinks = [
-  { label: 'Work', href: '#work' },
+  { label: 'Work', href: '#cases' },
   { label: 'Process', href: '#process' },
   { label: 'About', href: '#about' },
   { label: 'Ask', href: '#ask' },

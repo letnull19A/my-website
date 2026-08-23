@@ -1,8 +1,18 @@
+import type { Metadata } from "next";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { AskSection } from "@/sections/ask";
 import { ContactSection } from "@/sections/contact";
-import { OtherArticles } from "@/sections/other-articles/other-articles";
+import { OtherArticles } from "@/sections/other-articles";
+
+export const metadata: Metadata = {
+  title: "Articles",
+  description:
+    "Technical articles by Letnull19A about NestJS request lifecycle, engineering decisions and building web products with visible state.",
+  alternates: {
+    canonical: "/articles",
+  },
+};
 
 const navData = {
   brand: { title: 'Letnull19A Portfolio', href: '/' },

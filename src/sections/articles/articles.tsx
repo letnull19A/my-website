@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { ArticleCard, ArticleCardProps } from '@/components/article-card';
-import { Button } from '@/components/button';
+import { buttonVariants } from '@/components/button';
+import { cn } from '@/lib/utils';
 import { articles as siteArticles } from '@/config/articles';
 
 export interface ArticlesSectionProps {
@@ -30,15 +31,15 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
             {title}
           </h2>
 
-          <Button
-            variant="lime-light"
-            className="h-14 sm:h-16 px-4 sm:px-6 text-lg sm:text-xl font-bold uppercase rounded-none tracking-wider"
-            onClick={() => {
-              window.location.href = readMoreHref;
-            }}
+          <a
+            href={readMoreHref}
+            className={cn(
+              buttonVariants({ variant: 'lime-light' }),
+              'h-14 sm:h-16 px-4 sm:px-6 text-lg sm:text-xl font-bold uppercase rounded-none tracking-wider'
+            )}
           >
             READ MORE
-          </Button>
+          </a>
         </div>
 
         {/* Сетка из 3-х статей */}

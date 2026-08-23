@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
-import { Button } from '@/components/button';
+import { Button, buttonVariants } from '@/components/button';
+import { cn } from '@/lib/utils';
 
 export interface CaseAction {
   id: string;
@@ -78,21 +79,48 @@ export const CaseCard: React.FC<CaseCardProps> = ({
             actions.length > 1 ? 'grid-cols-2' : 'grid-cols-1'
           }`}
         >
-          {actions.map((act, idx) => (
-            <Button
-              key={act.id}
-              variant={act.variant || (idx === 0 ? 'lime-light' : 'default')}
-              className={`h-15 sm:h-16 w-full rounded-none text-lg font-bold uppercase tracking-wider transition-transform hover:brightness-105 active:scale-[0.99] ${
-                actions.length > 1 && idx === 0 ? 'border-r border-background/20' : ''
-              }`}
-              onClick={() => {
-                if (act.onClick) act.onClick();
-                else if (act.href) window.location.href = act.href;
-              }}
-            >
-              {act.label}
-            </Button>
-          ))}
+          {actions.map((act, idx) => {
+            const classes = cn(
+              buttonVariants({
+                variant: act.variant || (idx === 0 ? 'lime-light' : 'default'),
+              }),
+              'h-15 sm:h-16 w-full rounded-none text-lg font-bold uppercase tracking-wider transition-transform hover:brightness-105 active:scale-[0.99]',
+              actions.length > 1 && idx === 0
+                ? 'border-r border-background/20'
+                : ''
+            );
+
+            if (act.href) {
+              const isExternal = /^https?:\/\//.test(act.href);
+              return (
+                <a
+                  key={act.id}
+                  href={act.href}
+                  {...(isExternal
+                    ? { target: '_blank', rel: 'noopener noreferrer' }
+                    : {})}
+                  className={classes}
+                >
+                  {act.label}
+                </a>
+              );
+            }
+
+            return (
+              <Button
+                key={act.id}
+                variant={act.variant || (idx === 0 ? 'lime-light' : 'default')}
+                className={`h-15 sm:h-16 w-full rounded-none text-lg font-bold uppercase tracking-wider transition-transform hover:brightness-105 active:scale-[0.99] ${
+                  actions.length > 1 && idx === 0
+                    ? 'border-r border-background/20'
+                    : ''
+                }`}
+                onClick={act.onClick}
+              >
+                {act.label}
+              </Button>
+            );
+          })}
         </div>
       </div>
     </article>

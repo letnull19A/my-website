@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
-import { Button } from '@/components/button';
+import { buttonVariants } from '@/components/button';
+import { cn } from '@/lib/utils';
 
 export interface ArticleCardProps {
   title: string;
@@ -77,11 +78,14 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
         {/* Кнопки с масочными иконками */}
         <div className="mt-5 hidden lg:grid grid-cols-[1fr_1fr_1.2fr] gap-1.5 sm:gap-2 ">
           {/* Linkedin */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => window.open(linkedinHref, '_blank')}
-            className="group h-12 px-2 text-lg font-bold rounded-none border-lime text-lime flex items-center justify-center gap-1.5"
+          <a
+            href={linkedinHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              buttonVariants({ variant: 'outline', size: 'sm' }),
+              'group h-12 px-2 text-lg font-bold rounded-none border-lime text-lime flex items-center justify-center gap-1.5'
+            )}
           >
             <span
               style={{
@@ -92,14 +96,17 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
               aria-hidden="true"
             />
             <span className="truncate">linkedin</span>
-          </Button>
+          </a>
 
           {/* Telegram */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => window.open(telegramHref, '_blank')}
-            className="group h-12 px-2 text-lg font-bold rounded-none border-lime text-lime flex items-center justify-center gap-1.5"
+          <a
+            href={telegramHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              buttonVariants({ variant: 'outline', size: 'sm' }),
+              'group h-12 px-2 text-lg font-bold rounded-none border-lime text-lime flex items-center justify-center gap-1.5'
+            )}
           >
             <span
               style={{
@@ -110,19 +117,18 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
               aria-hidden="true"
             />
             <span className="truncate">telegram</span>
-          </Button>
+          </a>
 
           {/* Read here */}
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => {
-              window.location.href = readHref;
-            }}
-            className="h-12 px-2 text-lg font-bold uppercase rounded-none truncate text-background"
+          <a
+            href={readHref}
+            className={cn(
+              buttonVariants({ variant: 'default', size: 'sm' }),
+              'h-12 px-2 text-lg font-bold uppercase rounded-none truncate text-background'
+            )}
           >
             Read here
-          </Button>
+          </a>
         </div>
       </div>
     </article>

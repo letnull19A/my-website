@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
-import { Button } from '@/components/button';
+import { buttonVariants } from '@/components/button';
+import { cn } from '@/lib/utils';
 import { CaseCard, CaseCardProps } from '@/components/case-card';
 import { cases as siteCases } from '@/config/cases';
 
@@ -37,15 +38,15 @@ export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
           <div className="flex flex-col gap-4">
             <div>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  window.location.href = backHref;
-                }}
-                className="h-9 px-4 text-xs sm:text-sm font-bold tracking-wider uppercase rounded-none border-lime-light text-lime-light hover:bg-hatch-dark"
+              <a
+                href={backHref}
+                className={cn(
+                  buttonVariants({ variant: 'outline' }),
+                  'h-9 px-4 text-xs sm:text-sm font-bold tracking-wider uppercase rounded-none border-lime-light text-lime-light hover:bg-hatch-dark'
+                )}
               >
                 &lt;&lt; BACK
-              </Button>
+              </a>
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-lime-light uppercase">

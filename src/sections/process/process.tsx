@@ -60,6 +60,29 @@ const defaultSteps: ProcessStep[] = [
   },
 ];
 
+const NavigationButtons: React.FC<{
+  onPrev: () => void;
+  onNext: () => void;
+  className?: string;
+}> = ({ onPrev, onNext, className = '' }) => (
+  <div className={`gap-2.5 sm:gap-2 ${className}`}>
+    <Button
+      variant="outline"
+      onClick={onPrev}
+      className="w-full sm:w-auto border-lime-light text-lime-light font-bold text-lg sm:text-xl tracking-wider px-3 sm:px-4 h-14 rounded-none uppercase transition-colors"
+    >
+      &lt;&lt; PREV STEP
+    </Button>
+    <Button
+      variant="outline"
+      onClick={onNext}
+      className="w-full sm:w-auto border-lime-light text-lime-light font-bold text-lg sm:text-xl tracking-wider px-3 sm:px-4 h-14 rounded-none uppercase transition-colors"
+    >
+      NEXT STEP &gt;&gt;
+    </Button>
+  </div>
+);
+
 export const WorkProcessSection: React.FC<WorkProcessSectionProps> = ({
   title = 'WORK PROCESS.',
   subtitle = 'I work in visible slices: clear framing, explicit risk, and delivery signals that stay legible to clients.',
@@ -86,32 +109,12 @@ export const WorkProcessSection: React.FC<WorkProcessSectionProps> = ({
   const currentStep = steps[currentStepIdx] || steps[0];
   const stepVariantCode = String(currentStepIdx + 1).padStart(3, '0');
 
-  // Переиспользуемый блок кнопок навигации
-  const NavigationButtons = ({ className = '' }: { className?: string }) => (
-    <div className={`gap-2.5 sm:gap-2 ${className}`}>
-      <Button
-        variant="outline"
-        onClick={handlePrev}
-        className="w-full sm:w-auto border-lime-light text-lime-light font-bold text-lg sm:text-xl tracking-wider px-3 sm:px-4 h-14 rounded-none uppercase transition-colors"
-      >
-        &lt;&lt; PREV STEP
-      </Button>
-      <Button
-        variant="outline"
-        onClick={handleNext}
-        className="w-full sm:w-auto border-lime-light text-lime-light font-bold text-lg sm:text-xl tracking-wider px-3 sm:px-4 h-14 rounded-none uppercase transition-colors"
-      >
-        NEXT STEP &gt;&gt;
-      </Button>
-    </div>
-  );
-
   return (
     <section
       id="process"
-      className={`w-full bg-background text-foreground font-mono mt-20 px-4 py-4 sm:py-6 sm:px-6 md:px-8 bborder-b border-t border-border select-none ${className}`}
+      className={`w-full bg-background text-foreground font-mono mt-20 px-4 py-4 sm:py-6 sm:px-6 md:px-8 border-b border-t border-border select-none ${className}`}
     >
-      <div className=" mx-auto flex flex-col gap-6">
+      <div className="mx-auto flex flex-col gap-6">
         {/* Шапка: Заголовок + десктопные кнопки справа */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
           <div className="max-w-xl">
@@ -124,7 +127,7 @@ export const WorkProcessSection: React.FC<WorkProcessSectionProps> = ({
           </div>
 
           {/* Кнопки видны в шапке ТОЛЬКО от sm и выше */}
-          <NavigationButtons className="hidden sm:flex items-center shrink-0" />
+          <NavigationButtons onPrev={handlePrev} onNext={handleNext} className="hidden sm:flex items-center shrink-0" />
         </div>
 
         {/* Главный экран терминала */}
@@ -185,7 +188,7 @@ export const WorkProcessSection: React.FC<WorkProcessSectionProps> = ({
         </div>
 
         {/* Мобильные кнопки под терминалом (видны ТОЛЬКО на экранах до sm) */}
-        <NavigationButtons className="grid grid-cols-2 sm:hidden w-full" />
+        <NavigationButtons onPrev={handlePrev} onNext={handleNext} className="grid grid-cols-2 sm:hidden w-full" />
       </div>
     </section>
   );

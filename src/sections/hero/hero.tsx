@@ -3,8 +3,9 @@
 import React, { useState, useMemo } from 'react';
 import { FloatingCard } from '@/components/floating-card';
 import { DesktopIcon } from '@/components/desctop-icon';
-import { Button } from '@/components/button';
-import { TerminalTaskbar } from '@/components/terminal-taskbar/terminal-taskbar';
+import { buttonVariants } from '@/components/button';
+import { cn } from '@/lib/utils';
+import { TerminalTaskbar } from '@/components/terminal-taskbar';
 import { socialLinks } from '@/config/social';
 
 export interface ActionItem {
@@ -148,16 +149,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
         <div className="w-full md:max-w-165 grid grid-cols-2 mx-auto md:mb-8 shadow-[0_0_24px_rgba(0,0,0,0.8)]">
           {actions.map((action, idx) => (
-            <Button
+            <a
               key={action.id}
-              variant={action.variant}
-              className={`h-22 lg:h-26 w-full px-3 md:px-6 text-sm md:text-lg font-bold uppercase tracking-wider rounded-none transition-transform hover:brightness-105 active:scale-[0.99] ${
+              href={action.url}
+              onClick={(e) => {
+                e.preventDefault();
+                handleActionClick(action.url);
+              }}
+              className={cn(
+                buttonVariants({ variant: action.variant }),
+                'h-22 lg:h-26 w-full px-3 md:px-6 text-sm md:text-lg font-bold uppercase tracking-wider rounded-none transition-transform hover:brightness-105 active:scale-[0.99]',
                 idx === 0 ? 'border-r border-background/20' : ''
-              }`}
-              onClick={() => handleActionClick(action.url)}
+              )}
             >
               {action.label}
-            </Button>
+            </a>
           ))}
         </div>
 
