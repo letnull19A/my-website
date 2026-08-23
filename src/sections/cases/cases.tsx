@@ -76,7 +76,7 @@ const defaultCases: CaseCardProps[] = [
 
 export const CasesSection: React.FC<CasesSectionProps> = ({
   title = 'SELECTED WORK.',
-  viewAllHref = '#cases',
+  viewAllHref = '/cases',
   cases = defaultCases,
   className = '',
 }) => {

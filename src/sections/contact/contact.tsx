@@ -101,13 +101,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
             `,
             backgroundSize: '16px 16px',
           }}
-          className="hidden lg:flex relative border border-lime/50 p-4 flex-col justify-between min-h-[520px] overflow-hidden"
+          className="hidden lg:flex relative border border-lime/50 p-4 flex-col justify-between min-h-130 overflow-hidden"
         >
           {/* Виджет Ready for collaboration */}
           <StatusBadgeImage
             width={240}
             height={140}
-            className="relative z-10 self-end w-full max-w-[220px]"
+            className="relative z-10 self-end w-full max-w-55"
           />
 
           {/* Центральный кубик */}
