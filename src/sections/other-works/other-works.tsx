@@ -47,7 +47,7 @@ export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
             </h1>
           </div>
 
-          <div className="relative w-full max-w-[320px] sm:max-w-105 shrink-0 overflow-hidden">
+          <div className="relative w-full max-w-[320px] sm:max-w-105 shrink-0 overflow-hidden hidden sm:block">
             <Image
               src={principlesImageSrc}
               alt="Clarity over assumptions principles"

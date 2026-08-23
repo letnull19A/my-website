@@ -19,7 +19,7 @@ const EmailLink: React.FC<{ email: string; className?: string }> = ({
   email,
   className = '',
 }) => (
-  <p className={`font-bold uppercase tracking-wide text-lime-light break-keep ${className}`}>
+  <p className={`font-bold uppercase tracking-wide text-lime-light break-words ${className}`}>
     YOU CAN ALSO WRITE AN EMAIL ON{' '}
     <a href={`mailto:${email.toLowerCase()}`} className="underline hover:text-lime-soft transition-colors ">
       {email}
@@ -83,9 +83,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                 `,
                 backgroundSize: '16px 16px',
               }}
-              className="mt-6 border border-lime/50 p-3 sm:p-4 grid grid-cols-[1fr_auto] gap-3 items-center lg:hidden"
+              className="mt-6 border border-lime/50 p-4 sm:p-5 flex flex-col gap-4 items-center text-center lg:hidden"
             >
-              <EmailLink email={directEmail} className="text-2xl leading-snug pr-2" />
+              <EmailLink email={directEmail} className="text-lg sm:text-xl leading-snug text-center" />
               <StatusBadgeImage src={statusBadgeSrc} width={130} height={80} className="w-40 sm:w-32.5" />
             </div>
           </div>
