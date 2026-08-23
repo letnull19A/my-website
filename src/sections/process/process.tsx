@@ -161,7 +161,7 @@ export const WorkProcessSection: React.FC<WorkProcessSectionProps> = ({
                 <span>{currentStep.stepNumber}</span>
                 <span>{currentStep.title}</span>
               </h3>
-              <p className="mt-1.5 sm:mt-2 text-base sm:text-xl text-lime-soft leading-snug sm:leading-relaxed">
+              <p className="hidden lg:block mt-1.5 sm:mt-2 text-base sm:text-xl text-lime-soft leading-snug sm:leading-relaxed">
                 {currentStep.description}
               </p>
             </div>
