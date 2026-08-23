@@ -59,7 +59,7 @@ export const AboutStackSection: React.FC<AboutStackSectionProps> = ({
       id="about"
       className={`w-full bg-background text-foreground font-mono mt-20 px-4 py-6 sm:px-6 md:px-8 border-b border-t border-border select-none ${className}`}
     >
-      <div className=" mx-auto flex flex-col gap-8">
+      <div className="mx-auto flex flex-col gap-8">
         {/* Шапка секции */}
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
           <div className="max-w-2xl">

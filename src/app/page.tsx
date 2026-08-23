@@ -1,6 +1,10 @@
+import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { AboutStackSection } from "@/sections/about";
+import { ArticlesSection } from "@/sections/articles";
+import { AskSection } from "@/sections/ask";
 import { CasesSection } from "@/sections/cases";
+import { ContactSection } from "@/sections/contact";
 import { HeroSection } from "@/sections/hero";
 import { WorkProcessSection } from "@/sections/process";
 
@@ -25,16 +29,11 @@ export default function Home() {
         <CasesSection/>
         <AboutStackSection/>
         <WorkProcessSection/>
-        <section id="ask" className="min-h-[90vh] p-8 md:p-16">
-          <h2 className="text-3xl font-bold">Ask</h2>
-        </section>
-        <section id="articles" className="min-h-[90vh] p-8 md:p-16">
-          <h2 className="text-3xl font-bold">Articles</h2>
-        </section>
-        <section id="contact" className="min-h-[70vh] p-8 md:p-16 bg-surface">
-          <h2 className="text-3xl font-bold">Contact me</h2>
-        </section>
+        <AskSection/>
+        <ArticlesSection/>
+        <ContactSection/>
       </main>
+      <Footer/>
     </div>
   );
 }
