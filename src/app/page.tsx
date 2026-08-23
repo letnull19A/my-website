@@ -1,5 +1,6 @@
 import { Header } from "@/components/header";
 import { AboutStackSection } from "@/sections/about";
+import { ArticlesSection } from "@/sections/articles";
 import { AskSection } from "@/sections/ask";
 import { CasesSection } from "@/sections/cases";
 import { HeroSection } from "@/sections/hero";
@@ -27,6 +28,7 @@ export default function Home() {
         <AboutStackSection/>
         <WorkProcessSection/>
         <AskSection/>
+        <ArticlesSection/>
         <section id="ask" className="min-h-[90vh] p-8 md:p-16">
           <h2 className="text-3xl font-bold">Ask</h2>
         </section>
