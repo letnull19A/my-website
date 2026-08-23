@@ -44,7 +44,7 @@ export const AskSection: React.FC<AskSectionProps> = ({
       id="ask"
       className='mt-20 border border-y'
     >
-    <div className={`w-full bg-[#033604] border-y text-lime font-mono px-4 py-8 sm:px-6 md:px-8 select-none ${className}`}>
+    <div className={`w-full bg-green-dark border-y text-lime font-mono px-4 py-8 sm:px-6 md:px-8 select-none ${className}`}>
         <div className="mx-auto flex flex-col gap-6 ">
         {/* Шапка: Заголовок слева + Ретро-бейдж COMMAND INPUT справа */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
