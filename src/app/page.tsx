@@ -1,3 +1,4 @@
+import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { AboutStackSection } from "@/sections/about";
 import { ArticlesSection } from "@/sections/articles";
@@ -32,6 +33,7 @@ export default function Home() {
         <ArticlesSection/>
         <ContactSection/>
       </main>
+      <Footer/>
     </div>
   );
 }
