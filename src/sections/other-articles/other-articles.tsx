@@ -4,6 +4,7 @@ import React from 'react';
 import Image, { StaticImageData } from 'next/image';
 import { Button } from '@/components/button';
 import { ArticleCard, ArticleCardProps } from '@/components/article-card';
+import { articles as siteArticles } from '@/config/articles';
 
 export interface OtherArticlesProps {
   title?: string;
@@ -13,68 +14,11 @@ export interface OtherArticlesProps {
   className?: string;
 }
 
-const defaultArticles: ArticleCardProps[] = [
-  {
-    title: 'NESTJS REQUEST LIFECYCLE: WHO DOES WHAT?',
-    description:
-      'NestJS is a structured Node.js framework where each request passes through components with different responsibilities.',
-    coverImage: undefined,
-    linkedinHref: 'https://linkedin.com',
-    telegramHref: 'https://t.me',
-    readHref: '#article-1',
-  },
-  {
-    title: 'NESTJS REQUEST LIFECYCLE: WHO DOES WHAT?',
-    description:
-      'NestJS is a structured Node.js framework where each request passes through components with different responsibilities.',
-    coverImage: undefined,
-    linkedinHref: 'https://linkedin.com',
-    telegramHref: 'https://t.me',
-    readHref: '#article-2',
-  },
-  {
-    title: 'NESTJS REQUEST LIFECYCLE: WHO DOES WHAT?',
-    description:
-      'NestJS is a structured Node.js framework where each request passes through components with different responsibilities.',
-    coverImage: undefined,
-    linkedinHref: 'https://linkedin.com',
-    telegramHref: 'https://t.me',
-    readHref: '#article-3',
-  },
-  {
-    title: 'NESTJS REQUEST LIFECYCLE: WHO DOES WHAT?',
-    description:
-      'NestJS is a structured Node.js framework where each request passes through components with different responsibilities.',
-    coverImage: undefined,
-    linkedinHref: 'https://linkedin.com',
-    telegramHref: 'https://t.me',
-    readHref: '#article-4',
-  },
-  {
-    title: 'NESTJS REQUEST LIFECYCLE: WHO DOES WHAT?',
-    description:
-      'NestJS is a structured Node.js framework where each request passes through components with different responsibilities.',
-    coverImage: undefined,
-    linkedinHref: 'https://linkedin.com',
-    telegramHref: 'https://t.me',
-    readHref: '#article-5',
-  },
-  {
-    title: 'NESTJS REQUEST LIFECYCLE: WHO DOES WHAT?',
-    description:
-      'NestJS is a structured Node.js framework where each request passes through components with different responsibilities.',
-    coverImage: undefined,
-    linkedinHref: 'https://linkedin.com',
-    telegramHref: 'https://t.me',
-    readHref: '#article-6',
-  },
-];
-
 export const OtherArticles: React.FC<OtherArticlesProps> = ({
   title = 'ALL ARTICLES.',
   backHref = '/',
   principlesImageSrc = '/images/principles-widget.png',
-  articles = defaultArticles,
+  articles = siteArticles,
   className = '',
 }) => {
   return (

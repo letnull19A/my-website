@@ -1,12 +1,9 @@
 'use client';
 
 import React from 'react';
+import { socialLinks } from '@/config/social';
 
-export interface SocialLink {
-  label: string;
-  href: string;
-  iconSrc: string;
-}
+export type { SocialLink } from '@/config/social';
 
 export interface FooterSectionProps {
   designerName?: string;
@@ -23,15 +20,6 @@ const navLinks = [
   { label: 'Articles', href: '#articles' },
   { label: 'Contact me', href: '#contact' },
   { label: 'Privacy policy', href: '#privacy' },
-];
-
-const socialLinks: SocialLink[] = [
-  { label: 'github', href: 'https://github.com', iconSrc: '/icons/github.svg' },
-  { label: 'linkedin', href: 'https://linkedin.com', iconSrc: '/icons/linkedin.svg' },
-  { label: 'telegram', href: 'https://t.me', iconSrc: '/icons/telegram.svg' },
-  { label: 'whatsapp', href: 'https://wa.me', iconSrc: '/icons/whatsapp.svg' },
-  { label: 'email', href: 'mailto:letnull19a@gmail.com', iconSrc: '/icons/email.svg' },
- 
 ];
 
 const systemSpecs = [

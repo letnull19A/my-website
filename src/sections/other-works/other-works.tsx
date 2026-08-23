@@ -4,6 +4,7 @@ import React from 'react';
 import Image, { StaticImageData } from 'next/image';
 import { Button } from '@/components/button';
 import { CaseCard, CaseCardProps } from '@/components/case-card';
+import { cases as siteCases } from '@/config/cases';
 
 export interface OtherWorkSectionProps {
   title?: string;
@@ -13,75 +14,11 @@ export interface OtherWorkSectionProps {
   className?: string;
 }
 
-const defaultCases: CaseCardProps[] = [
-  {
-    title: 'SPEKA',
-    role: 'FULLSTACK',
-    description:
-      'A client-facing specification editor designed around progress transparency and predictable delivery signal',
-    logo: '/images/project-speka.png',
-    actions: [
-      { id: 'view', label: 'VIEW CASE', href: '#case-speka', variant: 'lime-light' },
-      { id: 'try', label: 'TRY OUT', href: 'https://speka.example.com', variant: 'default' },
-    ],
-  },
-  {
-    title: 'BIMAR SYSTEM',
-    role: 'FRONTEND // BACKEND',
-    description:
-      'Construction workflows, product data, and 3D configuration logic in one browser platform',
-    logo: '/images/project-bimar.png',
-    actions: [
-      { id: 'view', label: 'VIEW CASE', href: '#case-bimar', variant: 'lime-light' },
-    ],
-  },
-  {
-    title: 'BIMAR SYSTEM',
-    role: 'FRONTEND // BACKEND',
-    description:
-      'Construction workflows, product data, and 3D configuration logic in one browser platform',
-    logo: '/images/project-bimar.png',
-    actions: [
-      { id: 'view', label: 'VIEW CASE', href: '#case-bimar-2', variant: 'lime-light' },
-    ],
-  },
-  {
-    title: 'BIMAR SYSTEM',
-    role: 'FRONTEND // BACKEND',
-    description:
-      'Construction workflows, product data, and 3D configuration logic in one browser platform',
-    logo: '/images/project-bimar.png',
-    actions: [
-      { id: 'view', label: 'VIEW CASE', href: '#case-bimar-3', variant: 'lime-light' },
-    ],
-  },
-  {
-    title: 'BIMAR SYSTEM',
-    role: 'FRONTEND // BACKEND',
-    description:
-      'Construction workflows, product data, and 3D configuration logic in one browser platform',
-    logo: '/images/project-bimar.png',
-    actions: [
-      { id: 'view', label: 'VIEW CASE', href: '#case-bimar-4', variant: 'lime-light' },
-    ],
-  },
-  {
-    title: 'BIMAR SYSTEM',
-    role: 'FRONTEND // BACKEND',
-    description:
-      'Construction workflows, product data, and 3D configuration logic in one browser platform',
-    logo: '/images/project-bimar.png',
-    actions: [
-      { id: 'view', label: 'VIEW CASE', href: '#case-bimar-5', variant: 'lime-light' },
-    ],
-  },
-];
-
 export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
   title = 'SELECTED WORK.',
   backHref = '/',
   principlesImageSrc = '/images/principles-widget.png',
-  cases = defaultCases,
+  cases = siteCases,
   className = '',
 }) => {
   return (

@@ -3,6 +3,7 @@
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
 import { ContactForm, ContactFormData } from '@/components/contact-form';
+import { email as siteEmail } from '@/config/social';
 
 export interface ContactSectionProps {
   title?: string;
@@ -19,7 +20,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   subtitle = 'A new product, an unfinished system or something that needs fixing? Tell me about your project!',
   illustrationSrc = '/images/contact-cube-matrix.png',
   statusBadgeSrc = '/images/contact-status-badge.png',
-  directEmail = 'LETNULL19A@GMAIL.COM',
+  directEmail = siteEmail.toUpperCase(),
   onSubmit,
   className = '',
 }) => {

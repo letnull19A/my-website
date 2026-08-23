@@ -4,7 +4,8 @@ import React, { useState, useMemo } from 'react';
 import { FloatingCard } from '@/components/floating-card';
 import { DesktopIcon } from '@/components/desctop-icon';
 import { Button } from '@/components/button';
-import { TaskbarLink, TerminalTaskbar } from '@/components/terminal-taskbar/terminal-taskbar';
+import { TerminalTaskbar } from '@/components/terminal-taskbar/terminal-taskbar';
+import { socialLinks } from '@/config/social';
 
 export interface ActionItem {
   id: string;
@@ -19,13 +20,18 @@ export interface HeroSectionProps {
   headerHeight?: string;
 }
 
-const taskbarLinks: TaskbarLink[] = [
-  { id: 'github', label: 'github.html', href: 'https://github.com', iconSrc: '/icons/github.svg' },
-  { id: 'linkedin', label: 'linkedin.html', href: 'https://linkedin.com', iconSrc: '/icons/linkedin.svg' },
-  { id: 'telegram', label: 'telegram.exe', href: 'https://t.me', iconSrc: '/icons/telegram.svg' },
-  { id: 'whatsapp', label: 'whatsapp.exe', href: 'https://wa.me', iconSrc: '/icons/whatsapp.svg' },
-  { id: 'email', label: 'email.exe', href: 'mailto:contact@example.com', iconSrc: '/icons/email.svg' },
-];
+const taskbarLabelSuffix: Record<string, string> = {
+  github: '.html',
+  linkedin: '.html',
+  telegram: '.exe',
+  whatsapp: '.exe',
+  email: '.exe',
+};
+
+const taskbarLinks = socialLinks.map((link) => ({
+  ...link,
+  label: `${link.label}${taskbarLabelSuffix[link.id] ?? ''}`,
+}));
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   cvUrl = '#cv',
