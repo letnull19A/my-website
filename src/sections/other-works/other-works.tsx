@@ -25,13 +25,6 @@ export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
   return (
     <section
       id="cases"
-      style={{
-        backgroundImage: `
-          linear-gradient(to right, rgba(255, 255, 255, 0.045) 2px, transparent 1px),
-          linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 2px, transparent 1px)
-        `,
-        backgroundSize: '30px 30px',
-      }}
       className={`w-full min-h-screen bg-background text-foreground font-mono px-4 py-8 sm:px-6 md:px-8 border-b border-border select-none ${className}`}
     >
       <div className="mx-auto flex flex-col gap-8">
