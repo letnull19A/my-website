@@ -86,7 +86,7 @@ export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
 }) => {
   return (
     <section
-      id="selected-work"
+      id="cases"
       style={{
         backgroundImage: `
           linear-gradient(to right, rgba(255, 255, 255, 0.045) 2px, transparent 1px),

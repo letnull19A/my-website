@@ -31,7 +31,7 @@ const socialLinks: SocialLink[] = [
   { label: 'telegram', href: 'https://t.me', iconSrc: '/icons/telegram.svg' },
   { label: 'whatsapp', href: 'https://wa.me', iconSrc: '/icons/whatsapp.svg' },
   { label: 'email', href: 'mailto:letnull19a@gmail.com', iconSrc: '/icons/email.svg' },
-  { label: 'email', href: 'mailto:letnull19a@gmail.com', iconSrc: '/icons/email.svg' },
+ 
 ];
 
 const systemSpecs = [
@@ -43,7 +43,7 @@ const systemSpecs = [
 
 export const Footer: React.FC<FooterSectionProps> = ({
   designerName = 'Aleksey Dan',
-  designerHref = '#',
+  designerHref = 'https://www.behance.net/sunflow1e',
   copyrightYear = '2026',
   className = '',
 }) => {
