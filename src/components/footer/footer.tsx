@@ -32,7 +32,7 @@ const systemSpecs = [
 export const Footer: React.FC<FooterSectionProps> = ({
   designerName = 'Aleksey Dan',
   designerHref = 'https://www.behance.net/sunflow1e',
-  copyrightYear = '2026',
+  copyrightYear = new Date().getFullYear(),
   className = '',
 }) => {
   return (
@@ -80,7 +80,7 @@ export const Footer: React.FC<FooterSectionProps> = ({
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="hover:text-foreground hover:underline transition-colors block"
+                    className="hover:text-lime-soft hover:underline transition-colors block"
                   >
                     {link.label}
                   </a>
@@ -99,11 +99,11 @@ export const Footer: React.FC<FooterSectionProps> = ({
               </div>
               <p className="p-4 text-xl text-lime leading-5">
                 Use the{' '}
-                <a href="#ask" className="underline hover:text-foreground">
+                <a href="#ask" className="underline hover:text-lime-light">
                   Ask page
                 </a>{' '}
                 for project-fit questions, fill the{' '}
-                <a href="#contact" className="underline hover:text-foreground">
+                <a href="#contact" className="underline hover:text-lime-light">
                   contact form
                 </a>{' '}
                 or send direct context by email
@@ -117,7 +117,9 @@ export const Footer: React.FC<FooterSectionProps> = ({
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex flex-col items-start justify-between p-3 min-h-25 hover:bg-lime/10 transition-colors"
+                className={`group flex flex-col items-start justify-between p-3 min-h-25 hover:bg-lime/10 transition-colors ${
+                  item.id === 'email' ? 'col-span-2' : ''
+                }`}
                 >
                 <span className="text-base font-medium text-lime tracking-wider">
                     {item.label}
@@ -127,7 +129,7 @@ export const Footer: React.FC<FooterSectionProps> = ({
                     mask: `url(${item.iconSrc}) no-repeat center / contain`,
                     WebkitMask: `url(${item.iconSrc}) no-repeat center / contain`,
                     }}
-                    className="w-4 h-4 sm:w-5 sm:h-5 bg-lime group-hover:bg-foreground transition-colors pointer-events-none mt-3"
+                    className="w-4 h-4 sm:w-5 sm:h-5 bg-lime transition-colors pointer-events-none mt-3"
                     aria-hidden="true"
                 />
                 </a>
