@@ -22,6 +22,8 @@
 
 - [х] Конвертировать крупные PNG в WebP/AVIF и сжать
   - каталог: `public/images/*.png`
+- [x] Добавить адаптивные размеры изображений (srcset/sizes) для floating-карточек в hero — мобилки грузят маленькие WebP-варианты (160/200/260w)
+  - файлы: `src/components/floating-card/floating-card.tsx`, `public/images/{philosophy,developer}-*w.webp`
 - [x] Добавить `loading="lazy"` нижесгибающим изображениям
   - файлы: `src/sections/process/process.tsx`, `about.tsx`, `contact.tsx`
 - [x] Оптимизировать перетаскивание floating-карточек (не вызывать `setState` каждый кадр — снизить влияние на INP/CLS)
@@ -35,6 +37,8 @@
 
 - [x] Добавить skip-link "Перейти к содержимому"
   - файл: `src/app/layout.tsx`
+- [x] Настроить анализ бандла: скрипт `pnpm analyze` (`next experimental-analyze`), результаты в `.next/diagnostics/analyze`
+  - файл: `package.json`
 
 ---
 

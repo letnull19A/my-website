@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import Image from 'next/image';
 
 export interface FloatingCardProps {
   id: string;
@@ -226,11 +225,18 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
           !isDragging ? 'animate-[floating_4.5s_ease-in-out_infinite]' : ''
         }`}
       >
-        <Image
+        {/* <img> вместо <Image /> намеренно: unoptimized, и нужен ручной srcset
+            для адаптивных WebP-вариантов (Next Image не принимает srcSet при unoptimized). */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={imageSrc}
           alt={imageAlt}
           width={width}
           height={height}
+          {...({
+            srcset: `${imageSrc.replace(/\.(webp|png|jpe?g)$/, '')}-160w.webp 160w, ${imageSrc.replace(/\.(webp|png|jpe?g)$/, '')}-200w.webp 200w, ${imageSrc.replace(/\.(webp|png|jpe?g)$/, '')}-260w.webp 260w`,
+            sizes: '(max-width: 640px) 160px, (max-width: 768px) 200px, 260px',
+          } as React.ImgHTMLAttributes<HTMLImageElement>)}
           draggable={false}
           className="pointer-events-none block h-auto w-[160px] sm:w-[200px] md:w-[260px] object-contain"
         />
