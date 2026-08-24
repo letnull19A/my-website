@@ -151,6 +151,7 @@ export const Header: React.FC<HeaderProps> = ({
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string
   ) => {
+    vibrateOnTap(e);
     setIsMobileMenuOpen(false);
     if (!href.startsWith('#')) return;
     e.preventDefault();
@@ -232,7 +233,10 @@ export const Header: React.FC<HeaderProps> = ({
             aria-label="Toggle navigation menu"
             aria-expanded={isMobileMenuOpen}
             aria-controls={mobileMenuId}
-            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            onClick={(e) => {
+              vibrateOnTap(e);
+              setIsMobileMenuOpen((prev) => !prev);
+            }}
             className="p-2 text-foreground hover:text-lime transition-colors bg-transparent border-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {isMobileMenuOpen ? (
@@ -331,7 +335,6 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="mt-auto">
             <a
               href={action.href}
-              onPointerDown={vibrateOnTap}
               onClick={(e) => handleAnchorClick(e, action.href)}
               className={cn(
                 buttonVariants({ variant: 'lime-light' }),

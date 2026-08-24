@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { vibrateOnTap } from '@/lib/utils';
 
 export interface TaskbarLink {
   id: string;
@@ -58,6 +59,7 @@ export const TerminalTaskbar: React.FC<{ links: TaskbarLink[] }> = ({ links }) =
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={vibrateOnTap}
               className="group flex items-center gap-1.5 px-2 py-2 hover:bg-lime hover:text-background transition-colors truncate"
             >
               <span
@@ -95,6 +97,7 @@ export const TerminalTaskbar: React.FC<{ links: TaskbarLink[] }> = ({ links }) =
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={vibrateOnTap}
               className="group px-3 py-1.5 hover:bg-lime hover:text-background transition-colors flex items-center gap-2 truncate"
             >
               <span

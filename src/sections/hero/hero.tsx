@@ -152,8 +152,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <a
               key={action.id}
               href={action.url}
-              onPointerDown={vibrateOnTap}
               onClick={(e) => {
+                vibrateOnTap(e);
                 e.preventDefault();
                 handleActionClick(action.url);
               }}

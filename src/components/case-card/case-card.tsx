@@ -118,7 +118,7 @@ export const CaseCard: React.FC<CaseCardProps> = ({
                     href={act.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onPointerDown={vibrateOnTap}
+                    onClick={vibrateOnTap}
                     className={buttonClass}
                   >
                     {act.label}
@@ -130,7 +130,7 @@ export const CaseCard: React.FC<CaseCardProps> = ({
                 <Link
                   key={act.id}
                   href={act.href}
-                  onPointerDown={vibrateOnTap}
+                  onClick={vibrateOnTap}
                   className={buttonClass}
                 >
                   {act.label}

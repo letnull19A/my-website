@@ -102,8 +102,8 @@ export const Footer: React.FC<FooterSectionProps> = ({
                 Use the{' '}
                 <a
                   href="#ask"
-                  onPointerDown={vibrateOnTap}
                   onClick={(e) => {
+                    vibrateOnTap(e);
                     e.preventDefault();
                     document.getElementById('ask')?.scrollIntoView({ behavior: 'smooth' });
                   }}
@@ -114,8 +114,8 @@ export const Footer: React.FC<FooterSectionProps> = ({
                 for project-fit questions, fill the{' '}
                 <a
                   href="#contact"
-                  onPointerDown={vibrateOnTap}
                   onClick={(e) => {
+                    vibrateOnTap(e);
                     e.preventDefault();
                     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
                   }}

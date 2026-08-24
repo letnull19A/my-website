@@ -42,28 +42,28 @@ const buttonVariants = cva(
   }
 );
 
-type BaseUIPointerDown = NonNullable<ButtonPrimitive.Props["onPointerDown"]>;
+type BaseUIClick = NonNullable<ButtonPrimitive.Props["onClick"]>;
 
 function Button({
   className,
   variant = "default",
   size = "default",
-  onPointerDown,
+  onClick,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
-  const handlePointerDown = useCallback(
-    (e: Parameters<BaseUIPointerDown>[0]) => {
-      vibrateOnTap({ pointerType: e.pointerType });
-      onPointerDown?.(e);
+  const handleClick = useCallback(
+    (e: Parameters<BaseUIClick>[0]) => {
+      vibrateOnTap(e);
+      onClick?.(e);
     },
-    [onPointerDown]
+    [onClick]
   );
 
   return (
     <ButtonPrimitive
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
-      onPointerDown={handlePointerDown}
+      onClick={handleClick}
       {...props}
     />
   );

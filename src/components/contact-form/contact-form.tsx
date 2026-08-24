@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/button';
+import { vibrateOnTap } from '@/lib/utils';
 
 export interface ContactFormData {
   name: string;
@@ -146,7 +147,10 @@ export const ContactForm: React.FC<ContactFormProps> = ({
       </Button>
 
       {/* Чекбокс согласия с политикой */}
-      <label className="flex items-start gap-2.5 mt-2 cursor-pointer group">
+      <label
+        onClick={vibrateOnTap}
+        className="flex items-start gap-2.5 mt-2 cursor-pointer group"
+      >
         <input
           type="checkbox"
           name="agreed"

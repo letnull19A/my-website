@@ -34,7 +34,7 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
 
           <Link
             href={readMoreHref}
-            onPointerDown={vibrateOnTap}
+            onClick={vibrateOnTap}
             className={cn(
               buttonVariants({ variant: 'lime-light' }),
               'hidden md:inline-flex h-15 sm:h-16 px-4 sm:px-6 text-base sm:text-lg font-bold uppercase rounded-none tracking-wider transition-transform hover:brightness-105 active:scale-[0.99]'
@@ -62,7 +62,7 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
         {/* Кнопка READ MORE на мобилке — внизу секции */}
         <Link
           href={readMoreHref}
-          onPointerDown={vibrateOnTap}
+          onClick={vibrateOnTap}
           className={cn(
             buttonVariants({ variant: 'lime-light' }),
             'md:hidden h-14 px-4 text-base font-bold uppercase rounded-none tracking-wider w-full justify-center'

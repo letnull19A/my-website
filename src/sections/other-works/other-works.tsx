@@ -34,7 +34,7 @@ export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
             <div>
               <Link
                 href={backHref}
-                onPointerDown={vibrateOnTap}
+                onClick={vibrateOnTap}
                 className={cn(
                   buttonVariants({ variant: 'outline' }),
                   'h-9 px-4 text-xs sm:text-sm font-bold tracking-wider uppercase rounded-none'
