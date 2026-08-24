@@ -78,7 +78,6 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-
 };
 
 export const viewport: Viewport = {
@@ -88,13 +87,17 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-      <html lang="en" className={`${ptMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+    <html lang="en" className={`${ptMono.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col overflow-x-hidden bg-background text-foreground">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-lime focus:text-green-dark focus:font-bold focus:rounded-none"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-lime focus:text-background focus:font-bold focus:rounded-none focus:outline-none"
         >
           Skip to main content
         </a>

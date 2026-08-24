@@ -34,7 +34,7 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
             href={viewAllHref}
             className={cn(
               buttonVariants({ variant: 'lime-light' }),
-              'h-15 sm:h-16 px-4 sm:px-6 text-base sm:text-lg font-bold uppercase rounded-none tracking-wider transition-transform hover:brightness-105 active:scale-[0.99]'
+              'hidden md:inline-flex h-15 sm:h-16 px-4 sm:px-6 text-base sm:text-lg font-bold uppercase rounded-none tracking-wider transition-transform hover:brightness-105 active:scale-[0.99]'
             )}
           >
             VIEW ALL CASES
@@ -46,6 +46,17 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
             <CaseCard key={card.title} {...card} />
           ))}
         </div>
+
+        {/* Кнопка VIEW ALL на мобилке — внизу секции */}
+        <a
+          href={viewAllHref}
+          className={cn(
+            buttonVariants({ variant: 'lime-light' }),
+            'md:hidden h-14 px-4 text-base font-bold uppercase rounded-none tracking-wider w-full justify-center'
+          )}
+        >
+          VIEW ALL CASES
+        </a>
       </div>
     </section>
   );

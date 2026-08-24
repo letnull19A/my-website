@@ -15,13 +15,12 @@ export const CookieBanner: React.FC = () => {
     if (!consent) {
       const timer = setTimeout(() => {
         setIsVisible(true);
-      }, 700);
+      }, 500);
 
       return () => clearTimeout(timer);
     }
   }, []);
 
-  // Сохраняем предыдущий фокус и переносим его в баннер при открытии
   useEffect(() => {
     if (!isVisible) return;
     previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
@@ -48,7 +47,11 @@ export const CookieBanner: React.FC = () => {
       role="dialog"
       aria-modal="true"
       aria-label="Cookie consent banner"
-      className="fixed z-50 bottom-4 right-4 sm:bottom-6 sm:right-6 w-[calc(100vw-32px)] sm:w-[320px] md:w-[340px] border border-lime bg-background/95 backdrop-blur-md shadow-2xl font-mono text-lime-light select-none animate-in fade-in slide-in-from-bottom-4 duration-300"
+      style={{
+        position: 'fixed',
+        zIndex: 50,
+      }}
+      className="bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 sm:w-[320px] md:w-[340px] max-w-[calc(100vw-32px)] border border-lime bg-background text-lime-light font-mono select-none shadow-2xl transition-opacity duration-300 opacity-100"
     >
       {/* Шапка окна */}
       <div className="flex items-center justify-between border-b border-lime px-3 py-1.5 bg-card text-xs text-lime">
@@ -57,7 +60,7 @@ export const CookieBanner: React.FC = () => {
           type="button"
           onClick={handleDecline}
           aria-label="Close cookie banner"
-          className="text-lime hover:text-lime-light text-xs font-bold px-1 transition-colors cursor-pointer"
+          className="text-lime hover:text-lime-light text-xs font-bold px-1 transition-colors cursor-pointer bg-transparent border-none"
         >
           X
         </button>
