@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
+import Link from 'next/link';
 import { buttonVariants } from '@/components/button';
 import { cn } from '@/lib/utils';
 
@@ -15,6 +16,14 @@ export interface ArticleCardProps {
   linkedinIconSrc?: string;
   telegramIconSrc?: string;
   className?: string;
+
+  // Опциональные поля для детальной страницы статьи
+  slug?: string;
+  subtitle?: string;
+  date?: string;
+  readTime?: string;
+  category?: string;
+  content?: string;
 }
 
 const isImageSource = (item: unknown): item is string | StaticImageData => {
@@ -32,6 +41,8 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   telegramIconSrc = '/icons/telegram.svg',
   className = '',
 }) => {
+  const isExternalRead = /^https?:\/\//.test(readHref);
+
   return (
     <article
       style={{
@@ -67,16 +78,16 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
       {/* Контент */}
       <div className="mt-4 flex-1 flex flex-col justify-between">
         <div>
-          <h3 className="text-lg sm:xl font-bold text-lime-light uppercase tracking-tight leading-snug">
+          <h3 className="text-base sm:text-lg md:text-xl font-bold text-lime-light uppercase tracking-tight leading-snug">
             {title}
           </h3>
-          <p className="mt-2 leading-5 text-lg sm:text-xl text-lime-light min-h-13.5">
+          <p className="mt-2 text-sm sm:text-base md:text-lg text-lime-light/80 leading-relaxed min-h-12">
             {description}
           </p>
         </div>
 
-        {/* Кнопки с масочными иконками */}
-        <div className="mt-5 hidden lg:grid grid-cols-[1fr_1fr_1.2fr] gap-1.5 sm:gap-2 ">
+        {/* Кнопки действий: адаптивная сетка (1 колонка на мобилках, 3 на десктопе) */}
+        <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-2">
           {/* Linkedin */}
           <a
             href={linkedinHref}
@@ -84,7 +95,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             rel="noopener noreferrer"
             className={cn(
               buttonVariants({ variant: 'outline', size: 'sm' }),
-              'group h-12 px-2 text-lg font-bold rounded-none border-lime text-lime flex items-center justify-center gap-1.5'
+              'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold rounded-none border-lime text-lime flex items-center justify-center gap-1.5'
             )}
           >
             <span
@@ -92,7 +103,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
                 mask: `url(${linkedinIconSrc}) no-repeat center / contain`,
                 WebkitMask: `url(${linkedinIconSrc}) no-repeat center / contain`,
               }}
-              className="w-4 h-4 mr-2 shrink-0 bg-lime transition-colors pointer-events-none"
+              className="w-4 h-4 mr-1 shrink-0 bg-lime transition-colors pointer-events-none"
               aria-hidden="true"
             />
             <span className="truncate">linkedin</span>
@@ -105,7 +116,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             rel="noopener noreferrer"
             className={cn(
               buttonVariants({ variant: 'outline', size: 'sm' }),
-              'group h-12 px-2 text-lg font-bold rounded-none border-lime text-lime flex items-center justify-center gap-1.5'
+              'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold rounded-none border-lime text-lime flex items-center justify-center gap-1.5'
             )}
           >
             <span
@@ -113,22 +124,36 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
                 mask: `url(${telegramIconSrc}) no-repeat center / contain`,
                 WebkitMask: `url(${telegramIconSrc}) no-repeat center / contain`,
               }}
-              className="w-4 h-4 mr-2 shrink-0 bg-lime transition-colors pointer-events-none"
+              className="w-4 h-4 mr-1 shrink-0 bg-lime transition-colors pointer-events-none"
               aria-hidden="true"
             />
             <span className="truncate">telegram</span>
           </a>
 
           {/* Read here */}
-          <a
-            href={readHref}
-            className={cn(
-              buttonVariants({ variant: 'default', size: 'sm' }),
-              'h-12 px-2 text-lg font-bold uppercase rounded-none truncate text-background'
-            )}
-          >
-            Read here
-          </a>
+          {isExternalRead ? (
+            <a
+              href={readHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                buttonVariants({ variant: 'default', size: 'sm' }),
+                'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold uppercase rounded-none truncate text-background flex items-center justify-center'
+              )}
+            >
+              Read here
+            </a>
+          ) : (
+            <Link
+              href={readHref}
+              className={cn(
+                buttonVariants({ variant: 'default', size: 'sm' }),
+                'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold uppercase rounded-none truncate text-background flex items-center justify-center'
+              )}
+            >
+              Read here
+            </Link>
+          )}
         </div>
       </div>
     </article>

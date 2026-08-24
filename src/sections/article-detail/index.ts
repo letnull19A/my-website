@@ -1,0 +1,1 @@
+export { ArticleDetailSection } from './article-detail'
