@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState, useRef, useId } from 'react';
 import { Menu, X } from 'lucide-react';
+import { buttonVariants } from '@/components/button';
+import { cn } from '@/lib/utils';
+import { socialLinks } from '@/config/social';
 
 export interface NavItem {
   id: string;
@@ -143,7 +146,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header
       ref={headerRef}
-      className={`sticky z-[60] top-0 w-full bg-background text-foreground font-mono select-none ${className}`}
+      className={`sticky z-60 top-0 w-full bg-background text-foreground font-mono select-none ${className}`}
     >
       <div className="grid grid-cols-[1fr_auto] md:grid-cols-[1.2fr_2fr_1fr] items-stretch border-b border-border">
         <div
@@ -253,7 +256,7 @@ export const Header: React.FC<HeaderProps> = ({
         <nav
           id={mobileMenuId}
           aria-label="Mobile Navigation"
-          className="fixed top-[calc(57px+16px)] inset-x-0 bottom-0 z-[60] md:hidden border-b border-border bg-background/95 backdrop-blur-md px-6 py-6 flex flex-col gap-4 overflow-y-auto shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150"
+          className="fixed top-18.25 inset-x-0 bottom-0 z-60 md:hidden border-b border-border bg-background/95 backdrop-blur-md px-6 py-6 flex flex-col gap-6 overflow-y-auto shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150"
         >
           <ul className="flex flex-col gap-3 list-none m-0 p-0">
             {items.map((item) => (
@@ -265,7 +268,7 @@ export const Header: React.FC<HeaderProps> = ({
                   className={`block py-2 px-2.5 text-sm font-medium transition-colors ${
                     activeId === item.id
                       ? 'bg-lime text-background font-semibold'
-                      : 'text-muted-foreground hover:text-foreground'
+                      : 'text-lime-light hover:text-lime'
                   }`}
                 >
                   {item.label}
@@ -273,18 +276,50 @@ export const Header: React.FC<HeaderProps> = ({
               </li>
             ))}
           </ul>
-          <div className="pt-3 border-t border-border">
+
+          {/* CONTACTS */}
+          <div className="flex flex-col gap-3">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-lime-light">
+              Contacts
+            </h3>
+            <div className="grid grid-cols-3 divide-x divide-y divide-border border border-border">
+              {socialLinks.map((item, idx) => (
+                <a
+                  key={idx}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`group flex flex-col items-start justify-between p-3 min-h-25 hover:bg-lime/10 transition-colors ${
+                    item.id === 'email' ? 'col-span-2' : ''
+                  }`}
+                >
+                  <span className="text-base font-medium text-lime tracking-wider">
+                    {item.label}
+                  </span>
+                  <span
+                    style={{
+                      mask: `url(${item.iconSrc}) no-repeat center / contain`,
+                      WebkitMask: `url(${item.iconSrc}) no-repeat center / contain`,
+                    }}
+                    className="w-4 h-4 bg-lime transition-colors pointer-events-none mt-3"
+                    aria-hidden="true"
+                  />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* CONTACT ME */}
+          <div className="mt-auto">
             <a
               href={action.href}
               onClick={() => setIsMobileMenuOpen(false)}
-              aria-current={isActionActive ? 'true' : undefined}
-              className={`text-sm block py-2 px-2.5 font-medium transition-colors ${
-                isActionActive
-                  ? 'bg-lime text-background font-semibold'
-                  : 'text-foreground hover:text-lime'
-              }`}
+              className={cn(
+                buttonVariants({ variant: 'lime-light' }),
+                'w-full h-14 text-lg font-bold uppercase tracking-wider rounded-none'
+              )}
             >
-              {action.label}
+              CONTACT ME
             </a>
           </div>
         </nav>
