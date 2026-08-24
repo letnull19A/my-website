@@ -69,14 +69,14 @@ const NavigationButtons: React.FC<{
     <Button
       variant="outline"
       onClick={onPrev}
-      className="w-full sm:w-auto border-lime-light text-lime-light font-bold text-lg sm:text-xl tracking-wider px-3 sm:px-4 h-14 rounded-none uppercase transition-colors"
+      className="w-full sm:w-auto font-bold text-lg sm:text-xl tracking-wider px-3 sm:px-4 h-14 rounded-none uppercase transition-colors"
     >
       &lt;&lt; PREV STEP
     </Button>
     <Button
       variant="outline"
       onClick={onNext}
-      className="w-full sm:w-auto border-lime-light text-lime-light font-bold text-lg sm:text-xl tracking-wider px-3 sm:px-4 h-14 rounded-none uppercase transition-colors"
+      className="w-full sm:w-auto font-bold text-lg sm:text-xl tracking-wider px-3 sm:px-4 h-14 rounded-none uppercase transition-colors"
     >
       NEXT STEP &gt;&gt;
     </Button>

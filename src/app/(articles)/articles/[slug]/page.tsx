@@ -11,16 +11,14 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-// 1. Обязательно для генерации статических страниц при output: 'export'
 export async function generateStaticParams() {
   return articles
     .filter((a) => Boolean(a.slug))
     .map((a) => ({
-      slug: a.slug as string,
+      slug: String(a.slug),
     }));
 }
 
-// 2. Метатеги страницы
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const currentArticle = articles.find((a) => a.slug === slug);
@@ -35,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const navData = {
   brand: { title: 'Letnull19A Portfolio', href: '/' },
   items: [
-    { id: 'articles', label: 'Articles', href: '/articles' },
+    { id: 'article', label: 'Article', href: '#article' },
     { id: 'ask', label: 'Ask', href: '#ask' },
   ],
   action: { label: 'Contact me', href: '#contact' },
@@ -49,6 +47,9 @@ export default async function ArticleDetailPage({ params }: Props) {
     notFound();
   }
 
+  // Фильтруем остальные статьи для блока "MORE ARTICLES"
+  const otherArticles = articles.filter((a) => a.slug !== slug);
+
   return (
     <div className="min-h-screen bg-background text-foreground font-mono">
       <Header {...navData} />
@@ -60,6 +61,10 @@ export default async function ArticleDetailPage({ params }: Props) {
           readTime={currentArticle.readTime}
           category={currentArticle.category}
           content={currentArticle.content || ''}
+          coverImage={currentArticle.coverImage}
+          linkedinHref={currentArticle.linkedinHref}
+          telegramHref={currentArticle.telegramHref}
+          otherArticles={otherArticles}
         />
       </main>
       <AskSection />

@@ -55,7 +55,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
       className={`relative border border-border bg-card p-4 sm:p-5 flex flex-col justify-between font-mono select-none h-full ${className}`}
     >
       {/* Превью статьи */}
-      <div className="relative w-full aspect-16/10 border border-lime-light bg-card flex items-center justify-center overflow-hidden">
+      <div className="relative w-full aspect-16/8 sm:aspect-16/7.5 border border-lime-light bg-card flex items-center justify-center overflow-hidden">
         {coverImage ? (
           isImageSource(coverImage) ? (
             <Image
@@ -95,7 +95,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             rel="noopener noreferrer"
             className={cn(
               buttonVariants({ variant: 'outline', size: 'sm' }),
-              'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold rounded-none border-lime text-lime flex items-center justify-center gap-1.5'
+              'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold rounded-none flex items-center justify-center gap-1.5'
             )}
           >
             <span
@@ -116,7 +116,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             rel="noopener noreferrer"
             className={cn(
               buttonVariants({ variant: 'outline', size: 'sm' }),
-              'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold rounded-none border-lime text-lime flex items-center justify-center gap-1.5'
+              'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold rounded-none flex items-center justify-center gap-1.5'
             )}
           >
             <span
@@ -138,7 +138,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
               rel="noopener noreferrer"
               className={cn(
                 buttonVariants({ variant: 'default', size: 'sm' }),
-                'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold uppercase rounded-none truncate text-background flex items-center justify-center'
+                'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold uppercase rounded-none truncate flex items-center justify-center'
               )}
             >
               Read here
@@ -148,7 +148,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
               href={readHref}
               className={cn(
                 buttonVariants({ variant: 'default', size: 'sm' }),
-                'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold uppercase rounded-none truncate text-background flex items-center justify-center'
+                'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold uppercase rounded-none truncate flex items-center justify-center'
               )}
             >
               Read here

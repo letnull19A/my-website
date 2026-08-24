@@ -25,9 +25,9 @@ export const OtherArticles: React.FC<OtherArticlesProps> = ({
   return (
     <section
       id="articles"
-      className={`w-full min-h-screen bg-background text-foreground font-mono px-4 py-8 sm:px-6 md:px-8 border-b border-border select-none ${className}`}
+      className={`w-full bg-background text-foreground font-mono px-4 py-8 sm:px-6 md:px-8 border-b border-border select-none ${className}`}
     >
-      <div className="mx-auto flex flex-col gap-8">
+      <div className="w-full mx-auto flex flex-col gap-8">
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
           <div className="flex flex-col gap-4">
             <div>
@@ -35,7 +35,7 @@ export const OtherArticles: React.FC<OtherArticlesProps> = ({
                 href={backHref}
                 className={cn(
                   buttonVariants({ variant: 'outline' }),
-                  'h-9 px-4 text-xs sm:text-sm font-bold tracking-wider uppercase rounded-none border-lime-light text-lime-light hover:bg-hatch-dark'
+                  'h-9 px-4 text-xs sm:text-sm font-bold tracking-wider uppercase rounded-none'
                 )}
               >
                 &lt;&lt; BACK
@@ -60,7 +60,8 @@ export const OtherArticles: React.FC<OtherArticlesProps> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 items-stretch">
+        {/* Сетка: 1 колонка на мобилках, 2 в ряд на десктопе */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-stretch">
           {articles.map((article, idx) => (
             <ArticleCard
               key={`${article.title}-${idx}`}

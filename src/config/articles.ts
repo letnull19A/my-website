@@ -3,129 +3,86 @@ import { socialLinks } from '@/config/social';
 
 export const articles: ArticleCardProps[] = [
   {
-    slug: 'nestjs-request-lifecycle',
-    title: 'NESTJS REQUEST LIFECYCLE: WHO DOES WHAT?',
+    slug: 'ui-syntax-and-styleguide',
+    title: 'UI DESIGN SYSTEM & MARKDOWN SYNTAX DEMO',
     description:
-      'A deep architectural breakdown of how requests traverse Middleware, Guards, Interceptors, Pipes, and Exception Filters in NestJS.',
+      'Complete showcase of all typography, lists, code blocks, tables, and blockquotes supported by the markdown parser.',
     coverImage: undefined,
     linkedinHref: socialLinks[1]?.href,
     telegramHref: socialLinks[2]?.href,
-    readHref: '/articles/nestjs-request-lifecycle',
+    readHref: '/articles/ui-syntax-and-styleguide',
     subtitle:
-      'Understanding execution order and responsibilities to keep backend controllers slim, predictable, and maintainable.',
+      'A reference specification demonstrating headers, list markers, code copy actions, and responsive tables.',
     date: '2026-08',
-    readTime: '6 MIN READ',
-    category: 'BACKEND // NESTJS',
+    readTime: '4 MIN READ',
+    category: 'DESIGN SYSTEM // SPEC',
     content: `
-## Overview
+# 1. Main Section Heading (H1)
 
-In NestJS, incoming HTTP requests don't hit controllers directly. They pass through a strictly defined pipeline of architectural layers. Misplacing logic — such as validating DTOs in middleware or checking permissions inside controllers — leads to code duplication, testing headaches, and subtle security gaps.
-
----
-
-## The Execution Sequence
-
-Each layer has a single, well-defined responsibility. When a client initiates a request, the runtime processes it in this exact order:
-
-1. **Global & Route Middleware**: Executes raw request handlers (CORS, body parsing, request IDs, low-level logging).
-2. **Guards**: Determines whether the caller has permission to access the route before any business logic runs.
-3. **Pre-Controller Interceptors**: Binds extra logic before route execution (e.g. starting execution timers, cache checks).
-4. **Pipes**: Validates payload schemas and transforms raw JSON into typed DTO instances.
-5. **Controller Handler**: The business entrypoint that delegates work to injectable providers/services.
-6. **Post-Controller Interceptors**: Mutates returned response bodies, transforms RxJS streams, or logs response status codes.
-7. **Exception Filters**: Traps unhandled errors thrown anywhere in the lifecycle and formats standard client-facing JSON errors.
+This is a standard text paragraph (\`p\`) illustrating text rhythm and line spacing. It demonstrates inline elements like **bold emphasis**, *italicized terms*, and an external link to [Next.js Documentation](https://nextjs.org).
 
 ---
 
-## Practical Example: Auth Guard & Validation Pipe
+## 2. Subsystem Heading with Hash Decorator (H2)
 
-Guards should never transform input data. Their only job is to evaluate context and return a boolean or throw an \`UnauthorizedException\`:
+Headers of level two automatically prepend a green hash tag indicator.
+
+### 3. Nested Feature Header (H3)
+
+Below is an unordered bullet list demonstrating custom \`>>\` list item decorators:
+
+* **State Determinism**: Every interaction yields a predictable render output.
+* **Stream Processing**: Data pipelines handle real-time event updates without UI blocking.
+* **Zero Overhead**: Minimal layout shifts and targeted component updates.
+
+---
+
+## 4. Numbered Execution Pipeline (OL / LI)
+
+1. Initialize execution context and hydrate incoming parameters.
+2. Validate incoming request schema using strict type guards.
+3. Commit validated payloads to the persistence storage layer.
+
+---
+
+## 5. Blockquote / System Note
+
+> "Visible progress beats hidden effort every single time. Clear state boundaries keep client architectures simple and maintainable."
+
+---
+
+## 6. Inline Code and Code Block with Copy Action
+
+To run the local development server, execute \`npm run dev\` inside your terminal.
 
 \`\`\`typescript
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
-import { Request } from 'express';
+interface SystemSignal<T> {
+  readonly id: string;
+  readonly payload: T;
+  readonly timestamp: number;
+  status: 'IDLE' | 'PROCESSING' | 'RESOLVED';
+}
 
-@Injectable()
-export class AccessTokenGuard implements CanActivate {
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<Request>();
-    const authHeader = request.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Missing or invalid bearer token');
-    }
-
-    const token = authHeader.split(' ')[1];
-    // Attach decoded identity payload directly to the request object
-    request['user'] = await this.verifyToken(token);
-    return true;
-  }
-
-  private async verifyToken(token: string) {
-    // Decryption / verification logic
-    return { id: 'usr_01', role: 'ENGINEER' };
-  }
+export function dispatchSignal<T>(signal: SystemSignal<T>): void {
+  console.log(\`[SIGNAL_DISPATCH]: \${signal.id} - \${signal.status}\`);
 }
 \`\`\`
 
 ---
 
-## Layer Responsibilities Summary
+## 7. Comparative Data Matrix (TABLE)
 
-| Layer | Primary Responsibility | Common Anti-Pattern |
-| :--- | :--- | :--- |
-| **Middleware** | Low-level HTTP headers & parsing | Domain data validation |
-| **Guards** | Authentication & RBAC permissions | Mutating request bodies |
-| **Pipes** | Schema validation & type casting | Database lookups |
-| **Interceptors** | Performance profiling & caching | Permission authorization |
-| **Filters** | Standardized error formatting | Handling business logic |
+| Architecture Layer | Core Duty | Runtime Target | Status |
+| :--- | :--- | :--- | :--- |
+| **API Gateway** | Request parsing & security guards | Node.js Runtime | Active |
+| **State Store** | Client cache & sync reconciliation | Web Browser | Active |
+| **3D Engine** | Mesh configuration & rendering | WebGL / Canvas | Standby |
 
 ---
 
-## Architectural Rules of Thumb
+## 8. Final Boundary Summary
 
-* **Use Pipes strictly for schema integrity**: If a payload fails schema validation, execution must stop before hitting your controller methods.
-* **Keep Controllers thin**: Controllers should only parse parameters, call services, and return results.
-* **Centralize error handling with Filters**: Never wrap every controller method in \`try/catch\` blocks; let NestJS filters produce uniform error envelopes.
-
-> Explicit layer boundaries reduce regression risks and make unit testing isolated and predictable.
-    `,
-  },
-  {
-    slug: 'react-state-architecture',
-    title: 'PREDICTABLE STATE FLOW IN COMPLEX REACT UIs',
-    description:
-      'Architectural principles for managing global data flow, background cache invalidation, and local interactive UI state without overhead.',
-    coverImage: undefined,
-    linkedinHref: socialLinks[1]?.href,
-    telegramHref: socialLinks[2]?.href,
-    readHref: '/articles/react-state-architecture',
-    subtitle:
-      'Eliminating state synchronization issues by separating server data cache from interactive client state.',
-    date: '2026-07',
-    readTime: '8 MIN READ',
-    category: 'FRONTEND // REACT',
-    content: `
-## The Problem with Monolithic State
-
-Treating server data and client interaction state as a single unified store causes state drift, stale data bugs, and excessive component re-renders.
-
-### Three Categories of State
-
-1. **Server State**: Asynchronous, cached, and owned by remote APIs (e.g. user profiles, case metrics).
-2. **Client Interaction State**: Ephemeral UI toggles, active tabs, modal visibility, and local form inputs.
-3. **URL State**: The single source of truth for routing, filters, search parameters, and pagination.
-
-\`\`\`typescript
-// Separate interactive UI state from cached entity records
-interface WorkspaceUiState {
-  sidebarOpen: boolean;
-  activeFilter: string;
-  selectedElementId: string | null;
-}
-\`\`\`
-
-> If state can be derived or stored in the URL search parameters, avoid duplicating it in React context or global stores.
+Here is the concluding paragraph summarizing the complete design spec. All styles align with the retro-terminal palette, monospace hierarchy, and responsive grid layouts.
     `,
   },
 ];

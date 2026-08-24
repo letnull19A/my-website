@@ -35,7 +35,7 @@ export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
                 href={backHref}
                 className={cn(
                   buttonVariants({ variant: 'outline' }),
-                  'h-9 px-4 text-xs sm:text-sm font-bold tracking-wider uppercase rounded-none border-lime-light text-lime-light hover:bg-hatch-dark'
+                  'h-9 px-4 text-xs sm:text-sm font-bold tracking-wider uppercase rounded-none'
                 )}
               >
                 &lt;&lt; BACK

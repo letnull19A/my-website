@@ -87,7 +87,7 @@ export const CaseDetailSection: React.FC<CaseDetailProps> = ({
                 onClick={() => {
                   window.location.href = backHref;
                 }}
-                className="h-10 sm:h-14 md:h-16 px-4 text-xs sm:text-base md:text-lg font-bold tracking-wider uppercase rounded-none border-lime-light text-lime-light hover:bg-hatch-dark"
+                className="h-10 sm:h-14 md:h-16 px-4 text-xs sm:text-base md:text-lg font-bold tracking-wider uppercase rounded-none"
               >
                 &lt;&lt; BACK
               </Button>
@@ -117,7 +117,7 @@ export const CaseDetailSection: React.FC<CaseDetailProps> = ({
           <div className="pt-2">
             <Button
               variant="default"
-              className="h-12 sm:h-14 md:h-16 px-4 sm:px-6 text-xs sm:text-base md:text-xl font-bold uppercase rounded-none tracking-wider text-background w-full sm:w-auto"
+              className="h-12 sm:h-14 md:h-16 px-4 sm:px-6 text-xs sm:text-base md:text-xl font-bold uppercase rounded-none tracking-wider w-full sm:w-auto"
               onClick={() => {
                 const contactEl = document.getElementById('contact');
                 contactEl?.scrollIntoView({ behavior: 'smooth' });

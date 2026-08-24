@@ -1,38 +1,38 @@
-import type { Metadata } from "next";
-import { Footer } from "@/components/footer";
-import { Header } from "@/components/header";
-import { AskSection } from "@/sections/ask";
-import { ContactSection } from "@/sections/contact";
-import { OtherArticles } from "@/sections/other-articles";
+import type { Metadata } from 'next';
+import { Footer } from '@/components/footer';
+import { Header } from '@/components/header';
+import { AskSection } from '@/sections/ask';
+import { ContactSection } from '@/sections/contact';
+import { OtherArticles } from '@/sections/other-articles';
 
 export const metadata: Metadata = {
-  title: "Articles",
+  title: 'Articles — Technical Insights',
   description:
-    "Technical articles by Letnull19A about NestJS request lifecycle, engineering decisions and building web products with visible state.",
+    'Technical articles by Letnull19A about NestJS request lifecycle, engineering decisions and building web products with visible state.',
   alternates: {
-    canonical: "/articles",
+    canonical: '/articles',
   },
 };
 
 const navData = {
   brand: { title: 'Letnull19A Portfolio', href: '/' },
   items: [
-    { id: 'articles', label: 'Articles', href: '#articles' },
+    { id: 'articles', label: 'Articles', href: '/articles' },
     { id: 'ask', label: 'Ask', href: '#ask' },
   ],
   action: { label: 'Contact me', href: '#contact' },
 };
 
-export default function Cases() {
+export default function ArticlesPage() {
   return (
-   <div className="min-h-screen bg-background text-foreground font-mono">
+    <div className="min-h-screen bg-background text-foreground font-mono">
       <Header {...navData} />
       <main className="divide-y divide-border">
-        <OtherArticles/>
+        <OtherArticles />
       </main>
-      <AskSection/>
-      <ContactSection/>
-      <Footer/>
+      <AskSection />
+      <ContactSection />
+      <Footer />
     </div>
   );
 }
