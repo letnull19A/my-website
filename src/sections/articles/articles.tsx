@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { ArticleCard, ArticleCardProps } from '@/components/article-card';
 import { buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
@@ -31,7 +32,7 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
             {title}
           </h2>
 
-          <a
+          <Link
             href={readMoreHref}
             onPointerDown={vibrateOnTap}
             className={cn(
@@ -40,7 +41,7 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
             )}
           >
             READ ALL ARTICLES
-          </a>
+          </Link>
         </div>
 
         {/* Сетка из 3-х статей */}
@@ -59,7 +60,7 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
         </div>
 
         {/* Кнопка READ MORE на мобилке — внизу секции */}
-        <a
+        <Link
           href={readMoreHref}
           onPointerDown={vibrateOnTap}
           className={cn(
@@ -68,7 +69,7 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
           )}
         >
           READ ALL ARTICLES
-        </a>
+        </Link>
       </div>
     </section>
   );

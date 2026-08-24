@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
+import Link from 'next/link';
 import { buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
 import { CaseCard, CaseCardProps } from '@/components/case-card';
@@ -31,7 +32,7 @@ export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
           <div className="flex flex-col gap-4">
             <div>
-              <a
+              <Link
                 href={backHref}
                 onPointerDown={vibrateOnTap}
                 className={cn(
@@ -40,7 +41,7 @@ export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
                 )}
               >
                 &lt;&lt; BACK
-              </a>
+              </Link>
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-lime-light uppercase">

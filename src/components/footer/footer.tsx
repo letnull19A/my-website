@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { socialLinks } from '@/config/social';
+import { vibrateOnTap } from '@/lib/utils';
 
 export type { SocialLink } from '@/config/social';
 
@@ -99,11 +100,27 @@ export const Footer: React.FC<FooterSectionProps> = ({
               </div>
               <p className="p-4 text-xl text-lime leading-5">
                 Use the{' '}
-                <a href="#ask" className="underline hover:text-lime-light">
+                <a
+                  href="#ask"
+                  onPointerDown={vibrateOnTap}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('ask')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="underline hover:text-lime-light"
+                >
                   Ask page
                 </a>{' '}
                 for project-fit questions, fill the{' '}
-                <a href="#contact" className="underline hover:text-lime-light">
+                <a
+                  href="#contact"
+                  onPointerDown={vibrateOnTap}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="underline hover:text-lime-light"
+                >
                   contact form
                 </a>{' '}
                 or send direct context by email

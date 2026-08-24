@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { CaseCard, CaseCardProps } from '@/components/case-card';
 import { buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
@@ -30,7 +31,7 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
             {title}
           </h2>
 
-          <a
+          <Link
             href={viewAllHref}
             onPointerDown={vibrateOnTap}
             className={cn(
@@ -39,7 +40,7 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
             )}
           >
             VIEW ALL CASES
-          </a>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -49,7 +50,7 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
         </div>
 
         {/* Кнопка VIEW ALL на мобилке — внизу секции */}
-        <a
+        <Link
           href={viewAllHref}
           onPointerDown={vibrateOnTap}
           className={cn(
@@ -58,7 +59,7 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
           )}
         >
           VIEW ALL CASES
-        </a>
+        </Link>
       </div>
     </section>
   );

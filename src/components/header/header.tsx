@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useId } from 'react';
+import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
@@ -143,6 +144,20 @@ export const Header: React.FC<HeaderProps> = ({
   const actionId = action.href.replace('#', '');
   const isActionActive = activeId === actionId;
 
+  // Плавный скролл к якорю без добавления хэша в URL/историю.
+  // Это нужно, чтобы «назад»/свайп возвращали на позицию скролла,
+  // а не прыгали на якорную ссылку (#cases и т.п.).
+  const handleAnchorClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
+    setIsMobileMenuOpen(false);
+    if (!href.startsWith('#')) return;
+    e.preventDefault();
+    const el = document.getElementById(href.slice(1));
+    el?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <header
       ref={headerRef}
@@ -153,12 +168,13 @@ export const Header: React.FC<HeaderProps> = ({
           ref={brandRef}
           className="flex items-center px-4 md:px-6 py-4 border-r border-border"
         >
-          <a
+          <Link
             href={brand.href}
+            onClick={(e) => handleAnchorClick(e, brand.href)}
             className="text-xl md:text-base font-normal tracking-wide text-foreground hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {brand.title}
-          </a>
+          </Link>
         </div>
 
         <nav
@@ -176,6 +192,7 @@ export const Header: React.FC<HeaderProps> = ({
                       else navItemRefs.current.delete(item.id);
                     }}
                     href={item.href}
+                    onClick={(e) => handleAnchorClick(e, item.href)}
                     aria-current={isActive ? 'true' : undefined}
                     className={`text-xl tracking-wide transition-all py-1 px-2.5 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       isActive
@@ -197,6 +214,7 @@ export const Header: React.FC<HeaderProps> = ({
         >
           <a
             href={action.href}
+            onClick={(e) => handleAnchorClick(e, action.href)}
             aria-current={isActionActive ? 'true' : undefined}
             className={`text-xl tracking-wide transition-all py-1 px-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               isActionActive
@@ -263,7 +281,7 @@ export const Header: React.FC<HeaderProps> = ({
               <li key={item.id}>
                 <a
                   href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(e) => handleAnchorClick(e, item.href)}
                   aria-current={activeId === item.id ? 'true' : undefined}
                   className={`block py-2 px-2.5 text-sm font-medium transition-colors ${
                     activeId === item.id
@@ -314,7 +332,7 @@ export const Header: React.FC<HeaderProps> = ({
             <a
               href={action.href}
               onPointerDown={vibrateOnTap}
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={(e) => handleAnchorClick(e, action.href)}
               className={cn(
                 buttonVariants({ variant: 'lime-light' }),
                 'w-full h-14 text-lg font-bold uppercase tracking-wider rounded-none'
