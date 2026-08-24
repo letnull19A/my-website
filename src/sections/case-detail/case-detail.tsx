@@ -42,7 +42,7 @@ const defaultOtherCases: CaseCardProps[] = [
     role: 'FULLSTACK',
     description:
       'A client-facing specification editor designed around progress transparency and predictable delivery signal',
-    logo: '/images/project-speka.png',
+    logo: '/images/project-speka.webp',
     actions: [
       { id: 'view', label: 'VIEW CASE', href: '/cases/speka', variant: 'lime-light' },
       { id: 'try', label: 'TRY OUT', href: 'https://speka.example.com', variant: 'default' },
@@ -53,7 +53,7 @@ const defaultOtherCases: CaseCardProps[] = [
     role: 'FRONTEND // BACKEND',
     description:
       'Construction workflows, product data, and 3D configuration logic in one browser platform',
-    logo: '/images/project-bimar.png',
+    logo: '/images/project-bimar.webp',
     actions: [
       { id: 'view', label: 'VIEW CASE', href: '/cases/bimar-system', variant: 'lime-light' },
     ],
@@ -64,7 +64,7 @@ export const CaseDetailSection: React.FC<CaseDetailProps> = ({
   title = 'CONSTRUCTION DATA, 3D CONFIGURATION, AND PRODUCTION VISIBILITY UNIFIED IN ONE BROWSER PLATFORM.',
   subtitle = 'The product had to keep commercial, context, and production execution data aligned while providing real-time 3D visibility of customized product data and model versions.',
   backHref = '/cases',
-  principlesImageSrc = '/images/principles-widget-small.png',
+  principlesImageSrc = '/images/principles-widget-small.webp',
   meta = defaultMeta,
   problem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
   previewImageSrc,
@@ -101,7 +101,6 @@ export const CaseDetailSection: React.FC<CaseDetailProps> = ({
                 alt="Clarity over assumptions principles"
                 width={420}
                 height={140}
-                unoptimized
                 draggable={false}
                 className="w-full h-auto object-contain pointer-events-none block"
               />
@@ -151,7 +150,6 @@ export const CaseDetailSection: React.FC<CaseDetailProps> = ({
                 src={previewImageSrc}
                 alt="Case Preview"
                 fill
-                unoptimized
                 className="object-contain"
               />
             ) : (

@@ -16,7 +16,7 @@ const defaultCards: StackCardProps[] = [
   {
     number: '01',
     title: 'FRONTEND',
-    illustration: '/images/stack-cube-frontend.png',
+    illustration: '/images/stack-cube-frontend.webp',
     tags: [
       'TYPESCRIPT', 'JAVASCRIPT', 'RSPACK', 'WEBPACK',
       'NODEJS', 'REACTJS', 'REDUX TOOLKIT', 'ZUSTAND',
@@ -27,7 +27,7 @@ const defaultCards: StackCardProps[] = [
   {
     number: '02',
     title: 'BACKEND',
-    illustration: '/images/stack-cube-backend.png',
+    illustration: '/images/stack-cube-backend.webp',
     tags: [
       'VITEST', 'NESTJS', 'POSTGRES', 'MONGODB',
       'SUPABASE', 'DRIZZLE ORM', 'TYPEORM', 'PRISMA',
@@ -38,7 +38,7 @@ const defaultCards: StackCardProps[] = [
   {
     number: '03',
     title: 'OTHER',
-    illustration: '/images/stack-cube-other.png',
+    illustration: '/images/stack-cube-other.webp',
     tags: [
       'CLAUDE', 'CHATGPT', 'GOOGLE', 'META',
       'LANGCHAIN', 'LANGGRAPH', 'OPENROUTER', 'RAG / CAG',
@@ -50,7 +50,7 @@ const defaultCards: StackCardProps[] = [
 export const AboutStackSection: React.FC<AboutStackSectionProps> = ({
   title = 'ABOUT & STACK.',
   description = 'I am a full-stack engineer focused on products where interface clarity and system behavior have to support each other.',
-  principlesImageSrc = '/images/principles-widget.png',
+  principlesImageSrc = '/images/principles-widget.webp',
   cards = defaultCards,
   className = '',
 }) => {
@@ -78,7 +78,6 @@ export const AboutStackSection: React.FC<AboutStackSectionProps> = ({
               alt="Clarity over assumptions principles"
               width={420}
               height={140}
-              unoptimized
               loading="lazy"
               draggable={false}
               className="w-full h-auto object-contain pointer-events-none block"

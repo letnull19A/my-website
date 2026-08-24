@@ -96,7 +96,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     >
       <FloatingCard
         id="philosophy"
-        imageSrc="/images/philosophy.png"
+        imageSrc="/images/philosophy.webp"
         imageAlt="Philosophy Text Window"
         width={240}
         height={220}
@@ -108,7 +108,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       />
       <FloatingCard
         id="developer"
-        imageSrc="/images/developer.png"
+        imageSrc="/images/developer.webp"
         imageAlt="Developer Photo Window"
         width={260}
         height={260}
@@ -130,17 +130,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="hidden lg:flex flex-col gap-2 absolute left-6 bottom-24">
           <DesktopIcon
             label="DEVELOPER.JPEG"
-            img="/icons/developer.png"
+            img="/icons/developer.webp"
             onClick={() => handleOpen('developer')}
           />
           <DesktopIcon
             label="PHILOSOPHY.TXT"
-            img="/icons/philosophy.png"
+            img="/icons/philosophy.webp"
             onClick={() => handleOpen('philosophy')}
           />
           <DesktopIcon
             label="CASES"
-            img="/icons/cases.png"
+            img="/icons/cases.webp"
             onClick={() => {
               document.getElementById('cases')?.scrollIntoView({ behavior: 'smooth' });
             }}

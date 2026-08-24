@@ -18,7 +18,7 @@ export interface OtherWorkSectionProps {
 export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
   title = 'SELECTED WORK.',
   backHref = '/',
-  principlesImageSrc = '/images/principles-widget.png',
+  principlesImageSrc = '/images/principles-widget.webp',
   cases = siteCases,
   className = '',
 }) => {
@@ -53,7 +53,6 @@ export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
               alt="Clarity over assumptions principles"
               width={420}
               height={140}
-              unoptimized
               draggable={false}
               className="w-full h-auto object-contain pointer-events-none block"
             />

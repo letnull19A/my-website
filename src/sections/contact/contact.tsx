@@ -39,7 +39,6 @@ const StatusBadgeImage: React.FC<{
       alt="Ready for collaboration badge"
       width={width}
       height={height}
-      unoptimized
       loading="lazy"
       draggable={false}
       className="w-full h-auto object-contain pointer-events-none block"
@@ -50,8 +49,8 @@ const StatusBadgeImage: React.FC<{
 export const ContactSection: React.FC<ContactSectionProps> = ({
   title = "LET'S WORK TOGETHER",
   subtitle = 'A new product, an unfinished system or something that needs fixing? Tell me about your project!',
-  illustrationSrc = '/images/contact-cube-matrix.png',
-  statusBadgeSrc = '/images/contact-status-badge.png',
+  illustrationSrc = '/images/contact-cube-matrix.webp',
+  statusBadgeSrc = '/images/contact-status-badge.webp',
   directEmail = siteEmail.toUpperCase(),
   onSubmit,
   className = '',
@@ -119,7 +118,6 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                 alt="Collaboration matrix isometric diagram"
                 width={600}
                 height={600}
-                unoptimized
                 loading="lazy"
                 draggable={false}
                 className="object-contain w-full h-full pointer-events-none"

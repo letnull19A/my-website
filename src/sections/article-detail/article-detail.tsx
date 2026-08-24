@@ -39,7 +39,7 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
   category = 'DESIGN SYSTEM // SPEC',
   backHref = '/articles',
   coverImage,
-  principlesImageSrc = '/images/principles-widget-small.png',
+  principlesImageSrc = '/images/principles-widget-small.webp',
   content,
   linkedinHref = '#',
   telegramHref = '#',
@@ -86,7 +86,6 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
                 alt="Principles"
                 width={420}
                 height={140}
-                unoptimized
                 draggable={false}
                 className="w-full h-auto object-contain pointer-events-none block"
               />
@@ -128,7 +127,6 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
                     alt={title}
                     width={440}
                     height={275}
-                    unoptimized
                     draggable={false}
                     className="object-cover w-full h-full pointer-events-none"
                   />

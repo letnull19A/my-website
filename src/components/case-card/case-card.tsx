@@ -72,7 +72,6 @@ export const CaseCard: React.FC<CaseCardProps> = ({
             alt={title}
             width={320}
             height={120}
-            unoptimized
             draggable={false}
             className="object-contain max-h-[70%] max-w-[85%] pointer-events-none"
           />

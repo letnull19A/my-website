@@ -20,7 +20,7 @@
 
 ## 🟡 Средний приоритет
 
-- [ ] Конвертировать крупные PNG в WebP/AVIF и сжать
+- [х] Конвертировать крупные PNG в WebP/AVIF и сжать
   - каталог: `public/images/*.png`
 - [x] Добавить `loading="lazy"` нижесгибающим изображениям
   - файлы: `src/sections/process/process.tsx`, `about.tsx`, `contact.tsx`

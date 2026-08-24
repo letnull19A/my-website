@@ -18,7 +18,7 @@ export interface OtherArticlesProps {
 export const OtherArticles: React.FC<OtherArticlesProps> = ({
   title = 'ALL ARTICLES.',
   backHref = '/',
-  principlesImageSrc = '/images/principles-widget.png',
+  principlesImageSrc = '/images/principles-widget.webp',
   articles = siteArticles,
   className = '',
 }) => {
@@ -53,7 +53,6 @@ export const OtherArticles: React.FC<OtherArticlesProps> = ({
               alt="Clarity over assumptions principles"
               width={420}
               height={140}
-              unoptimized
               draggable={false}
               className="w-full h-auto object-contain pointer-events-none block"
             />

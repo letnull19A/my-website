@@ -28,7 +28,6 @@ export const DesktopIcon: React.FC<DesktopIconProps> = ({
           alt={label}
           width={100}
           height={100}
-          unoptimized
           draggable={false}
           className="object-contain w-full h-full pointer-events-none"
         />

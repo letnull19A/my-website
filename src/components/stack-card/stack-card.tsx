@@ -51,7 +51,6 @@ export const StackCard: React.FC<StackCardProps> = ({
             alt={`${title} diagram`}
             width={340}
             height={260}
-            unoptimized
             loading="lazy"
             draggable={false}
             className="object-contain max-h-full max-w-full pointer-events-none"

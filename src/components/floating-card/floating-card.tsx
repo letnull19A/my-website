@@ -231,7 +231,6 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
           alt={imageAlt}
           width={width}
           height={height}
-          unoptimized
           draggable={false}
           className="pointer-events-none block h-auto w-[160px] sm:w-[200px] md:w-[260px] object-contain"
         />

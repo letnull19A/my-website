@@ -63,7 +63,6 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
               alt={title}
               width={400}
               height={250}
-              unoptimized
               draggable={false}
               className="object-cover w-full h-full pointer-events-none"
             />
