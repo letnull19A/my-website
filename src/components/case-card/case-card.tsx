@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
+import Link from 'next/link';
 import { Button, buttonVariants } from '@/components/button';
 import { cn } from '@/lib/utils';
 
@@ -13,6 +14,13 @@ export interface CaseAction {
   variant?: 'default' | 'lime-light' | 'outline' | 'secondary' | 'ghost';
 }
 
+export interface CaseMeta {
+  role: string;
+  duration: string;
+  status: string;
+  stack: string;
+}
+
 export interface CaseCardProps {
   title: string;
   role: string;
@@ -20,6 +28,17 @@ export interface CaseCardProps {
   logo: React.ReactNode | string | StaticImageData;
   actions: CaseAction[];
   className?: string;
+
+  // Опциональные поля для детальной страницы
+  slug?: string;
+  fullTitle?: string;
+  subtitle?: string;
+  meta?: CaseMeta;
+  problem?: string;
+  previewImageSrc?: string | StaticImageData;
+  previewCaption?: string;
+  solution?: string;
+  results?: string;
 }
 
 const isImageSrc = (logo: CaseCardProps['logo']): logo is string | StaticImageData => {
@@ -73,18 +92,18 @@ export const CaseCard: React.FC<CaseCardProps> = ({
           </p>
         </div>
 
-        {/* Кнопки действий */}
+        {/* Кнопки действий с поддержкой Next Link */}
         <div
           className={`mt-5 grid gap-0 ${
             actions.length > 1 ? 'grid-cols-2' : 'grid-cols-1'
           }`}
         >
           {actions.map((act, idx) => {
-            const classes = cn(
+            const buttonClass = cn(
               buttonVariants({
                 variant: act.variant || (idx === 0 ? 'lime-light' : 'default'),
               }),
-              'h-15 sm:h-16 w-full rounded-none text-lg font-bold uppercase tracking-wider transition-transform hover:brightness-105 active:scale-[0.99]',
+              'h-15 sm:h-16 w-full rounded-none text-lg font-bold uppercase tracking-wider transition-transform hover:brightness-105 active:scale-[0.99] flex items-center justify-center',
               actions.length > 1 && idx === 0
                 ? 'border-r border-background/20'
                 : ''
@@ -92,17 +111,25 @@ export const CaseCard: React.FC<CaseCardProps> = ({
 
             if (act.href) {
               const isExternal = /^https?:\/\//.test(act.href);
+
+              if (isExternal) {
+                return (
+                  <a
+                    key={act.id}
+                    href={act.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={buttonClass}
+                  >
+                    {act.label}
+                  </a>
+                );
+              }
+
               return (
-                <a
-                  key={act.id}
-                  href={act.href}
-                  {...(isExternal
-                    ? { target: '_blank', rel: 'noopener noreferrer' }
-                    : {})}
-                  className={classes}
-                >
+                <Link key={act.id} href={act.href} className={buttonClass}>
                   {act.label}
-                </a>
+                </Link>
               );
             }
 
@@ -110,11 +137,7 @@ export const CaseCard: React.FC<CaseCardProps> = ({
               <Button
                 key={act.id}
                 variant={act.variant || (idx === 0 ? 'lime-light' : 'default')}
-                className={`h-15 sm:h-16 w-full rounded-none text-lg font-bold uppercase tracking-wider transition-transform hover:brightness-105 active:scale-[0.99] ${
-                  actions.length > 1 && idx === 0
-                    ? 'border-r border-background/20'
-                    : ''
-                }`}
+                className={buttonClass}
                 onClick={act.onClick}
               >
                 {act.label}

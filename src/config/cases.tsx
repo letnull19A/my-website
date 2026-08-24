@@ -1,6 +1,8 @@
+import React from 'react';
 import type { CaseCardProps } from '@/components/case-card';
 
 export const spekaCase: CaseCardProps = {
+  slug: 'speka',
   title: 'SPEKA',
   role: 'FULLSTACK',
   description:
@@ -14,7 +16,7 @@ export const spekaCase: CaseCardProps = {
     {
       id: 'view',
       label: 'VIEW CASE',
-      href: '#case-speka',
+      href: '/cases/speka',
       variant: 'lime-light',
     },
     {
@@ -24,9 +26,28 @@ export const spekaCase: CaseCardProps = {
       variant: 'default',
     },
   ],
+
+  // Детальная страница
+  fullTitle: 'A CLIENT-FACING SPECIFICATION EDITOR DESIGNED AROUND PROGRESS TRANSPARENCY.',
+  subtitle:
+    'A client-facing specification editor designed around progress transparency and predictable delivery signal.',
+  meta: {
+    role: 'FULL-STACK DEVELOPER',
+    duration: '3 MONTHS',
+    status: 'PRODUCTION',
+    stack: 'REACT / NEXT.JS / NESTJS / POSTGRESQL',
+  },
+  problem:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+  previewCaption: 'FIGMA/DEV-001 // Speka Interactive workspace matrix',
+  solution:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+  results:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
 };
 
 export const bimarCase: CaseCardProps = {
+  slug: 'bimar-system',
   title: 'BIMAR SYSTEM',
   role: 'FRONTEND // BACKEND',
   description:
@@ -56,10 +77,29 @@ export const bimarCase: CaseCardProps = {
     {
       id: 'view',
       label: 'VIEW CASE',
-      href: '#case-bimar',
+      href: '/cases/bimar-system',
       variant: 'lime-light',
     },
   ],
+
+  // Детальная страница
+  fullTitle:
+    'CONSTRUCTION DATA, 3D CONFIGURATION, AND PRODUCTION VISIBILITY UNIFIED IN ONE BROWSER PLATFORM.',
+  subtitle:
+    'The product had to keep commercial, context, and production execution data aligned while providing real-time 3D visibility of customized product data and model versions.',
+  meta: {
+    role: 'FULL-STACK DEVELOPER',
+    duration: '4 MONTHS',
+    status: 'PRODUCTION',
+    stack: 'REACT / ASP.NET / POSTGRESQL / THREE.JS',
+  },
+  problem:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+  previewCaption: 'FIGMA/DEV-001 // System Interactive backend operation matrix',
+  solution:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+  results:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
 };
 
 export const cases: CaseCardProps[] = [spekaCase, bimarCase];
