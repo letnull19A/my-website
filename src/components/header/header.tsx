@@ -39,6 +39,17 @@ export const Header: React.FC<HeaderProps> = ({
   const actionRef = useRef<HTMLDivElement>(null);
   const activeIdRef = useRef<string>(items[0]?.id || '');
 
+  // Блокировка скролла страницы при открытии мобильного меню
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [isMobileMenuOpen]);
+
   // Active section + slider indicator, rAF-throttled on scroll/resize
   useEffect(() => {
     const computeActiveId = (prev: string): string => {
@@ -132,7 +143,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header
       ref={headerRef}
-      className={`sticky z-40 top-0 w-full bg-background text-foreground font-mono select-none ${className}`}
+      className={`sticky z-[60] top-0 w-full bg-background text-foreground font-mono select-none ${className}`}
     >
       <div className="grid grid-cols-[1fr_auto] md:grid-cols-[1.2fr_2fr_1fr] items-stretch border-b border-border">
         <div
@@ -242,7 +253,7 @@ export const Header: React.FC<HeaderProps> = ({
         <nav
           id={mobileMenuId}
           aria-label="Mobile Navigation"
-          className="absolute top-full left-0 right-0 z-50 md:hidden border-b border-border bg-background/95 backdrop-blur-md px-6 py-4 flex flex-col gap-4 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150"
+          className="fixed top-[calc(57px+16px)] inset-x-0 bottom-0 z-[60] md:hidden border-b border-border bg-background/95 backdrop-blur-md px-6 py-6 flex flex-col gap-4 overflow-y-auto shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150"
         >
           <ul className="flex flex-col gap-3 list-none m-0 p-0">
             {items.map((item) => (
