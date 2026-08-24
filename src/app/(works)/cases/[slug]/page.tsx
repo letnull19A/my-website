@@ -6,6 +6,7 @@ import { AskSection } from '@/sections/ask';
 import { ContactSection } from '@/sections/contact';
 import { CaseDetailSection } from '@/sections/case-detail';
 import { cases } from '@/config/cases';
+import { SITE_URL, SITE_TITLE, SITE_OG_IMAGE } from '@/lib/site';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -26,9 +27,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const currentCase = cases.find((c) => c.slug === slug);
   if (!currentCase) return {};
 
+  const title = `${currentCase.title} — Case Study`;
+  const description = currentCase.description;
+  const url = `${SITE_URL}/cases/${currentCase.slug}`;
+
   return {
-    title: `${currentCase.title} — Case Study`,
-    description: currentCase.description,
+    title,
+    description,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      type: 'article',
+      siteName: SITE_TITLE,
+      title,
+      description,
+      url,
+      images: [{ url: SITE_OG_IMAGE }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [SITE_OG_IMAGE],
+    },
   };
 }
 

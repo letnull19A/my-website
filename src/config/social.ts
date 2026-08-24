@@ -14,6 +14,3 @@ export const socialLinks: SocialLink[] = [
   { id: 'whatsapp', label: 'whatsapp', href: 'https://wa.me/995511706127', iconSrc: '/icons/whatsapp.svg' },
   { id: 'email', label: 'email', href: `mailto:${email}`, iconSrc: '/icons/email.svg' },
 ];
-
-export const getSocialById = (id: string): SocialLink | undefined =>
-  socialLinks.find((link) => link.id === id);

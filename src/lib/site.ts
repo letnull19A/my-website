@@ -11,11 +11,3 @@ export const SITE_AUTHOR = "Letnull19A";
 
 // TODO: Заменить на полноразмерное изображение 1200x630, когда будет готово.
 export const SITE_OG_IMAGE = "/images/contact-cube-matrix.png";
-
-export const SITE_LINKS = {
-  github: "https://github.com",
-  linkedin: "https://linkedin.com",
-  telegram: "https://t.me",
-  whatsapp: "https://wa.me",
-  email: "mailto:letnull19a@gmail.com",
-};

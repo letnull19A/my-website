@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/button';
 import { CaseCard, CaseCardProps } from '@/components/case-card';
 import { CaseMetaGrid } from '@/components/case-meta-grid';
@@ -73,6 +74,7 @@ export const CaseDetailSection: React.FC<CaseDetailProps> = ({
   otherCases = defaultOtherCases,
   className = '',
 }) => {
+  const router = useRouter();
   return (
     <div
       className={`w-full min-h-screen bg-background text-foreground font-mono py-6 sm:py-8 select-none flex flex-col ${className}`}
@@ -85,7 +87,7 @@ export const CaseDetailSection: React.FC<CaseDetailProps> = ({
               <Button
                 variant="outline"
                 onClick={() => {
-                  window.location.href = backHref;
+                  router.push(backHref);
                 }}
                 className="h-10 sm:h-14 md:h-16 px-4 text-xs sm:text-base md:text-lg font-bold tracking-wider uppercase rounded-none"
               >
@@ -203,7 +205,7 @@ export const CaseDetailSection: React.FC<CaseDetailProps> = ({
             <Button
               variant="lime-light"
               onClick={() => {
-                window.location.href = '/cases';
+                router.push('/cases');
               }}
               className="h-10 sm:h-14 md:h-16 px-4 text-xs sm:text-base md:text-lg font-bold uppercase rounded-none w-full sm:w-auto"
             >

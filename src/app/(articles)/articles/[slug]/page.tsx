@@ -6,6 +6,7 @@ import { AskSection } from '@/sections/ask';
 import { ContactSection } from '@/sections/contact';
 import { ArticleDetailSection } from '@/sections/article-detail';
 import { articles } from '@/config/articles';
+import { SITE_URL, SITE_TITLE, SITE_OG_IMAGE } from '@/lib/site';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -24,9 +25,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const currentArticle = articles.find((a) => a.slug === slug);
   if (!currentArticle) return {};
 
+  const title = `${currentArticle.title} — Article`;
+  const description = currentArticle.description;
+  const url = `${SITE_URL}/articles/${currentArticle.slug}`;
+
   return {
-    title: `${currentArticle.title} — Article`,
-    description: currentArticle.description,
+    title,
+    description,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      type: 'article',
+      siteName: SITE_TITLE,
+      title,
+      description,
+      url,
+      publishedTime: currentArticle.date,
+      images: [{ url: SITE_OG_IMAGE }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [SITE_OG_IMAGE],
+    },
   };
 }
 

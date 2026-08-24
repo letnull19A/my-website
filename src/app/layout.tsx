@@ -78,9 +78,7 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  icons: {
-    icon: "/favicon.ico",
-  },
+
 };
 
 export const viewport: Viewport = {
@@ -92,7 +90,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${ptMono.variable} h-full antialiased`}>
+      <html lang="en" className={`${ptMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         {children}
         <CookieBanner />

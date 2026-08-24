@@ -35,9 +35,6 @@ importers:
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
-      shadcn:
-        specifier: ^4.16.2
-        version: 4.16.2(typescript@5.9.3)
       tailwind-merge:
         specifier: ^3.6.0
         version: 3.6.0
@@ -69,6 +66,9 @@ importers:
       sass:
         specifier: ^1.103.0
         version: 1.103.0
+      shadcn:
+        specifier: ^4.16.2
+        version: 4.16.2(typescript@5.9.3)
       storybook:
         specifier: ^10.5.9
         version: 10.5.9(@types/react@19.2.18)(react@19.2.8)

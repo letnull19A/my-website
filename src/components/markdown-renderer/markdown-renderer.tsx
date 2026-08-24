@@ -100,11 +100,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     </ol>
   ),
   // Элемент списка
-  li: ({ children, ...props }: any) => {
-    // Внутри ol маркер рисует браузер через list-decimal
-    // Внутри ul рисуем кастомный '>>'
-    const isInsideUl = props.node?.position ? true : true;
-
+  li: ({ children }: { children?: React.ReactNode }) => {
     return (
       <li className="text-sm sm:text-base md:text-lg text-lime-light/90">
         {/* Маркер сработает только внутри ul благодаря селекторам ul выше */}
@@ -139,7 +135,11 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
             </td>
           ),
           pre: ({ children }) => <PreBlock>{children}</PreBlock>,
-          code: ({ className: codeClass, children, ...props }: any) => {
+          code: ({
+            className: codeClass,
+            children,
+            ...props
+          }: React.ComponentPropsWithoutRef<'code'>) => {
             const isCodeBlock = Boolean(codeClass);
             if (isCodeBlock) {
               return (

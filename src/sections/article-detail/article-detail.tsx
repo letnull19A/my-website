@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Button, buttonVariants } from '@/components/button';
 import { ArticleCard, ArticleCardProps } from '@/components/article-card';
 import { MarkdownRenderer } from '@/components/markdown-renderer';
@@ -47,6 +48,7 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
   otherArticles = [],
   className = '',
 }) => {
+  const router = useRouter();
   const [copiedLink, setCopiedLink] = useState(false);
 
   const handleCopyLink = () => {
@@ -70,7 +72,7 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
               <Button
                 variant="outline"
                 onClick={() => {
-                  window.location.href = backHref;
+                  router.push(backHref);
                 }}
                 className="h-10 sm:h-12 px-4 text-xs sm:text-sm font-bold tracking-wider uppercase rounded-none"
               >
@@ -100,9 +102,9 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
                 className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs sm:text-sm text-lime uppercase tracking-widest"
               >
                 <span>{date}</span>
-                <span>//</span>
+                <span>{'//'}</span>
                 <span>{readTime}</span>
-                <span>//</span>
+                <span>{'//'}</span>
                 <span>{category}</span>
               </div>
 
@@ -225,7 +227,7 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
               <Button
                 variant="lime-light"
                 onClick={() => {
-                  window.location.href = '/articles';
+                  router.push('/articles');
                 }}
                 className="h-10 sm:h-12 md:h-14 px-4 text-xs sm:text-sm md:text-base font-bold uppercase rounded-none w-full sm:w-auto"
               >
