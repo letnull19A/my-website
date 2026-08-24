@@ -83,9 +83,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     <section
       id='portfolio'
       style={{
-        height: `calc(100dvh - ${headerHeight})`,
-        minHeight: `calc(100dvh - ${headerHeight})`,
-        maxHeight: `calc(100dvh - ${headerHeight})`,
+        height: `calc(100svh - ${headerHeight})`,
+        minHeight: `calc(100svh - ${headerHeight})`,
+        maxHeight: `calc(100svh - ${headerHeight})`,
         backgroundImage: `
           linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
           linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px)
