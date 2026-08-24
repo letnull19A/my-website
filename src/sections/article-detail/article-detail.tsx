@@ -61,9 +61,9 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
     <div
       className={`w-full min-h-screen bg-background text-foreground font-mono py-6 sm:py-8 select-none flex flex-col ${className}`}
     >
-      <div className="w-full max-w-7xl mx-auto flex flex-col gap-6 sm:gap-8">
+      <div className="w-full max-w-7xl mx-auto flex flex-col gap-10 sm:gap-16 lg:gap-20">
         {/* 1. Header статьи */}
-        <div className="flex flex-col gap-6 border-border border-b pb-8 px-4 sm:px-6 md:px-8">
+        <div className="flex flex-col gap-6 pb-8 px-4 sm:px-6 md:px-8">
           {/* Верхняя панель: Кнопка назад + Принципы */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -78,7 +78,7 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
               </Button>
             </div>
 
-            <div className="relative w-full max-w-[260px] sm:max-w-[320px] md:max-w-105 shrink-0 overflow-hidden self-start sm:self-auto">
+            <div className="hidden lg:block relative w-full max-w-[260px] sm:max-w-[320px] md:max-w-105 shrink-0 overflow-hidden self-start sm:self-auto">
               <Image
                 src={principlesImageSrc}
                 alt="Principles"
@@ -148,7 +148,7 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
         </article>
 
         {/* 3. Конец статьи: Подвал с шарингом и копированием */}
-        <div className="border-t border-b border-border py-6 mx-4 sm:mx-6 md:mx-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="py-6 mx-4 sm:mx-6 md:mx-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex flex-col gap-1">
             <span className="text-[11px] sm:text-xs uppercase tracking-wider text-lime">
               END OF SIGNAL
@@ -217,7 +217,7 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
 
         {/* 4. Блок MORE ARTICLES */}
         {otherArticles.length > 0 && (
-          <section className="flex flex-col gap-6 pt-4 border-border border-b pb-8 px-4 sm:px-6 md:px-8">
+          <section className="flex flex-col gap-6 pt-4 pb-8 px-4 sm:px-6 md:px-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-lime-light uppercase">
                 MORE ARTICLES

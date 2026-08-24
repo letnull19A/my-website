@@ -9,6 +9,7 @@ import {
 } from "@/lib/site";
 import "./globals.css";
 import "@/styles/main.scss";
+import { CookieBanner } from "@/components/cookie-banner";
 
 const ptMono = PT_Mono({
   variable: "--font-sans",
@@ -94,6 +95,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${ptMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         {children}
+        <CookieBanner />
       </body>
     </html>
   );

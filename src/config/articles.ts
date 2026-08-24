@@ -35,7 +35,6 @@ Below is an unordered bullet list demonstrating custom \`>>\` list item decorato
 * **Stream Processing**: Data pipelines handle real-time event updates without UI blocking.
 * **Zero Overhead**: Minimal layout shifts and targeted component updates.
 
----
 
 ## 4. Numbered Execution Pipeline (OL / LI)
 

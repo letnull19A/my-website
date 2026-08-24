@@ -73,9 +73,8 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
             </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold uppercase text-lime-light first:mt-0 mt-10 mb-4 tracking-tight flex items-center gap-2">
-              <span className="text-lime text-xl select-none">#</span>
-              <span>{children}</span>
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold uppercase text-lime-light first:mt-0 mt-10 mb-4 tracking-tight">
+              {children}
             </h2>
           ),
           h3: ({ children }) => (
