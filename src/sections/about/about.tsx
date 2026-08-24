@@ -2,10 +2,31 @@
 
 import React from 'react';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
 import { StackCard, StackCardProps } from '@/components/stack-card';
-import { IsometricCubeMorph1 } from '@/components/test/isom1';
-import { IsometricCubeMorph2 } from '@/components/test/isom2';
-import { IsometricCubeMorph3 } from '@/components/test/isom3';
+import { useInView } from '@/hooks/use-in-view';
+
+const IsometricCubeMorph1 = dynamic(
+  () => import('@/components/test/isom1').then((m) => m.IsometricCubeMorph1),
+  { ssr: false, loading: () => null }
+);
+const IsometricCubeMorph2 = dynamic(
+  () => import('@/components/test/isom2').then((m) => m.IsometricCubeMorph2),
+  { ssr: false, loading: () => null }
+);
+const IsometricCubeMorph3 = dynamic(
+  () => import('@/components/test/isom3').then((m) => m.IsometricCubeMorph3),
+  { ssr: false, loading: () => null }
+);
+
+const LazyIllustration: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [ref, inView] = useInView<HTMLDivElement>(0.1);
+  return (
+    <div ref={ref} className="w-full h-full">
+      {inView ? children : null}
+    </div>
+  );
+};
 
 export interface AboutStackSectionProps {
   title?: string;
@@ -19,7 +40,11 @@ const defaultCards: StackCardProps[] = [
   {
     number: '01',
     title: 'FRONTEND',
-    illustration: <IsometricCubeMorph1 showControls={false} />,
+    illustration: (
+      <LazyIllustration>
+        <IsometricCubeMorph1 showControls={false} />
+      </LazyIllustration>
+    ),
     tags: [
       'TYPESCRIPT', 'JAVASCRIPT', 'RSPACK', 'WEBPACK',
       'NODEJS', 'REACTJS', 'REDUX TOOLKIT', 'ZUSTAND',
@@ -30,7 +55,11 @@ const defaultCards: StackCardProps[] = [
   {
     number: '02',
     title: 'BACKEND',
-    illustration: <IsometricCubeMorph2 showControls={false} />,
+    illustration: (
+      <LazyIllustration>
+        <IsometricCubeMorph2 showControls={false} />
+      </LazyIllustration>
+    ),
     tags: [
       'VITEST', 'NESTJS', 'POSTGRES', 'MONGODB',
       'SUPABASE', 'DRIZZLE ORM', 'TYPEORM', 'PRISMA',
@@ -41,7 +70,11 @@ const defaultCards: StackCardProps[] = [
   {
     number: '03',
     title: 'OTHER',
-    illustration: <IsometricCubeMorph3 showControls={false} />,
+    illustration: (
+      <LazyIllustration>
+        <IsometricCubeMorph3 showControls={false} />
+      </LazyIllustration>
+    ),
     tags: [
       'CLAUDE', 'CHATGPT', 'GOOGLE', 'META',
       'LANGCHAIN', 'LANGGRAPH', 'OPENROUTER', 'RAG / CAG',

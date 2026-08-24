@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Play, Pause, RotateCcw } from 'lucide-react';
+import { useInView } from '@/hooks/use-in-view';
 
 interface IsometricCubeMorphProps {
   autoPlay?: boolean;
@@ -17,13 +18,19 @@ export const IsometricCubeMorph1: React.FC<IsometricCubeMorphProps> = ({
   showControls = true,
   className = '',
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerRef, inView] = useInView<HTMLDivElement>(0.2);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const hasInitializedRef = useRef(false);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [currentStep, setCurrentStep] = useState(0);
   const lastStepRef = useRef<number>(-1);
 
   useEffect(() => {
+    // Создаём таймлайн только при первом попадании в зону видимости,
+    // чтобы не тратить main thread на setup во время загрузки страницы
+    if (hasInitializedRef.current || !inView) return;
+    hasInitializedRef.current = true;
+
     const ctx = gsap.context(() => {
       // Инициализация стартового состояния (виден только нижний блок)
       gsap.set('.cube-layer-mid', { y: 70, opacity: 0, scale: 0.95 });
@@ -42,7 +49,7 @@ export const IsometricCubeMorph1: React.FC<IsometricCubeMorphProps> = ({
 
       // Главный таймлайн анимации
       const tl = gsap.timeline({
-        paused: !autoPlay,
+        paused: true,
         repeat: loop ? -1 : 0,
         repeatDelay: 2,
         onUpdate: () => {
@@ -107,7 +114,18 @@ export const IsometricCubeMorph1: React.FC<IsometricCubeMorphProps> = ({
     }, containerRef);
 
     return () => ctx.revert();
-  }, [autoPlay, loop]);
+  }, [inView, autoPlay, loop, containerRef]);
+
+  // Играть только когда компонент в зоне видимости
+  useEffect(() => {
+    const tl = timelineRef.current;
+    if (!tl) return;
+    if (inView && isPlaying) {
+      tl.play();
+    } else {
+      tl.pause();
+    }
+  }, [inView, isPlaying]);
 
   const togglePlay = () => {
     if (!timelineRef.current) return;

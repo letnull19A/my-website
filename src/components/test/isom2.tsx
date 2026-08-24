@@ -3,6 +3,7 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Play, Pause, RotateCcw } from 'lucide-react';
+import { useInView } from '@/hooks/use-in-view';
 
 interface IsometricCubeMorphProps {
   autoPlay?: boolean;
@@ -24,8 +25,9 @@ export const IsometricCubeMorph2: React.FC<IsometricCubeMorphProps> = ({
   showControls = true,
   className = '',
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerRef, inView] = useInView<HTMLDivElement>(0.2);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const hasInitializedRef = useRef(false);
 
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [currentStep, setCurrentStep] = useState(0);
@@ -35,6 +37,11 @@ export const IsometricCubeMorph2: React.FC<IsometricCubeMorphProps> = ({
   const idPrefix = rawId.replace(/:/g, '');
 
   useEffect(() => {
+    // Создаём таймлайн только при первом попадании в зону видимости,
+    // чтобы не тратить main thread на setup во время загрузки страницы
+    if (hasInitializedRef.current || !inView) return;
+    hasInitializedRef.current = true;
+
     const ctx = gsap.context(() => {
       // Инициализация стартовых состояний
       gsap.set('.cluster-module', { y: 60, opacity: 0 });
@@ -52,7 +59,7 @@ export const IsometricCubeMorph2: React.FC<IsometricCubeMorphProps> = ({
       });
 
       const tl = gsap.timeline({
-        paused: !autoPlay,
+        paused: true,
         repeat: loop ? -1 : 0,
         repeatDelay: 2,
         onUpdate: () => {
@@ -150,7 +157,18 @@ export const IsometricCubeMorph2: React.FC<IsometricCubeMorphProps> = ({
     }, containerRef);
 
     return () => ctx.revert();
-  }, [autoPlay, loop]);
+  }, [inView, autoPlay, loop, containerRef]);
+
+  // Играть только когда компонент в зоне видимости
+  useEffect(() => {
+    const tl = timelineRef.current;
+    if (!tl) return;
+    if (inView && isPlaying) {
+      tl.play();
+    } else {
+      tl.pause();
+    }
+  }, [inView, isPlaying]);
 
   const togglePlay = () => {
     if (!timelineRef.current) return;
@@ -197,9 +215,13 @@ export const IsometricCubeMorph2: React.FC<IsometricCubeMorphProps> = ({
       )}
 
       {/* Радиальное свечение */}
-      {showControls && (
-        <div className="core-glow absolute w-64 h-64 rounded-full bg-[#CAF05F]/10 blur-3xl pointer-events-none transition-all" />
-      )}
+      <div
+        className={
+          showControls
+            ? "core-glow absolute w-64 h-64 rounded-full bg-[#CAF05F]/10 blur-3xl pointer-events-none transition-all"
+            : "core-glow absolute left-1/2 top-1/2 w-64 h-64 -ml-32 -mt-32 rounded-full bg-[#CAF05F]/10 blur-3xl pointer-events-none transition-all"
+        }
+      />
 
       {/* SVG контейнер */}
       <div
