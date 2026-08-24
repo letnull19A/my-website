@@ -3,7 +3,7 @@
 import React from 'react';
 import { ArticleCard, ArticleCardProps } from '@/components/article-card';
 import { buttonVariants } from '@/components/button';
-import { cn } from '@/lib/utils';
+import { cn, vibrateOnTap } from '@/lib/utils';
 import { articles as siteArticles } from '@/config/articles';
 
 export interface ArticlesSectionProps {
@@ -33,6 +33,7 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
 
           <a
             href={readMoreHref}
+            onPointerDown={vibrateOnTap}
             className={cn(
               buttonVariants({ variant: 'lime-light' }),
               'hidden md:inline-flex h-15 sm:h-16 px-4 sm:px-6 text-base sm:text-lg font-bold uppercase rounded-none tracking-wider transition-transform hover:brightness-105 active:scale-[0.99]'
@@ -60,6 +61,7 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
         {/* Кнопка READ MORE на мобилке — внизу секции */}
         <a
           href={readMoreHref}
+          onPointerDown={vibrateOnTap}
           className={cn(
             buttonVariants({ variant: 'lime-light' }),
             'md:hidden h-14 px-4 text-base font-bold uppercase rounded-none tracking-wider w-full justify-center'

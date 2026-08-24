@@ -4,7 +4,7 @@ import React from 'react';
 import Image, { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import { buttonVariants } from '@/components/button';
-import { cn } from '@/lib/utils';
+import { cn, vibrateOnTap } from '@/lib/utils';
 
 export interface ArticleCardProps {
   title: string;
@@ -92,6 +92,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             href={linkedinHref}
             target="_blank"
             rel="noopener noreferrer"
+            onPointerDown={vibrateOnTap}
             className={cn(
               buttonVariants({ variant: 'outline', size: 'sm' }),
               'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold rounded-none flex items-center justify-center gap-1.5'
@@ -113,6 +114,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             href={telegramHref}
             target="_blank"
             rel="noopener noreferrer"
+            onPointerDown={vibrateOnTap}
             className={cn(
               buttonVariants({ variant: 'outline', size: 'sm' }),
               'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold rounded-none flex items-center justify-center gap-1.5'
@@ -135,6 +137,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
               href={readHref}
               target="_blank"
               rel="noopener noreferrer"
+              onPointerDown={vibrateOnTap}
               className={cn(
                 buttonVariants({ variant: 'default', size: 'sm' }),
                 'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold uppercase rounded-none truncate flex items-center justify-center'
@@ -145,6 +148,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
           ) : (
             <Link
               href={readHref}
+              onPointerDown={vibrateOnTap}
               className={cn(
                 buttonVariants({ variant: 'default', size: 'sm' }),
                 'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold uppercase rounded-none truncate flex items-center justify-center'

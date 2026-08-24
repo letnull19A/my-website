@@ -4,7 +4,7 @@ import React from 'react';
 import Image, { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import { Button, buttonVariants } from '@/components/button';
-import { cn } from '@/lib/utils';
+import { cn, vibrateOnTap } from '@/lib/utils';
 
 export interface CaseAction {
   id: string;
@@ -118,6 +118,7 @@ export const CaseCard: React.FC<CaseCardProps> = ({
                     href={act.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onPointerDown={vibrateOnTap}
                     className={buttonClass}
                   >
                     {act.label}
@@ -126,7 +127,12 @@ export const CaseCard: React.FC<CaseCardProps> = ({
               }
 
               return (
-                <Link key={act.id} href={act.href} className={buttonClass}>
+                <Link
+                  key={act.id}
+                  href={act.href}
+                  onPointerDown={vibrateOnTap}
+                  className={buttonClass}
+                >
                   {act.label}
                 </Link>
               );

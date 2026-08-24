@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef, useId } from 'react';
 import { Menu, X } from 'lucide-react';
 import { buttonVariants } from '@/components/button';
-import { cn } from '@/lib/utils';
+import { cn, vibrateOnTap } from '@/lib/utils';
 import { socialLinks } from '@/config/social';
 
 export interface NavItem {
@@ -313,6 +313,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="mt-auto">
             <a
               href={action.href}
+              onPointerDown={vibrateOnTap}
               onClick={() => setIsMobileMenuOpen(false)}
               className={cn(
                 buttonVariants({ variant: 'lime-light' }),

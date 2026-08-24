@@ -3,7 +3,7 @@
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
 import { buttonVariants } from '@/components/button';
-import { cn } from '@/lib/utils';
+import { cn, vibrateOnTap } from '@/lib/utils';
 import { CaseCard, CaseCardProps } from '@/components/case-card';
 import { cases as siteCases } from '@/config/cases';
 
@@ -33,6 +33,7 @@ export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
             <div>
               <a
                 href={backHref}
+                onPointerDown={vibrateOnTap}
                 className={cn(
                   buttonVariants({ variant: 'outline' }),
                   'h-9 px-4 text-xs sm:text-sm font-bold tracking-wider uppercase rounded-none'

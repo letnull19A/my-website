@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button, buttonVariants } from '@/components/button';
 import { ArticleCard, ArticleCardProps } from '@/components/article-card';
 import { MarkdownRenderer } from '@/components/markdown-renderer';
-import { cn } from '@/lib/utils';
+import { cn, vibrateOnTap } from '@/lib/utils';
 import { Check, Copy } from 'lucide-react';
 
 export interface ArticleDetailProps {
@@ -164,6 +164,7 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
               href={linkedinHref}
               target="_blank"
               rel="noopener noreferrer"
+              onPointerDown={vibrateOnTap}
               className={cn(
                 buttonVariants({ variant: 'outline', size: 'sm' }),
                 'h-10 sm:h-11 px-3 text-xs font-bold rounded-none flex items-center justify-center gap-1.5 w-full sm:w-auto'
@@ -184,6 +185,7 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
               href={telegramHref}
               target="_blank"
               rel="noopener noreferrer"
+              onPointerDown={vibrateOnTap}
               className={cn(
                 buttonVariants({ variant: 'outline', size: 'sm' }),
                 'h-10 sm:h-11 px-3 text-xs font-bold rounded-none flex items-center justify-center gap-1.5 w-full sm:w-auto'

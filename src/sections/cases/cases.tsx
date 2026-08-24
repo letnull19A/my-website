@@ -3,7 +3,7 @@
 import React from 'react';
 import { CaseCard, CaseCardProps } from '@/components/case-card';
 import { buttonVariants } from '@/components/button';
-import { cn } from '@/lib/utils';
+import { cn, vibrateOnTap } from '@/lib/utils';
 import { cases as siteCases } from '@/config/cases';
 
 export interface CasesSectionProps {
@@ -32,6 +32,7 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
 
           <a
             href={viewAllHref}
+            onPointerDown={vibrateOnTap}
             className={cn(
               buttonVariants({ variant: 'lime-light' }),
               'hidden md:inline-flex h-15 sm:h-16 px-4 sm:px-6 text-base sm:text-lg font-bold uppercase rounded-none tracking-wider transition-transform hover:brightness-105 active:scale-[0.99]'
@@ -50,6 +51,7 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
         {/* Кнопка VIEW ALL на мобилке — внизу секции */}
         <a
           href={viewAllHref}
+          onPointerDown={vibrateOnTap}
           className={cn(
             buttonVariants({ variant: 'lime-light' }),
             'md:hidden h-14 px-4 text-base font-bold uppercase rounded-none tracking-wider w-full justify-center'

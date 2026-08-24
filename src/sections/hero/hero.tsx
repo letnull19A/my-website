@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { FloatingCard } from '@/components/floating-card';
 import { DesktopIcon } from '@/components/desctop-icon';
 import { buttonVariants } from '@/components/button';
-import { cn } from '@/lib/utils';
+import { cn, vibrateOnTap } from '@/lib/utils';
 import { TerminalTaskbar } from '@/components/terminal-taskbar';
 import { socialLinks } from '@/config/social';
 
@@ -152,6 +152,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <a
               key={action.id}
               href={action.url}
+              onPointerDown={vibrateOnTap}
               onClick={(e) => {
                 e.preventDefault();
                 handleActionClick(action.url);
