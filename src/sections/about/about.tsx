@@ -3,6 +3,9 @@
 import React from 'react';
 import Image from 'next/image';
 import { StackCard, StackCardProps } from '@/components/stack-card';
+import { IsometricCubeMorph1 } from '@/components/test/isom1';
+import { IsometricCubeMorph2 } from '@/components/test/isom2';
+import { IsometricCubeMorph3 } from '@/components/test/isom3';
 
 export interface AboutStackSectionProps {
   title?: string;
@@ -16,7 +19,7 @@ const defaultCards: StackCardProps[] = [
   {
     number: '01',
     title: 'FRONTEND',
-    illustration: '/images/stack-cube-frontend.webp',
+    illustration: <IsometricCubeMorph1 showControls={false} />,
     tags: [
       'TYPESCRIPT', 'JAVASCRIPT', 'RSPACK', 'WEBPACK',
       'NODEJS', 'REACTJS', 'REDUX TOOLKIT', 'ZUSTAND',
@@ -27,7 +30,7 @@ const defaultCards: StackCardProps[] = [
   {
     number: '02',
     title: 'BACKEND',
-    illustration: '/images/stack-cube-backend.webp',
+    illustration: <IsometricCubeMorph2 showControls={false} />,
     tags: [
       'VITEST', 'NESTJS', 'POSTGRES', 'MONGODB',
       'SUPABASE', 'DRIZZLE ORM', 'TYPEORM', 'PRISMA',
@@ -38,7 +41,7 @@ const defaultCards: StackCardProps[] = [
   {
     number: '03',
     title: 'OTHER',
-    illustration: '/images/stack-cube-other.webp',
+    illustration: <IsometricCubeMorph3 showControls={false} />,
     tags: [
       'CLAUDE', 'CHATGPT', 'GOOGLE', 'META',
       'LANGCHAIN', 'LANGGRAPH', 'OPENROUTER', 'RAG / CAG',

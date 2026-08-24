@@ -7,6 +7,7 @@ import { Play, Pause, RotateCcw } from 'lucide-react';
 interface IsometricCubeMorphProps {
   autoPlay?: boolean;
   loop?: boolean;
+  showControls?: boolean;
   className?: string;
 }
 
@@ -118,6 +119,7 @@ const IsometricLeftFace = ({
 export const IsometricCubeMorph3: React.FC<IsometricCubeMorphProps> = ({
   autoPlay = true,
   loop = true,
+  showControls = true,
   className = '',
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -125,6 +127,7 @@ export const IsometricCubeMorph3: React.FC<IsometricCubeMorphProps> = ({
 
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [currentStep, setCurrentStep] = useState(0);
+  const lastStepRef = useRef<number>(-1);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -153,10 +156,14 @@ export const IsometricCubeMorph3: React.FC<IsometricCubeMorphProps> = ({
         repeatDelay: 2,
         onUpdate: () => {
           const p = tl.progress();
-          if (p < 0.25) setCurrentStep(0);
-          else if (p < 0.55) setCurrentStep(1);
-          else if (p < 0.8) setCurrentStep(2);
-          else setCurrentStep(3);
+          let step = 3;
+          if (p < 0.25) step = 0;
+          else if (p < 0.55) step = 1;
+          else if (p < 0.8) step = 2;
+          if (step !== lastStepRef.current) {
+            lastStepRef.current = step;
+            setCurrentStep(step);
+          }
         },
       });
 
@@ -275,15 +282,29 @@ export const IsometricCubeMorph3: React.FC<IsometricCubeMorphProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative flex flex-col items-center justify-center p-6 bg-[#0B0C0B] border border-[#222] rounded-2xl overflow-hidden select-none shadow-2xl ${className}`}
+      className={
+        showControls
+          ? `relative flex flex-col items-center justify-center p-6 bg-[#0B0C0B] border border-[#222] rounded-2xl overflow-hidden select-none shadow-2xl ${className}`
+          : `relative w-full h-full flex items-center justify-center ${className}`
+      }
     >
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#151515_1px,transparent_1px),linear-gradient(to_bottom,#151515_1px,transparent_1px)] bg-[size:24px_24px] opacity-40 pointer-events-none" />
+      {showControls && (
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#151515_1px,transparent_1px),linear-gradient(to_bottom,#151515_1px,transparent_1px)] bg-[size:24px_24px] opacity-40 pointer-events-none" />
+      )}
 
       {/* Фоновое свечение */}
-      <div className="core-glow absolute w-64 h-64 rounded-full bg-[#CAF05F]/10 blur-3xl pointer-events-none transition-all" />
+      {showControls && (
+        <div className="core-glow absolute w-64 h-64 rounded-full bg-[#CAF05F]/10 blur-3xl pointer-events-none transition-all" />
+      )}
 
       {/* SVG контейнер */}
-      <div className="relative z-10 w-full max-w-[320px] aspect-[315/361] flex items-center justify-center">
+      <div
+        className={
+          showControls
+            ? "relative z-10 w-full max-w-[320px] aspect-[315/361] flex items-center justify-center"
+            : "relative z-10 h-full max-h-full max-w-full aspect-[315/361] flex items-center justify-center"
+        }
+      >
         <svg
           className="w-full h-full overflow-visible"
           viewBox="0 0 315 361"
@@ -589,6 +610,7 @@ export const IsometricCubeMorph3: React.FC<IsometricCubeMorphProps> = ({
       </div>
 
       {/* Панель управления */}
+      {showControls && (
       <div className="relative z-10 flex items-center justify-between w-full mt-6 pt-4 border-t border-[#1F201F]">
         <div className="flex gap-1.5 sm:gap-2">
           {STEPS.map((step, idx) => (
@@ -623,6 +645,7 @@ export const IsometricCubeMorph3: React.FC<IsometricCubeMorphProps> = ({
           </button>
         </div>
       </div>
+      )}
     </div>
   );
 };

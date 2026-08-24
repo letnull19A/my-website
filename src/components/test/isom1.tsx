@@ -7,18 +7,21 @@ import { Play, Pause, RotateCcw } from 'lucide-react';
 interface IsometricCubeMorphProps {
   autoPlay?: boolean;
   loop?: boolean;
+  showControls?: boolean;
   className?: string;
 }
 
 export const IsometricCubeMorph1: React.FC<IsometricCubeMorphProps> = ({
   autoPlay = true,
   loop = true,
+  showControls = true,
   className = '',
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [currentStep, setCurrentStep] = useState(0);
+  const lastStepRef = useRef<number>(-1);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -43,12 +46,16 @@ export const IsometricCubeMorph1: React.FC<IsometricCubeMorphProps> = ({
         repeat: loop ? -1 : 0,
         repeatDelay: 2,
         onUpdate: () => {
-          // Вычисление текущего шага для индикаторов
+          // Вычисление текущего шага для индикаторов (только при смене шага)
           const progress = tl.progress();
-          if (progress < 0.3) setCurrentStep(0);
-          else if (progress < 0.6) setCurrentStep(1);
-          else if (progress < 0.85) setCurrentStep(2);
-          else setCurrentStep(3);
+          let step = 3;
+          if (progress < 0.3) step = 0;
+          else if (progress < 0.6) step = 1;
+          else if (progress < 0.85) step = 2;
+          if (step !== lastStepRef.current) {
+            lastStepRef.current = step;
+            setCurrentStep(step);
+          }
         },
       });
 
@@ -128,13 +135,25 @@ export const IsometricCubeMorph1: React.FC<IsometricCubeMorphProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`relative flex flex-col items-center justify-center p-6 bg-[#0B0C0B] border border-[#222] rounded-2xl overflow-hidden select-none ${className}`}
+      className={
+        showControls
+          ? `relative flex flex-col items-center justify-center p-6 bg-[#0B0C0B] border border-[#222] rounded-2xl overflow-hidden select-none ${className}`
+          : `relative w-full h-full flex items-center justify-center ${className}`
+      }
     >
       {/* Фоновая сетка для киберпанк стилистики */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#151515_1px,transparent_1px),linear-gradient(to_bottom,#151515_1px,transparent_1px)] bg-[size:24px_24px] opacity-40 pointer-events-none" />
+      {showControls && (
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#151515_1px,transparent_1px),linear-gradient(to_bottom,#151515_1px,transparent_1px)] bg-[size:24px_24px] opacity-40 pointer-events-none" />
+      )}
 
       {/* SVG контейнер (Figma Vector Asset) */}
-      <div className="relative z-10 w-full max-w-[320px] aspect-[315/361] flex items-center justify-center">
+      <div
+        className={
+          showControls
+            ? "relative z-10 w-full max-w-[320px] aspect-[315/361] flex items-center justify-center"
+            : "relative z-10 h-full max-h-full max-w-full aspect-[315/361] flex items-center justify-center"
+        }
+      >
         <svg
           className="w-full h-full overflow-visible"
           viewBox="0 0 315 361"
@@ -248,7 +267,8 @@ export const IsometricCubeMorph1: React.FC<IsometricCubeMorphProps> = ({
       </div>
 
       {/* Панель управления и индикаторы шагов */}
-      <div className="relative z-10 flex items-center justify-between w-full mt-6 pt-4 border-t border-[#1F201F]">
+      {showControls && (
+        <div className="relative z-10 flex items-center justify-between w-full mt-6 pt-4 border-t border-[#1F201F]">
         <div className="flex gap-2">
           {['Init', 'Expand 1', 'Expand 2', 'Lock'].map((label, idx) => (
             <button
@@ -282,6 +302,7 @@ export const IsometricCubeMorph1: React.FC<IsometricCubeMorphProps> = ({
           </button>
         </div>
       </div>
+      )}
     </div>
   );
 };
