@@ -1,5 +1,8 @@
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
+import { IsometricCubeMorph1 } from "@/components/test/isom1";
+import { IsometricCubeMorph2 } from "@/components/test/isom2";
+import { IsometricCubeMorph3 } from "@/components/test/isom3";
 import { AboutStackSection } from "@/sections/about";
 import { ArticlesSection } from "@/sections/articles";
 import { AskSection } from "@/sections/ask";
@@ -33,6 +36,9 @@ export default function Home() {
         <ArticlesSection/>
         <ContactSection/>
       </main>
+      <IsometricCubeMorph1/>
+      <IsometricCubeMorph2/>
+      <IsometricCubeMorph3/>
       <Footer/>
     </div>
   );
