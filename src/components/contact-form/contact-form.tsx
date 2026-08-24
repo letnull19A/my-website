@@ -9,8 +9,6 @@ export interface ContactFormData {
   email: string;
   company?: string;
   description: string;
-  deadline?: string;
-  budget?: string;
   agreed: boolean;
 }
 
@@ -28,8 +26,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({
     email: '',
     company: '',
     description: '',
-    deadline: '',
-    budget: '',
     agreed: false,
   });
 
@@ -109,32 +105,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({
         value={formData.description}
         onChange={handleChange}
         className="w-full bg-transparent border border-lime-soft p-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime resize-none min-h-20"
-      />
-
-      <label className="sr-only" htmlFor="contact-deadline">
-        Expected deadline
-      </label>
-      <input
-        type="text"
-        id="contact-deadline"
-        name="deadline"
-        placeholder="Expected deadline"
-        value={formData.deadline}
-        onChange={handleChange}
-        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
-      />
-
-      <label className="sr-only" htmlFor="contact-budget">
-        Approximate budget
-      </label>
-      <input
-        type="text"
-        id="contact-budget"
-        name="budget"
-        placeholder="Approximate budget"
-        value={formData.budget}
-        onChange={handleChange}
-        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
       />
 
       {/* Кнопка отправки */}
