@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { useInView } from '@/hooks/use-in-view';
 
-interface IsometricCubeMorphProps {
+interface CubeClusterProps {
   autoPlay?: boolean;
   loop?: boolean;
   showControls?: boolean;
@@ -19,7 +19,7 @@ const STEPS = [
   { label: 'Lock', labelKey: 'lock' },
 ];
 
-export const IsometricCubeMorph2: React.FC<IsometricCubeMorphProps> = ({
+export const IsometricCubeCluster: React.FC<CubeClusterProps> = ({
   autoPlay = true,
   loop = true,
   showControls = true,

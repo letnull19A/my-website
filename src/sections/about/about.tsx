@@ -6,16 +6,16 @@ import dynamic from 'next/dynamic';
 import { StackCard, StackCardProps } from '@/components/stack-card';
 import { useInView } from '@/hooks/use-in-view';
 
-const IsometricCubeMorph1 = dynamic(
-  () => import('@/components/test/isom1').then((m) => m.IsometricCubeMorph1),
+const IsometricCubeStack = dynamic(
+  () => import('@/components/isometric').then((m) => m.IsometricCubeStack),
   { ssr: false, loading: () => null }
 );
-const IsometricCubeMorph2 = dynamic(
-  () => import('@/components/test/isom2').then((m) => m.IsometricCubeMorph2),
+const IsometricCubeCluster = dynamic(
+  () => import('@/components/isometric').then((m) => m.IsometricCubeCluster),
   { ssr: false, loading: () => null }
 );
-const IsometricCubeMorph3 = dynamic(
-  () => import('@/components/test/isom3').then((m) => m.IsometricCubeMorph3),
+const IsometricVoxelPyramid = dynamic(
+  () => import('@/components/isometric').then((m) => m.IsometricVoxelPyramid),
   { ssr: false, loading: () => null }
 );
 
@@ -42,7 +42,7 @@ const defaultCards: StackCardProps[] = [
     title: 'FRONTEND',
     illustration: (
       <LazyIllustration>
-        <IsometricCubeMorph1 showControls={false} />
+        <IsometricCubeStack showControls={false} />
       </LazyIllustration>
     ),
     tags: [
@@ -57,7 +57,7 @@ const defaultCards: StackCardProps[] = [
     title: 'BACKEND',
     illustration: (
       <LazyIllustration>
-        <IsometricCubeMorph2 showControls={false} />
+        <IsometricCubeCluster showControls={false} />
       </LazyIllustration>
     ),
     tags: [
@@ -72,7 +72,7 @@ const defaultCards: StackCardProps[] = [
     title: 'OTHER',
     illustration: (
       <LazyIllustration>
-        <IsometricCubeMorph3 showControls={false} />
+        <IsometricVoxelPyramid showControls={false} />
       </LazyIllustration>
     ),
     tags: [

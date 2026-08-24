@@ -5,7 +5,7 @@ import gsap from 'gsap';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { useInView } from '@/hooks/use-in-view';
 
-interface IsometricCubeMorphProps {
+interface VoxelPyramidProps {
   autoPlay?: boolean;
   loop?: boolean;
   showControls?: boolean;
@@ -72,13 +72,11 @@ const IsometricDiamond = ({
 const IsometricLeftFace = ({
   top,
   bottom,
-  width = 28.9859,
   height = 28.9859,
   hasHatches = true,
 }: {
   top: [number, number]; // левая верхняя точка ромба
   bottom: [number, number]; // нижняя центральная точка ромба
-  width?: number;
   height?: number;
   hasHatches?: boolean;
 }) => {
@@ -117,7 +115,7 @@ const IsometricLeftFace = ({
   );
 };
 
-export const IsometricCubeMorph3: React.FC<IsometricCubeMorphProps> = ({
+export const IsometricVoxelPyramid: React.FC<VoxelPyramidProps> = ({
   autoPlay = true,
   loop = true,
   showControls = true,

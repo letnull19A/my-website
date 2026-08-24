@@ -5,14 +5,14 @@ import gsap from 'gsap';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { useInView } from '@/hooks/use-in-view';
 
-interface IsometricCubeMorphProps {
+interface CubeStackProps {
   autoPlay?: boolean;
   loop?: boolean;
   showControls?: boolean;
   className?: string;
 }
 
-export const IsometricCubeMorph1: React.FC<IsometricCubeMorphProps> = ({
+export const IsometricCubeStack: React.FC<CubeStackProps> = ({
   autoPlay = true,
   loop = true,
   showControls = true,

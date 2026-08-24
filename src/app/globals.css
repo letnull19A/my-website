@@ -205,3 +205,18 @@
     scroll-margin-top: 73px;
   }
 }
+
+/* Isometric stack — прячем стартовые слои до инициализации GSAP,
+   чтобы при попадании в viewport не "мерцал" полностью собранный куб.
+   GSAP при проигрывании перекрывает эти стили inline-значениями. */
+.cube-layer-mid,
+.cube-layer-top,
+.cluster-module,
+.voxel-node,
+.laser-cage {
+  opacity: 0;
+}
+
+.core-glow {
+  opacity: 0.15;
+}
