@@ -5,7 +5,6 @@ import {
   SITE_TITLE,
   SITE_DESCRIPTION,
   SITE_AUTHOR,
-  SITE_OG_IMAGE,
 } from "@/lib/site";
 import "./globals.css";
 import "@/styles/main.scss";
@@ -52,20 +51,11 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     locale: "en_US",
-    images: [
-      {
-        url: SITE_OG_IMAGE,
-        width: 1200,
-        height: 630,
-        alt: "Letnull19A — Web Developer Portfolio",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
-    images: [SITE_OG_IMAGE],
   },
   robots: {
     index: true,
