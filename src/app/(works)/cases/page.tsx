@@ -27,7 +27,7 @@ export default function Cases() {
   return (
    <div className="min-h-screen bg-background text-foreground font-mono">
       <Header {...navData} />
-      <main className="divide-y divide-border">
+      <main id="main-content" className="divide-y divide-border">
         <OtherWorkSection/>
       </main>
       <AskSection/>

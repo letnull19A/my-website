@@ -38,7 +38,7 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
               'h-14 sm:h-16 px-4 sm:px-6 text-lg sm:text-xl font-bold uppercase rounded-none tracking-wider'
             )}
           >
-            READ MORE
+            READ ALL ARTICLES
           </a>
         </div>
 

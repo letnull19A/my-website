@@ -76,7 +76,7 @@ export default async function ArticleDetailPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-background text-foreground font-mono">
       <Header {...navData} />
-      <main className="divide-y divide-border">
+      <main id="main-content" className="divide-y divide-border">
         <ArticleDetailSection
           title={currentArticle.title}
           subtitle={currentArticle.subtitle || currentArticle.description}

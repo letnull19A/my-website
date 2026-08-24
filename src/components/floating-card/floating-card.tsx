@@ -79,6 +79,20 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
     };
   }, [isVisible, desktopPos, mobilePos, alignRightOnMobile, width, height]);
 
+  const applyTransform = useCallback((x: number, y: number) => {
+    posRef.current = { x, y };
+    const el = cardRef.current;
+    if (el) el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  }, []);
+
+  // Синхронизируем DOM-transform с posRef после каждого рендера,
+  // чтобы рендер не сбрасывал позицию, установленную при перетаскивании.
+  useEffect(() => {
+    if (isVisible && isInitializedRef.current && cardRef.current) {
+      cardRef.current.style.transform = `translate3d(${posRef.current.x}px, ${posRef.current.y}px, 0)`;
+    }
+  }, [isVisible, isDragging, pos]);
+
   const runMomentum = useCallback(() => {
     const parentEl = cardRef.current?.parentElement;
     const cardEl = cardRef.current;
@@ -116,8 +130,7 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
         velocityRef.current.vy = -velocityRef.current.vy * bounceFriction;
       }
 
-      posRef.current = { x: nextX, y: nextY };
-      setPos({ x: nextX, y: nextY });
+      applyTransform(nextX, nextY);
 
       if (Math.abs(velocityRef.current.vx) > 0.1 || Math.abs(velocityRef.current.vy) > 0.1) {
         momentumRafRef.current = requestAnimationFrame(step);
@@ -125,7 +138,7 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
     };
 
     momentumRafRef.current = requestAnimationFrame(step);
-  }, []);
+  }, [applyTransform]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('[data-close-trigger]')) return;
@@ -176,8 +189,7 @@ export const FloatingCard: React.FC<FloatingCardProps> = ({
     newX = Math.max(0, Math.min(newX, parent.width - card.width));
     newY = Math.max(0, Math.min(newY, parent.height - card.height));
 
-    posRef.current = { x: newX, y: newY };
-    setPos({ x: newX, y: newY });
+    applyTransform(newX, newY);
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {

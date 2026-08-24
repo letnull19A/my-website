@@ -55,61 +55,85 @@ export const ContactForm: React.FC<ContactFormProps> = ({
       onSubmit={handleSubmit}
       className={`flex flex-col gap-3 sm:gap-3.5 font-mono select-none ${className}`}
     >
+      <label className="sr-only" htmlFor="contact-name">
+        Name
+      </label>
       <input
         type="text"
+        id="contact-name"
         name="name"
         required
         placeholder="Name"
         value={formData.name}
         onChange={handleChange}
-        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-green-mid outline-none focus:border-lime focus:ring-1 focus:ring-lime"
+        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
       />
 
+      <label className="sr-only" htmlFor="contact-email">
+        Email
+      </label>
       <input
         type="email"
+        id="contact-email"
         name="email"
         required
         placeholder="Email"
         value={formData.email}
         onChange={handleChange}
-        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-green-mid outline-none focus:border-lime focus:ring-1 focus:ring-lime"
+        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
       />
 
+      <label className="sr-only" htmlFor="contact-company">
+        Company
+      </label>
       <input
         type="text"
+        id="contact-company"
         name="company"
         placeholder="Company [ optional ]"
         value={formData.company}
         onChange={handleChange}
-        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-green-mid outline-none focus:border-lime focus:ring-1 focus:ring-lime"
+        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
       />
 
+      <label className="sr-only" htmlFor="contact-description">
+        Description
+      </label>
       <textarea
         name="description"
+        id="contact-description"
         required
         rows={3}
         placeholder="What currently exists and what needs to be done"
         value={formData.description}
         onChange={handleChange}
-        className="w-full bg-transparent border border-lime-soft p-4 text-lg sm:text-xl text-green-mid placeholder:text-green-mid outline-none focus:border-lime focus:ring-1 focus:ring-lime resize-none min-h-20"
+        className="w-full bg-transparent border border-lime-soft p-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime resize-none min-h-20"
       />
 
+      <label className="sr-only" htmlFor="contact-deadline">
+        Expected deadline
+      </label>
       <input
         type="text"
+        id="contact-deadline"
         name="deadline"
         placeholder="Expected deadline"
         value={formData.deadline}
         onChange={handleChange}
-        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-green-mid outline-none focus:border-lime focus:ring-1 focus:ring-lime"
+        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
       />
 
+      <label className="sr-only" htmlFor="contact-budget">
+        Approximate budget
+      </label>
       <input
         type="text"
+        id="contact-budget"
         name="budget"
         placeholder="Approximate budget"
         value={formData.budget}
         onChange={handleChange}
-        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-green-mid outline-none focus:border-lime focus:ring-1 focus:ring-lime"
+        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
       />
 
       {/* Кнопка отправки */}

@@ -84,12 +84,16 @@ export const AskSection: React.FC<AskSectionProps> = ({
           className="flex flex-col sm:flex-row items-stretch gap-2.5 sm:gap-3"
         >
           <div className="relative flex-1">
+            <label className="sr-only" htmlFor="ask-query">
+              {placeholder}
+            </label>
             <input
               type="text"
+              id="ask-query"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={placeholder}
-              className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-xs sm:text-sm text-lime placeholder:text-lime/40 outline-none focus:border-lime focus:ring-1 focus:ring-lime tracking-wide"
+              className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-xs sm:text-sm text-lime placeholder:text-lime/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime tracking-wide"
             />
           </div>
 

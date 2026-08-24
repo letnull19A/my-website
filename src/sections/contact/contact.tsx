@@ -40,6 +40,7 @@ const StatusBadgeImage: React.FC<{
       width={width}
       height={height}
       unoptimized
+      loading="lazy"
       draggable={false}
       className="w-full h-auto object-contain pointer-events-none block"
     />
@@ -119,6 +120,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                 width={600}
                 height={600}
                 unoptimized
+                loading="lazy"
                 draggable={false}
                 className="object-contain w-full h-full pointer-events-none"
               />

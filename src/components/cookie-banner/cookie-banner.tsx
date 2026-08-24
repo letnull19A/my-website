@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/button';
 
 const COOKIE_CONSENT_KEY = 'portfolio_cookie_consent';
 
 export const CookieBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const panelRef = useRef<HTMLElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
@@ -19,22 +21,32 @@ export const CookieBanner: React.FC = () => {
     }
   }, []);
 
-  const handleAccept = () => {
-    localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
-    setIsVisible(false);
-  };
+  // Сохраняем предыдущий фокус и переносим его в баннер при открытии
+  useEffect(() => {
+    if (!isVisible) return;
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+    const acceptButton = panelRef.current?.querySelector<HTMLButtonElement>('[data-cookie-accept]');
+    acceptButton?.focus();
+    return () => {
+      previouslyFocusedRef.current?.focus?.();
+    };
+  }, [isVisible]);
 
-  const handleDecline = () => {
-    localStorage.setItem(COOKIE_CONSENT_KEY, 'declined');
+  const close = useCallback((consent: 'accepted' | 'declined') => {
+    localStorage.setItem(COOKIE_CONSENT_KEY, consent);
     setIsVisible(false);
-  };
+  }, []);
+
+  const handleAccept = () => close('accepted');
+  const handleDecline = () => close('declined');
 
   if (!isVisible) return null;
 
   return (
     <aside
+      ref={panelRef}
       role="dialog"
-      aria-live="polite"
+      aria-modal="true"
       aria-label="Cookie consent banner"
       className="fixed z-50 bottom-4 right-4 sm:bottom-6 sm:right-6 w-[calc(100vw-32px)] sm:w-[320px] md:w-[340px] border border-lime bg-background/95 backdrop-blur-md shadow-2xl font-mono text-lime-light select-none animate-in fade-in slide-in-from-bottom-4 duration-300"
     >
@@ -71,6 +83,7 @@ export const CookieBanner: React.FC = () => {
           <Button
             type="button"
             variant="default"
+            data-cookie-accept
             onClick={handleAccept}
             className="h-9 px-2 text-xs font-bold uppercase rounded-none bg-lime text-background hover:bg-lime/90 cursor-pointer"
           >

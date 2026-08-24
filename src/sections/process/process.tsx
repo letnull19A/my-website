@@ -151,6 +151,7 @@ export const WorkProcessSection: React.FC<WorkProcessSectionProps> = ({
                 width={700}
                 height={460}
                 unoptimized
+                loading="lazy"
                 draggable={false}
                 className="object-contain w-full h-full pointer-events-none transition-opacity duration-200"
               />

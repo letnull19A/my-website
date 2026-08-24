@@ -92,6 +92,30 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
       <html lang="en" className={`${ptMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-lime focus:text-green-dark focus:font-bold focus:rounded-none"
+        >
+          Skip to main content
+        </a>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: SITE_AUTHOR,
+              url: SITE_URL,
+              jobTitle: "Full-Stack Developer",
+              description: SITE_DESCRIPTION,
+              sameAs: [
+                "https://github.com/letnull19a",
+                "https://www.linkedin.com/in/aleksei-volkov-572ba9401/",
+                "https://t.me/alexei_wolkoff",
+              ],
+            }),
+          }}
+        />
         {children}
         <CookieBanner />
       </body>

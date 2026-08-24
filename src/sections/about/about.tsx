@@ -79,6 +79,7 @@ export const AboutStackSection: React.FC<AboutStackSectionProps> = ({
               width={420}
               height={140}
               unoptimized
+              loading="lazy"
               draggable={false}
               className="w-full h-auto object-contain pointer-events-none block"
             />
