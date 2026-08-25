@@ -63,7 +63,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
         placeholder="Name"
         value={formData.name}
         onChange={handleChange}
-        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
+        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-xl xl:text-2xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
       />
 
       <label className="sr-only" htmlFor="contact-email">
@@ -77,7 +77,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
         placeholder="Email"
         value={formData.email}
         onChange={handleChange}
-        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
+        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-xl xl:text-2xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
       />
 
       <label className="sr-only" htmlFor="contact-company">
@@ -90,7 +90,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
         placeholder="Company [ optional ]"
         value={formData.company}
         onChange={handleChange}
-        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
+        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-xl xl:text-2xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
       />
 
       <label className="sr-only" htmlFor="contact-description">
@@ -104,7 +104,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
         placeholder="What currently exists and what needs to be done"
         value={formData.description}
         onChange={handleChange}
-        className="w-full bg-transparent border border-lime-soft p-4 text-lg sm:text-xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime resize-none min-h-20"
+        className="w-full bg-transparent border border-lime-soft p-4 text-xl xl:text-2xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime resize-none min-h-20"
       />
 
       {/* Кнопка отправки */}

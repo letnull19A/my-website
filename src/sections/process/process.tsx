@@ -121,7 +121,7 @@ export const WorkProcessSection: React.FC<WorkProcessSectionProps> = ({
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-lime-light uppercase">
               {title}
             </h2>
-            <p className="w-[80%] mt-2 text-lg text-lime-light leading-relaxed">
+            <p className="w-[80%] mt-2 text-lg text-lime-light leading-5">
               {subtitle}
             </p>
           </div>

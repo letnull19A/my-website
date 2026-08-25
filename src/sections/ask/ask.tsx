@@ -44,7 +44,7 @@ export const AskSection: React.FC<AskSectionProps> = ({
       id="ask"
       className='mt-20 border border-y'
     >
-    <div className={`w-full bg-green-dark border-y text-lime font-mono px-4 py-8 sm:px-6 md:px-8 select-none ${className}`}>
+    <div className={`w-full bg-green-dark border-y text-lime font-mono p-6 select-none ${className}`}>
         <div className="mx-auto flex flex-col gap-6 ">
         {/* Шапка: Заголовок слева + Ретро-бейдж COMMAND INPUT справа */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
@@ -52,7 +52,7 @@ export const AskSection: React.FC<AskSectionProps> = ({
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-lime-light uppercase">
               {title}
             </h2>
-            <p className="w-[80%] leading-5 mt-2 text-lg text-lime-light  max-w-xl">
+            <p className="w-[90%] leading-5 mt-2 text-xl text-lime-light  max-w-xl">
               {description}
             </p>
           </div>
@@ -93,7 +93,7 @@ export const AskSection: React.FC<AskSectionProps> = ({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={placeholder}
-              className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-xs sm:text-sm text-lime placeholder:text-lime/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime tracking-wide"
+              className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-xl xl:text-2xl text-lime placeholder:text-lime/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime tracking-wide"
             />
           </div>
 

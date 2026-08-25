@@ -102,7 +102,7 @@ export const AboutStackSection: React.FC<AboutStackSectionProps> = ({
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-lime-light uppercase">
               {title}
             </h2>
-            <p className="w-[90%] mt-3 text-sm sm:text-base md:text-xl text-lime-light leading-relaxed max-w-xl">
+            <p className="w-[90%] mt-3 text-sm sm:text-base md:text-xl text-lime-light leading-5 max-w-xl">
               {description}
             </p>
           </div>

@@ -33,7 +33,7 @@ const StatusBadgeImage: React.FC<{
   height: number;
   className?: string;
 }> = ({ src, width, height, className = '' }) => (
-  <div className={`shrink-0 overflow-hidden ${className}`}>
+  <div className={`hidden lg:block shrink-0 overflow-hidden ${className}`}>
     <Image
       src={src}
       alt="Ready for collaboration badge"
@@ -63,12 +63,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 p-6">
         {/* Левая колонка: Форма */}
-        <div className="p-5 sm:p-8 md:p-10 flex flex-col justify-between">
+        <div className="lg:pr-8 flex flex-col justify-between">
           <div>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-lime-light uppercase">
               {title}
             </h2>
-            <p className="w-full lg:w-[60%] mt-2 sm:mt-3 text-lg text-lime-light leading-relaxed mb-6 sm:mb-8">
+            <p className="w-full lg:w-[60%] mt-2 sm:mt-3 text-xl text-lime-light leading-5 mb-6 sm:mb-8">
               {subtitle}
             </p>
 

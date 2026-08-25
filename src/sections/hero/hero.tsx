@@ -71,12 +71,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     }
   };
 
-  const handleClose = (id: string) => {
-    setOpenCards((prev) => ({ ...prev, [id]: false }));
+  const handleToggle = (id: string) => {
+    setOpenCards((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleOpen = (id: string) => {
-    setOpenCards((prev) => ({ ...prev, [id]: true }));
+  const handleClose = (id: string) => {
+    setOpenCards((prev) => ({ ...prev, [id]: false }));
   };
 
   return (
@@ -131,12 +131,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <DesktopIcon
             label="DEVELOPER.JPEG"
             img="/icons/developer.webp"
-            onClick={() => handleOpen('developer')}
+            onClick={() => handleToggle('developer')}
           />
           <DesktopIcon
             label="PHILOSOPHY.TXT"
             img="/icons/philosophy.webp"
-            onClick={() => handleOpen('philosophy')}
+            onClick={() => handleToggle('philosophy')}
           />
           <DesktopIcon
             label="CASES"
@@ -147,7 +147,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           />
         </div>
 
-        <div className="w-full md:max-w-165 grid grid-cols-2 mx-auto md:mb-8 shadow-[0_0_24px_rgba(0,0,0,0.8)]">
+        <div className="w-full md:max-w-165 grid grid-cols-2 mx-auto md:mb-8 lg:mb-16 shadow-[0_0_24px_rgba(0,0,0,0.8)]">
           {actions.map((action, idx) => (
             <a
               key={action.id}

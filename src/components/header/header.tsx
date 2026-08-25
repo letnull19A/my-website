@@ -83,7 +83,7 @@ export const Header: React.FC<HeaderProps> = ({
     };
 
     const computeSlider = (currentActiveId: string): number | null => {
-      if (!headerRef.current || window.innerWidth < 768) return null;
+      if (!headerRef.current || window.innerWidth < 1280) return null;
 
       const headerRect = headerRef.current.getBoundingClientRect();
       const actionId = action.href.replace('#', '');
@@ -164,15 +164,12 @@ export const Header: React.FC<HeaderProps> = ({
       ref={headerRef}
       className={`sticky z-60 top-0 w-full bg-background text-foreground font-mono select-none ${className}`}
     >
-      <div className="grid grid-cols-[1fr_auto] md:grid-cols-[1.2fr_2fr_1fr] items-stretch border-b border-border">
-        <div
-          ref={brandRef}
-          className="flex items-center px-4 md:px-6 py-4 border-r border-border"
-        >
+      <div className="grid grid-cols-[1fr_auto] xl:grid-cols-[300px_1fr_300px] items-stretch border-b border-border">
+        <div ref={brandRef} className="flex items-stretch border-r border-border">
           <Link
             href={brand.href}
             onClick={(e) => handleAnchorClick(e, brand.href)}
-            className="text-xl md:text-base font-normal tracking-wide text-foreground hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex items-center w-full py-4 px-4 xl:px-6 text-xl xl:text-base font-normal tracking-wide text-foreground transition-colors hover:bg-lime/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {brand.title}
           </Link>
@@ -180,7 +177,7 @@ export const Header: React.FC<HeaderProps> = ({
 
         <nav
           aria-label="Main Navigation"
-          className="hidden md:flex items-center justify-center border-r border-border px-2"
+          className="hidden xl:flex items-center justify-center border-r border-border px-2"
         >
           <ul className="flex items-center gap-6 lg:gap-10 list-none m-0 p-0">
             {items.map((item) => {
@@ -209,25 +206,22 @@ export const Header: React.FC<HeaderProps> = ({
           </ul>
         </nav>
 
-        <div
-          ref={actionRef}
-          className="hidden md:flex items-center justify-center px-6"
-        >
+        <div ref={actionRef} className="hidden xl:flex items-stretch">
           <a
             href={action.href}
             onClick={(e) => handleAnchorClick(e, action.href)}
             aria-current={isActionActive ? 'true' : undefined}
-            className={`text-xl tracking-wide transition-all py-1 px-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+            className={`flex items-center justify-center w-full px-6 text-xl tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               isActionActive
                 ? 'bg-lime text-background font-semibold'
-                : 'text-foreground hover:opacity-80'
+                : 'text-foreground hover:bg-lime/10'
             }`}
           >
             {action.label}
           </a>
         </div>
 
-        <div className="flex md:hidden items-center justify-center px-4">
+        <div className="flex xl:hidden items-center justify-center px-4">
           <button
             type="button"
             aria-label="Toggle navigation menu"
@@ -254,7 +248,7 @@ export const Header: React.FC<HeaderProps> = ({
       >
         {sliderLeft !== null && (
           <div
-            className="hidden md:flex absolute top-0 -translate-x-1/2 flex-col items-center pointer-events-none transition-[left] duration-300 ease-out"
+            className="hidden xl:flex absolute top-0 -translate-x-1/2 flex-col items-center pointer-events-none transition-[left] duration-300 ease-out"
             style={{ left: `${sliderLeft}px` }}
           >
             <svg
@@ -278,7 +272,7 @@ export const Header: React.FC<HeaderProps> = ({
         <nav
           id={mobileMenuId}
           aria-label="Mobile Navigation"
-          className="fixed top-18.25 inset-x-0 bottom-0 z-60 md:hidden border-b border-border bg-background/95 backdrop-blur-md px-6 py-6 flex flex-col gap-6 overflow-y-auto shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150"
+          className="fixed top-18.25 inset-x-0 bottom-0 z-60 xl:hidden border-b border-border bg-background/95 backdrop-blur-md px-6 py-6 flex flex-col gap-6 overflow-y-auto shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150"
         >
           <ul className="flex flex-col gap-3 list-none m-0 p-0">
             {items.map((item) => (
