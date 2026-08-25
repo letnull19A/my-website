@@ -79,6 +79,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     setOpenCards((prev) => ({ ...prev, [id]: false }));
   };
 
+  const renderAction = (action: ActionItem, idx: number) => (
+    <a
+      key={action.id}
+      href={action.url}
+      onClick={(e) => {
+        vibrateOnTap(e);
+        e.preventDefault();
+        handleActionClick(action.url);
+      }}
+      className={cn(
+        buttonVariants({ variant: action.variant }),
+        'h-22 lg:h-26 w-full px-3 md:px-6 text-sm md:text-lg font-bold uppercase tracking-wider rounded-none transition-transform hover:brightness-105 active:scale-[0.99]',
+        idx === 0 ? 'border-r border-background/20' : ''
+      )}
+    >
+      {action.label}
+    </a>
+  );
+
   return (
     <section
       id='portfolio'
@@ -124,6 +143,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <h1 className="w-[90%] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-lime-light leading-[0.98] select-text text-balance drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
           I BUILD WEB PRODUCTS WHERE TECHNICAL STATE STAYS VISIBLE TO BOTH OPERATORS AND DECISION-MAKERS.
         </h1>
+
+        {/* Десктопные кнопки — сразу под заголовком */}
+        <div className="hidden lg:grid grid-cols-2 w-full max-w-165 mt-10 pointer-events-auto shadow-[0_0_24px_rgba(0,0,0,0.8)]">
+          {actions.map(renderAction)}
+        </div>
       </div>
 
       <div className="z-20 w-full flex flex-col items-center">
@@ -147,25 +171,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           />
         </div>
 
-        <div className="w-full md:max-w-165 grid grid-cols-2 mx-auto md:mb-8 lg:mb-16 shadow-[0_0_24px_rgba(0,0,0,0.8)]">
-          {actions.map((action, idx) => (
-            <a
-              key={action.id}
-              href={action.url}
-              onClick={(e) => {
-                vibrateOnTap(e);
-                e.preventDefault();
-                handleActionClick(action.url);
-              }}
-              className={cn(
-                buttonVariants({ variant: action.variant }),
-                'h-22 lg:h-26 w-full px-3 md:px-6 text-sm md:text-lg font-bold uppercase tracking-wider rounded-none transition-transform hover:brightness-105 active:scale-[0.99]',
-                idx === 0 ? 'border-r border-background/20' : ''
-              )}
-            >
-              {action.label}
-            </a>
-          ))}
+        <div className="lg:hidden w-full md:max-w-165 grid grid-cols-2 mx-auto md:mb-8 shadow-[0_0_24px_rgba(0,0,0,0.8)]">
+          {actions.map(renderAction)}
         </div>
 
         <TerminalTaskbar links={taskbarLinks} />
