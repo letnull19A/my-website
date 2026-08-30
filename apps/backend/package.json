@@ -1,0 +1,17 @@
+{
+  "name": "backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "db": "json-server data/db.json --port 4000 --host 0.0.0.0"
+  },
+  "dependencies": {
+    "json-server": "^0.17.4"
+  }
+}

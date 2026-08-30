@@ -1,0 +1,94 @@
+{
+  "articles": [
+    {
+      "slug": "ui-syntax-and-styleguide",
+      "title": "UI DESIGN SYSTEM & MARKDOWN SYNTAX DEMO",
+      "description": "Complete showcase of all typography, lists, code blocks, tables, and blockquotes supported by the markdown parser.",
+      "subtitle": "A reference specification demonstrating headers, list markers, code copy actions, and responsive tables.",
+      "date": "2026-08-10",
+      "readTime": "4 MIN READ",
+      "category": "DESIGN SYSTEM // SPEC",
+      "content": "# 1. Main Section Heading (H1)\n\nThis is a standard text paragraph (`p`) illustrating text rhythm and line spacing. It demonstrates inline elements like **bold emphasis**, *italicized terms*, and an external link to [Next.js Documentation](https://nextjs.org).\n\n---\n\n## 2. Subsystem Heading with Hash Decorator (H2)\n\nHeaders of level two automatically prepend a green hash tag indicator.\n\n### 3. Nested Feature Header (H3)\n\nBelow is an unordered bullet list demonstrating custom `>>` list item decorators:\n\n* **State Determinism**: Every interaction yields a predictable render output.\n* **Stream Processing**: Data pipelines handle real-time event updates without UI blocking.\n* **Zero Overhead**: Minimal layout shifts and targeted component updates.\n\n## 4. Numbered Execution Pipeline (OL / LI)\n\n1. Initialize execution context and hydrate incoming parameters.\n2. Validate incoming request schema using strict type guards.\n3. Commit validated payloads to the persistence storage layer.\n\n---\n\n## 5. Blockquote / System Note\n\n> \"Visible progress beats hidden effort every single time. Clear state boundaries keep client architectures simple and maintainable.\"\n\n---\n\n## 6. Inline Code and Code Block with Copy Action\n\nTo run the local development server, execute `npm run dev` inside your terminal.\n\n```typescript\ninterface SystemSignal<T> {\n  readonly id: string;\n  readonly payload: T;\n  readonly timestamp: number;\n  status: 'IDLE' | 'PROCESSING' | 'RESOLVED';\n}\n\nexport function dispatchSignal<T>(signal: SystemSignal<T>): void {\n  console.log(`[SIGNAL_DISPATCH]: ${signal.id} - ${signal.status}`);\n}\n```\n\n---\n\n## 7. Comparative Data Matrix (TABLE)\n\n| Architecture Layer | Core Duty | Runtime Target | Status |\n| :--- | :--- | :--- | :--- |\n| **API Gateway** | Request parsing & security guards | Node.js Runtime | Active |\n| **State Store** | Client cache & sync reconciliation | Web Browser | Active |\n| **3D Engine** | Mesh configuration & rendering | WebGL / Canvas | Standby |\n\n---\n\n## 8. Final Boundary Summary\n\nHere is the concluding paragraph summarizing the complete design spec. All styles align with the retro-terminal palette, monospace hierarchy, and responsive grid layouts.\n",
+      "coverImage": null,
+      "linkedinHref": "https://www.linkedin.com/in/your-profile/",
+      "telegramHref": "https://t.me/your_channel"
+    },
+    {
+      "slug": "monorepo-infrastructure",
+      "title": "MONOREPO INFRASTRUCTURE WITH PNPM WORKSPACES",
+      "description": "How to split Next.js frontend and Node.js backend into a pnpm monorepo with isolated Dockerfiles.",
+      "subtitle": "Isolated Dockerfiles, workspace filtering, and static export that stays compatible with GitHub Pages.",
+      "date": "2026-08-20",
+      "readTime": "5 MIN READ",
+      "category": "BACKEND // INFRASTRUCTURE",
+      "content": "# Monorepo Infrastructure\n\nThis article describes the migration from a single Next.js app to a pnpm workspace monorepo.\n\n## Why separate apps?\n\n* Frontend stays a static export deployable to GitHub Pages.\n* Backend runs independently on Node.js + json-server for fast mocking.\n* Each app owns its Dockerfile, dependencies and AGENTS.md.\n\n## What changed\n\n* `apps/frontend` holds the Next.js app with `output: \"export\"`.\n* `apps/backend` exposes `data/db.json` via json-server on port 4000.\n* Root `pnpm-workspace.yaml` defines `packages: [\"apps/*\"]`.\n\n> API base for the next stage: `/api/v1` — routes are designed by a dedicated agent.\n",
+      "coverImage": "/images/stack-cube-frontend.webp",
+      "linkedinHref": null,
+      "telegramHref": null
+    }
+  ],
+  "cases": [
+    {
+      "slug": "speka",
+      "title": "SPEKA",
+      "role": "FULLSTACK",
+      "description": "A client-facing specification editor designed around progress transparency and predictable delivery signal",
+      "fullTitle": "A CLIENT-FACING SPECIFICATION EDITOR DESIGNED AROUND PROGRESS TRANSPARENCY.",
+      "subtitle": "A client-facing specification editor designed around progress transparency and predictable delivery signal.",
+      "actions": [
+        {
+          "id": "view",
+          "label": "VIEW CASE",
+          "href": "/cases/speka",
+          "variant": "lime-light"
+        },
+        {
+          "id": "try",
+          "label": "TRY OUT",
+          "href": "https://speka.example.com",
+          "variant": "default"
+        }
+      ],
+      "meta": {
+        "role": "FULL-STACK DEVELOPER",
+        "duration": "3 MONTHS",
+        "status": "PRODUCTION",
+        "stack": "REACT / NEXT.JS / NESTJS / POSTGRESQL"
+      },
+      "problem": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "solution": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "results": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "logo": "/icons/speka-logo.svg",
+      "previewImage": "/images/process-step-1.webp",
+      "previewCaption": "FIGMA/DEV-001 // Speka Interactive workspace matrix"
+    },
+    {
+      "slug": "bimar-system",
+      "title": "BIMAR SYSTEM",
+      "role": "FRONTEND // BACKEND",
+      "description": "Construction workflows, product data, and 3D configuration logic in one browser platform",
+      "fullTitle": "CONSTRUCTION DATA, 3D CONFIGURATION, AND PRODUCTION VISIBILITY UNIFIED IN ONE BROWSER PLATFORM.",
+      "subtitle": "The product had to keep commercial, context, and production execution data aligned while providing real-time 3D visibility of customized product data and model versions.",
+      "actions": [
+        {
+          "id": "view",
+          "label": "VIEW CASE",
+          "href": "/cases/bimar-system",
+          "variant": "lime-light"
+        }
+      ],
+      "meta": {
+        "role": "FULL-STACK DEVELOPER",
+        "duration": "4 MONTHS",
+        "status": "PRODUCTION",
+        "stack": "REACT / ASP.NET / POSTGRESQL / THREE.JS"
+      },
+      "problem": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "solution": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "results": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "logo": "/icons/bimar-logo.svg",
+      "previewImage": "/images/process-step-2.webp",
+      "previewCaption": "FIGMA/DEV-001 // System Interactive backend operation matrix"
+    }
+  ]
+}
