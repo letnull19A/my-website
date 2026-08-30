@@ -42,17 +42,20 @@ pnpm lint:frontend         # eslint для фронтенда
 
 ## Docker
 
-Сборка из корня (контекст — корень монорепозитория):
+Каждый сервис собирается из контекста своего приложения (не знает о монорепозитории):
 
 ```bash
-docker build -f apps/frontend/Dockerfile -t my-website-frontend .
-docker build -f apps/backend/Dockerfile -t my-website-backend .
+docker build -t my-website-frontend ./apps/frontend
+docker build -t my-website-backend ./apps/backend
+# альтернативно:
+# docker build -f apps/frontend/Dockerfile -t my-website-frontend ./apps/frontend
+# docker build -f apps/backend/Dockerfile -t my-website-backend ./apps/backend
 
 docker run -p 3000:3000 my-website-frontend
 docker run -p 4000:4000 my-website-backend
 ```
 
-- Frontend: multi-stage `node:24-alpine` → `static-web-server` (раздаёт `apps/frontend/out` + `public`).
+- Frontend: multi-stage `node:24-alpine` → `static-web-server` (раздаёт `/app` = `out` + `public`).
 - Backend: `node:24-alpine`, `node server.js` (json-server, `0.0.0.0:4000`).
 
 ## API

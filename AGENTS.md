@@ -69,17 +69,22 @@ pnpm build                 # алиас build:frontend
 
 ## Docker
 
-Каждый сервис имеет свой Dockerfile, собирается из контекста корня:
+Каждый сервис имеет свой Dockerfile и собирается **из контекста своего приложения** — приложение не знает о монорепозитории:
 
 ```bash
-docker build -f apps/frontend/Dockerfile -t my-website-frontend .
-docker build -f apps/backend/Dockerfile -t my-website-backend .
+docker build -t my-website-frontend ./apps/frontend
+docker build -t my-website-backend ./apps/backend
+# альтернативно с явным -f:
+# docker build -f apps/frontend/Dockerfile -t my-website-frontend ./apps/frontend
+# docker build -f apps/backend/Dockerfile -t my-website-backend ./apps/backend
+
 docker run -p 3000:3000 my-website-frontend
 docker run -p 4000:4000 my-website-backend
 ```
 
-- Frontend: multi-stage, `static-web-server` раздаёт `apps/frontend/out`.
+- Frontend: multi-stage, `static-web-server` раздаёт `/app` (`out` + `public`).
 - Backend: `node:24-alpine`, `node server.js` (json-server + префикс).
+- Контекст сборки — директория приложения (`./apps/frontend` или `./apps/backend`), а не корень монорепозитория.
 
 ## API contract
 

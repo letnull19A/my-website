@@ -31,7 +31,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Код фронтенда живёт **только** в `apps/frontend/`. Импорты `@/` резолвятся внутри этого пакета, а не из корня.
 - `next.config.ts:sassOptions.includePaths` указывает на `["./src/styles", "./src"]` относительно `apps/frontend/`.
 - Статический билд: `pnpm --filter frontend build` → `apps/frontend/out`. Локально: `pnpm dev:frontend` из корня или `pnpm dev` внутри `apps/frontend`.
-- Docker: `docker build -f apps/frontend/Dockerfile -t my-website-frontend .` (контекст — корень монорепозитория).
+- Docker: `docker build -t my-website-frontend ./apps/frontend` (контекст — `apps/frontend`, приложение не знает о монорепозитории; Dockerfile копирует только `package.json` → `pnpm install` → `COPY . .` → `out`/`public`).
 - Backend: не импортировать напрямую `apps/backend` в frontend-коде. Взаимодействие — только через HTTP API `/api/v1` (будет реализовано другим агентом).
 
 ## Commands

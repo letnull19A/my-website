@@ -9,7 +9,7 @@
 - **Data**: `apps/backend/data/db.json` — единственный источник мок-данных. Коллекции: `articles`, `cases` (структура по `docs/api-data-spec.md`). Слаги — `a-z`, `0-9`, `-`, глобально уникальны.
 - **API prefix**: `/api/v1` — **зарезервирован**, но не реализован в инфраструктурной задаче. Файл `apps/backend/routes.json` содержит маппинг `"/api/v1/*": "/$1"` для совместимости. Полноценное проектирование эндпоинтов, валидация, пагинация, фильтры и кастомные middleware — задача API-агента, не этого PR.
 - **Server entry**: `apps/backend/server.js` — тонкий лаунчер `json-server` с fallback на CLI. Поддерживает как `json-server@1.x` (programmatic `createApp`), так и `0.17.x` (`--watch` + `--routes`). Переменные окружения: `PORT`, `HOST`.
-- **Docker**: `apps/backend/Dockerfile` (`node:24-alpine`, `pnpm install --filter backend`, `EXPOSE 4000`, `CMD ["node", "server.js"]`). Сборка из корня: `docker build -f apps/backend/Dockerfile -t my-website-backend .` Запуск: `docker run -p 4000:4000 my-website-backend`.
+- **Docker**: `apps/backend/Dockerfile` (`node:24-alpine`, `pnpm install`, `EXPOSE 4000`, `CMD ["node", "server.js"]`). Сборка из контекста приложения: `docker build -t my-website-backend ./apps/backend` (приложение не знает о монорепозитории; Dockerfile копирует только `package.json` → `COPY . .`). Запуск: `docker run -p 4000:4000 my-website-backend`.
 - **Frontend boundary**: фронтенд (`apps/frontend`) не импортирует код бэкенда напрямую. Связь — только по HTTP. Фронт остаётся static export (`output: "export"`), поэтому не может проксировать API на этапе сборки без отдельного хоста.
 
 ## Commands
@@ -45,7 +45,7 @@ pnpm run db # напрямую json-server data/db.json --port 4000 --host 0.0.0
 ## Docker
 
 - Multi-stage не требуется — бэкенд лёгкий.
-- Кэширование: сначала копируются `pnpm-workspace.yaml`, `package.json`, `apps/backend/package.json`, затем `pnpm install --filter backend`.
+- Кэширование: `COPY package.json` → `pnpm install` → `COPY . .` (контекст — `apps/backend`).
 - Healthcheck (для будущего): `CMD-SHELL wget -qO- http://localhost:4000/api/v1/articles || wget -qO- http://localhost:4000/articles || exit 1`.
 
 ## Границы ответственности
