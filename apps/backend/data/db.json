@@ -59,7 +59,7 @@
       "solution": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       "results": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       "logo": "/icons/speka-logo.svg",
-      "previewImage": "/images/process-step-1.webp",
+      "previewImageSrc": "/images/process-step-1.webp",
       "previewCaption": "FIGMA/DEV-001 // Speka Interactive workspace matrix"
     },
     {
@@ -87,7 +87,7 @@
       "solution": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       "results": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       "logo": "/icons/bimar-logo.svg",
-      "previewImage": "/images/process-step-2.webp",
+      "previewImageSrc": "/images/process-step-2.webp",
       "previewCaption": "FIGMA/DEV-001 // System Interactive backend operation matrix"
     }
   ]

@@ -8,25 +8,26 @@
 ```
 my-website/
 ├── apps/
-│   ├── frontend/            # Next.js 16.3 — статический экспорт
+│   ├── frontend/            # Next.js 16.3 — статический экспорт, tRPC-клиент
 │   │   ├── src/
 │   │   ├── public/
-│   │   ├── Dockerfile
+│   │   ├── Dockerfile       # из контекста корня: docker build -f apps/frontend/Dockerfile .
 │   │   ├── package.json     # name: frontend
-│   │   └── AGENTS.md        # детальные правила frontend
-│   └── backend/             # NestJS 12 (TypeScript) + Swagger
-│       ├── src/             # Nest modules (articles, cases, health)
+│   │   └── AGENTS.md
+│   └── backend/             # NestJS 12 Fastify + tRPC
+│       ├── src/             # Nest modules (db, trpc, health)
 │       ├── data/db.json     # мок-данные (articles, cases)
-│       ├── openapi.yaml     # статический OpenAPI (референс)
-│       ├── Dockerfile       # multi-stage: nest build → node dist/main
+│       ├── Dockerfile       # multi-stage: root context → node dist/main.js
 │       ├── package.json     # name: backend
-│       └── AGENTS.md        # детальные правила backend
+│       └── AGENTS.md
+├── packages/
+│   ├── schemas/             # @my-website/schemas — zod-схемы + типы (единый источник)
+│   └── api/                 # @my-website/api — tRPC-роутеры, AppRouter
 ├── docs/
-│   ├── api-data-spec.md
+│   ├── api-data-spec.md     # (deprecated) superseded by @my-website/schemas
 │   └── design/*.pen
-├── .github/workflows/nextjs.yml
+├── pnpm-workspace.yaml      # packages: ["apps/*", "packages/*"]
 ├── package.json             # workspace root (private, scripts с фильтрами)
-├── pnpm-workspace.yaml      # packages: ["apps/*"]
 └── AGENTS.md                # ← ты здесь
 ```
 
@@ -34,9 +35,9 @@ my-website/
 
 - **pnpm 11** — единственный пакетный менеджер. Используй `pnpm install`, не `npm install`.
 - Lockfile: `pnpm-lock.yaml` в корне (единый для всех workspace).
-- Workspace объявлен в `pnpm-workspace.yaml:1-2` как `packages: ["apps/*"]`.
-- Установка: `pnpm install --frozen-lockfile`
-- Изолированные команды: `pnpm --filter frontend <script>`, `pnpm --filter backend <script>`
+- Workspace объявлен в `pnpm-workspace.yaml` как `packages: ["apps/*", "packages/*"]`.
+- Установка: `pnpm install --frozen-lockfile` или `pnpm install --ignore-scripts` (обход approve-builds)
+- Изолированные команды: `pnpm --filter frontend <script>`, `pnpm --filter backend <script>`, `pnpm --filter @my-website/schemas build`
 
 ## Корневые команды
 
@@ -53,54 +54,61 @@ pnpm build                 # алиас build:frontend
 
 ### frontend — `apps/frontend`
 
-- Next.js 16.3, static export (`output: "export"`), Tailwind v4, shadcn/ui (`base-nova`), `lucide`, `@base-ui/react`, Storybook.
-- Деплой: статика из `apps/frontend/out` на GitHub Pages (`.github/workflows/nextjs.yml`).
-- Алиасы: `@/*` → `apps/frontend/src/*` (см. `apps/frontend/tsconfig.json`, `apps/frontend/components.json`).
-- Тёмная тема only: не добавлять light тему или переключатель.
+- Next.js 16.3, static export (`output: "export"`), Tailwind v4, shadcn/ui (`base-nova`), `lucide`, `@base-ui/react`, Storybook, tRPC (`@trpc/client`, `@trpc/tanstack-react-query`, `@tanstack/react-query`, `superjson`).
+- Деплой: Docker-образ `static-web-server` из `apps/frontend/out` через Dokploy (не GitHub Pages).
+- Env (build-args, запекаются в static export): `NEXT_PUBLIC_SITE_URL` (дефолт `https://letnull19a.github.io/my-website`), `NEXT_PUBLIC_API_URL` (дефолт `http://localhost:4000`). Меняются пересборкой образа.
+- tRPC-клиент: `src/lib/trpc/client.ts` (httpBatchLink → `/api/v1/trpc` + superjson), `src/lib/trpc/provider.tsx` (QueryClient), секции `articles`/`cases` используют `useQuery` с фолбэком на `src/config/` моки.
+- Алиасы: `@/*` → `apps/frontend/src/*`.
+- Тёмная тема only.
 - Подробнее: [`apps/frontend/AGENTS.md`](apps/frontend/AGENTS.md)
 
 ### backend — `apps/backend`
 
-- NestJS 12 (TypeScript) + Swagger (`@nestjs/swagger`), мок-данные из `data/db.json` без БД.
-- Данные: `apps/backend/data/db.json` (`articles`, `cases` по `docs/api-data-spec.md`).
-- Порт: `4000`, host `0.0.0.0`, health: `GET /health`, `GET /api/v1/articles` → `{ items: [] }`, Swagger: `GET /api/docs`.
-- API prefix: `/api/v1` — реализован (`@Controller('api/v1/...')` + алиасы `/articles`, `/cases`), Swagger подключён в `src/main.ts`.
+- NestJS 12 Fastify (`@nestjs/platform-fastify`, `@fastify/cors`), tRPC (`@trpc/server` + `fastifyTRPCPlugin`) — без Swagger, без REST-эндпоинтов articles/cases.
+- Данные: `apps/backend/data/db.json` (через `DbService` → `DataSources`).
+- Порт: `4000`, host `0.0.0.0`, health: `GET /health`, `GET /api/health`, `GET /api/v1/health`; tRPC: `POST /api/v1/trpc/*` и `/trpc/*`.
+- Контракт — код: `packages/schemas` (zod) + `packages/api` (AppRouter).
 - Подробнее: [`apps/backend/AGENTS.md`](apps/backend/AGENTS.md)
+
+### packages — шареные пакеты
+
+- `@my-website/schemas`: zod-схемы `Article`, `Case`, `Health` + `z.infer` типы + `DataSources` интерфейсы. Зависимость только от `zod`.
+- `@my-website/api`: tRPC-роутеры `articles`, `cases`, `health` + `appRouter`/`AppRouter`. Зависит от `schemas`, `@trpc/server`, `superjson`.
 
 ## Docker
 
-Каждый сервис имеет свой Dockerfile и собирается **из контекста своего приложения** — приложение не знает о монорепозитории:
+Сборка **из контекста корня монорепозитория** (чтобы видеть `packages/`):
 
 ```bash
-docker build -t my-website-frontend ./apps/frontend
-docker build -t my-website-backend ./apps/backend
-# альтернативно с явным -f:
-# docker build -f apps/frontend/Dockerfile -t my-website-frontend ./apps/frontend
-# docker build -f apps/backend/Dockerfile -t my-website-backend ./apps/backend
+docker build -f apps/frontend/Dockerfile -t my-website-frontend .
+docker build -f apps/backend/Dockerfile -t my-website-backend . \
+  --build-arg NEXT_PUBLIC_API_URL=https://api.example.com \
+  --build-arg NEXT_PUBLIC_SITE_URL=https://example.com
 
 docker run -p 3000:3000 my-website-frontend
 docker run -p 4000:4000 my-website-backend
 ```
 
-- Frontend: multi-stage, `static-web-server` раздаёт `/app` (`out` + `public`).
-- Backend: `node:24-alpine`, `node dist/main.js` (NestJS, Swagger на `/api/docs`).
-- Контекст сборки — директория приложения (`./apps/frontend` или `./apps/backend`), а не корень монорепозитория.
+- Frontend: `static-web-server` раздаёт `/app` (`out` + `public`), build-args запекаются в бандл.
+- Backend: `node:24-alpine`, `node dist/main.js` (Fastify, tRPC).
+- Контекст — корень монорепозитория (не `./apps/frontend`).
 
 ## API contract
 
-- Префикс: `/api/v1` (не `api/v1` без слэша).
-- Спека: `docs/api-data-spec.md` — источник правды для `Article`/`Case`.
-- Инфраструктурный агент **не** проектирует эндпоинты и не добавляет кастомные middleware — только каркас.
+- Префикс tRPC: `/api/v1/trpc` (алиас `/trpc`).
+- Источник правды: `packages/schemas` (zod-схемы) + `packages/api` (AppRouter). `docs/api-data-spec.md` deprecated.
+- Валидация: zod (в процедурах), типы — `z.infer`. Код и есть документация.
 
 ## Границы ответственности
 
-- Инфраструктурный агент (текущий): структура монорепозитория, workspace, Docker, CI пути, мок `db.json`, AGENTS разделение — **завершён, backend теперь NestJS + Swagger**.
-- API-агент: расширение Nest модулей (`articles`, `cases`), добавление пагинации/фильтров/валидации, интеграция фронта (базовые эндпоинты уже реализованы).
-- Frontend-агент: компоненты `src/components/ui/`, утилиты `src/lib/utils.ts`, Storybook, стили.
+- Инфраструктурный агент: монорепозиторий, workspace, Docker (root-context), шареные пакеты — **завершён**.
+- API — через tRPC (`packages/api`), Fastify, без Swagger.
+- Frontend-агент: компоненты, tRPC-интеграция секций, стили.
 
 ## Где что искать
 
-- Общие факты монорепозитория — этот файл.
-- Правила Next.js/Tailwind/shadcn — `apps/frontend/AGENTS.md`.
-- Правила NestJS/Swagger/моков/Docker — `apps/backend/AGENTS.md`.
-- Дизайн: `docs/design/*.pen`
+- Контракт: `packages/schemas/src/`, `packages/api/src/`
+- Моки: `apps/backend/data/db.json`
+- Nest entry: `apps/backend/src/main.ts` (Fastify + fastifyTRPCPlugin)
+- Frontend клиент: `apps/frontend/src/lib/trpc/`
+- Общие правила: `AGENTS.md` в корне

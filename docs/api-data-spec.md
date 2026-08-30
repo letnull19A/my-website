@@ -1,5 +1,7 @@
 # API Data Spec — Articles & Cases
 
+> **DEPRECATED** — контракт теперь в коде: `packages/schemas` (zod-схемы + `z.infer` типы) и `packages/api` (tRPC `AppRouter`). Этот документ — исторический референс для `data/db.json`.
+
 Данные приходят с бэка в JSON. Фронт рендерит карточки (листинги) и детальные страницы.
 
 Все slug — только `a-z`, `0-9`, `-`. Уникальны глобально.

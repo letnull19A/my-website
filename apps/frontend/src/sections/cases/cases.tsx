@@ -2,10 +2,32 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { CaseCard, CaseCardProps } from '@/components/case-card';
 import { buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
-import { cases as siteCases } from '@/config/cases';
+import { cases as fallbackCases } from '@/config/cases';
+import { trpcClient } from '@/lib/trpc/client';
+import type { Case } from '@my-website/schemas';
+
+function mapCaseToCard(c: Case): CaseCardProps {
+  return {
+    slug: c.slug,
+    title: c.title,
+    role: c.role,
+    description: c.description,
+    fullTitle: c.fullTitle,
+    subtitle: c.subtitle,
+    logo: c.logo,
+    actions: c.actions,
+    meta: c.meta,
+    problem: c.problem,
+    solution: c.solution,
+    results: c.results,
+    previewImageSrc: c.previewImageSrc ?? undefined,
+    previewCaption: c.previewCaption ?? undefined,
+  };
+}
 
 export interface CasesSectionProps {
   title?: string;
@@ -17,9 +39,17 @@ export interface CasesSectionProps {
 export const CasesSection: React.FC<CasesSectionProps> = ({
   title = 'SELECTED WORK.',
   viewAllHref = '/cases',
-  cases = siteCases,
+  cases: propCases,
   className = '',
 }) => {
+  const { data } = useQuery({
+    queryKey: ['trpc', 'cases', 'list'],
+    queryFn: () => trpcClient.cases.list.query(),
+    staleTime: 30_000,
+  });
+
+  const cases = propCases ?? (data?.items ? data.items.map(mapCaseToCard) : fallbackCases);
+
   return (
     <section
       id="cases"
@@ -45,7 +75,7 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {cases.map((card) => (
-            <CaseCard key={card.title} {...card} />
+            <CaseCard key={card.slug ?? card.title} {...card} />
           ))}
         </div>
 

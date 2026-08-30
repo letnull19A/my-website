@@ -9,6 +9,7 @@ import {
 import "./globals.css";
 import "@/styles/main.scss";
 import { CookieBanner } from "@/components/cookie-banner";
+import { TRPCProvider } from "@/lib/trpc/provider";
 
 const ptMono = PT_Mono({
   variable: "--font-sans",
@@ -109,7 +110,7 @@ export default function RootLayout({
             }),
           }}
         />
-        {children}
+        <TRPCProvider>{children}</TRPCProvider>
         <CookieBanner />
       </body>
     </html>
