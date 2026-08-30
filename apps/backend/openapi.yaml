@@ -1,0 +1,325 @@
+openapi: 3.0.3
+info:
+  title: My Website API
+  description: |
+    Mock API for portfolio site — articles & cases.
+    Source of truth: `docs/api-data-spec.md`.
+    Backend: Node.js + json-server. Prefix `/api/v1` is reserved and rewritten via `routes.json` (`/api/v1/* -> /*`).
+    Swagger UI: `/api/docs`, `/docs`. Spec: `/api/openapi.json`, `/api/openapi.yaml`.
+  version: 1.0.0
+  contact:
+    name: Portfolio API
+servers:
+  - url: http://localhost:4000/api/v1
+    description: Local dev with prefix (recommended)
+  - url: http://localhost:4000
+    description: Direct without prefix (json-server root)
+tags:
+  - name: articles
+    description: Articles — markdown content, cover, share links
+  - name: cases
+    description: Cases — portfolio works (BIMAR, SPEKA etc.)
+  - name: meta
+    description: Service meta
+paths:
+  /articles:
+    get:
+      tags: [articles]
+      summary: List articles
+      operationId: listArticles
+      responses:
+        '200':
+          description: Array of articles (json-server) — proposed wrapper `{ items: Article[] }` also documented
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Article'
+                  - $ref: '#/components/schemas/ArticleListWrapper'
+              examples:
+                array:
+                  value:
+                    - slug: ui-syntax-and-styleguide
+                      title: UI DESIGN SYSTEM & MARKDOWN SYNTAX DEMO
+                      description: Complete showcase of all typography...
+                      subtitle: A reference specification demonstrating headers...
+                      date: '2026-08-10'
+                      readTime: 4 MIN READ
+                      category: DESIGN SYSTEM // SPEC
+                      content: '# 1. Main Section Heading ...'
+                      coverImage: null
+                      linkedinHref: https://www.linkedin.com/in/your-profile/
+                      telegramHref: https://t.me/your_channel
+                wrapper:
+                  value:
+                    items:
+                      - slug: ui-syntax-and-styleguide
+                        title: UI DESIGN SYSTEM & MARKDOWN SYNTAX DEMO
+                        description: Complete showcase...
+                        subtitle: A reference specification...
+                        date: '2026-08-10'
+                        readTime: 4 MIN READ
+                        category: DESIGN SYSTEM // SPEC
+                        content: '# 1. Main ...'
+                        coverImage: null
+  /articles/{slug}:
+    get:
+      tags: [articles]
+      summary: Get article by slug
+      operationId: getArticleBySlug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9-]+$'
+          example: ui-syntax-and-styleguide
+      responses:
+        '200':
+          description: Article found — wrapper `{ item: Article }` proposed, direct object also supported for mock
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Article'
+                  - $ref: '#/components/schemas/ArticleItemWrapper'
+        '404':
+          description: Article not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /cases:
+    get:
+      tags: [cases]
+      summary: List cases
+      operationId: listCases
+      responses:
+        '200':
+          description: Array of cases — proposed wrapper `{ items: Case[] }`
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Case'
+                  - $ref: '#/components/schemas/CaseListWrapper'
+  /cases/{slug}:
+    get:
+      tags: [cases]
+      summary: Get case by slug
+      operationId: getCaseBySlug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[a-z0-9-]+$'
+          example: speka
+      responses:
+        '200':
+          description: Case found
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Case'
+                  - $ref: '#/components/schemas/CaseItemWrapper'
+        '404':
+          description: Case not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /health:
+    get:
+      tags: [meta]
+      summary: Health check
+      operationId: health
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  uptime:
+                    type: number
+components:
+  schemas:
+    Article:
+      type: object
+      required: [slug, title, description, subtitle, date, readTime, category, content]
+      properties:
+        slug:
+          type: string
+          pattern: '^[a-z0-9-]+$'
+          example: ui-syntax-and-styleguide
+        title:
+          type: string
+          example: UI DESIGN SYSTEM & MARKDOWN SYNTAX DEMO
+        description:
+          type: string
+          example: Complete showcase of all typography, lists, code blocks...
+        subtitle:
+          type: string
+          example: A reference specification demonstrating headers...
+        date:
+          type: string
+          format: date
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+          example: '2026-08-10'
+        readTime:
+          type: string
+          example: 4 MIN READ
+        category:
+          type: string
+          example: DESIGN SYSTEM // SPEC
+        content:
+          type: string
+          description: Markdown + GFM
+          example: "# 1. Main Section Heading\n\nParagraph..."
+        coverImage:
+          type: string
+          nullable: true
+          example: /images/stack-cube-frontend.webp
+        linkedinHref:
+          type: string
+          format: uri
+          nullable: true
+          example: https://www.linkedin.com/in/your-profile/
+        telegramHref:
+          type: string
+          format: uri
+          nullable: true
+          example: https://t.me/your_channel
+    ArticleListWrapper:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Article'
+    ArticleItemWrapper:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/Article'
+    CaseAction:
+      type: object
+      required: [id, label, href]
+      properties:
+        id:
+          type: string
+          example: view
+        label:
+          type: string
+          example: VIEW CASE
+        href:
+          type: string
+          example: /cases/speka
+        variant:
+          type: string
+          enum: [default, lime-light, outline, secondary, ghost]
+          example: lime-light
+          nullable: true
+    CaseMeta:
+      type: object
+      required: [role, duration, status, stack]
+      properties:
+        role:
+          type: string
+          example: FULL-STACK DEVELOPER
+        duration:
+          type: string
+          example: 3 MONTHS
+        status:
+          type: string
+          example: PRODUCTION
+        stack:
+          type: string
+          example: REACT / NEXT.JS / NESTJS / POSTGRESQL
+    Case:
+      type: object
+      required: [slug, title, role, description, fullTitle, subtitle, actions, meta, problem, solution, results, logo]
+      properties:
+        slug:
+          type: string
+          pattern: '^[a-z0-9-]+$'
+          example: speka
+        title:
+          type: string
+          example: SPEKA
+        role:
+          type: string
+          example: FULLSTACK
+        description:
+          type: string
+          example: A client-facing specification editor...
+        fullTitle:
+          type: string
+          example: A CLIENT-FACING SPECIFICATION EDITOR DESIGNED AROUND PROGRESS TRANSPARENCY.
+        subtitle:
+          type: string
+          example: A client-facing specification editor designed around progress transparency...
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseAction'
+        meta:
+          $ref: '#/components/schemas/CaseMeta'
+        problem:
+          type: string
+          example: Lorem ipsum dolor sit amet...
+        solution:
+          type: string
+          example: Lorem ipsum dolor sit amet...
+        results:
+          type: string
+          example: Lorem ipsum dolor sit amet...
+        logo:
+          type: string
+          example: /icons/speka-logo.svg
+        previewImage:
+          type: string
+          nullable: true
+          example: /images/process-step-1.webp
+        previewCaption:
+          type: string
+          nullable: true
+          example: FIGMA/DEV-001 // Speka Interactive workspace matrix
+    CaseListWrapper:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Case'
+    CaseItemWrapper:
+      type: object
+      required: [item]
+      properties:
+        item:
+          $ref: '#/components/schemas/Case'
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          example: Not found
+        status:
+          type: integer
+          example: 404

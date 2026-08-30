@@ -14,11 +14,11 @@ my-website/
 │   │   ├── Dockerfile
 │   │   ├── package.json     # name: frontend
 │   │   └── AGENTS.md        # детальные правила frontend
-│   └── backend/             # Node.js + json-server
+│   └── backend/             # NestJS 12 (TypeScript) + Swagger
+│       ├── src/             # Nest modules (articles, cases, health)
 │       ├── data/db.json     # мок-данные (articles, cases)
-│       ├── routes.json      # маппинг /api/v1/* -> /*
-│       ├── server.js        # запуск json-server с поддержкой /api/v1
-│       ├── Dockerfile
+│       ├── openapi.yaml     # статический OpenAPI (референс)
+│       ├── Dockerfile       # multi-stage: nest build → node dist/main
 │       ├── package.json     # name: backend
 │       └── AGENTS.md        # детальные правила backend
 ├── docs/
@@ -43,7 +43,7 @@ my-website/
 ```bash
 pnpm install              # установить зависимости всех workspace
 pnpm dev:frontend          # Next.js dev server (http://localhost:3000)
-pnpm dev:backend           # json-server на http://localhost:4000
+pnpm dev:backend           # NestJS dev (http://localhost:4000, watch)
 pnpm build:frontend        # pnpm --filter frontend build -> apps/frontend/out
 pnpm lint:frontend         # pnpm --filter frontend lint
 pnpm build                 # алиас build:frontend
@@ -61,10 +61,10 @@ pnpm build                 # алиас build:frontend
 
 ### backend — `apps/backend`
 
-- Чистый Node.js + `json-server` (мок-данные, без реальной БД).
+- NestJS 12 (TypeScript) + Swagger (`@nestjs/swagger`), мок-данные из `data/db.json` без БД.
 - Данные: `apps/backend/data/db.json` (`articles`, `cases` по `docs/api-data-spec.md`).
-- Порт: `4000`, host `0.0.0.0`, health: `GET /` или `GET /api/v1/articles`.
-- Будущий API prefix: `/api/v1` — зарезервирован, но **не реализуется в этой задаче**. Проектирование и реализация API — отдельная задача другого агента (`routes.json` уже маппит `/api/v1/*` → `/*` для совместимости).
+- Порт: `4000`, host `0.0.0.0`, health: `GET /health`, `GET /api/v1/articles` → `{ items: [] }`, Swagger: `GET /api/docs`.
+- API prefix: `/api/v1` — реализован (`@Controller('api/v1/...')` + алиасы `/articles`, `/cases`), Swagger подключён в `src/main.ts`.
 - Подробнее: [`apps/backend/AGENTS.md`](apps/backend/AGENTS.md)
 
 ## Docker
@@ -83,7 +83,7 @@ docker run -p 4000:4000 my-website-backend
 ```
 
 - Frontend: multi-stage, `static-web-server` раздаёт `/app` (`out` + `public`).
-- Backend: `node:24-alpine`, `node server.js` (json-server + префикс).
+- Backend: `node:24-alpine`, `node dist/main.js` (NestJS, Swagger на `/api/docs`).
 - Контекст сборки — директория приложения (`./apps/frontend` или `./apps/backend`), а не корень монорепозитория.
 
 ## API contract
@@ -94,13 +94,13 @@ docker run -p 4000:4000 my-website-backend
 
 ## Границы ответственности
 
-- Инфраструктурный агент (текущий): структура монорепозитория, workspace, Docker, CI пути, мок `db.json`, AGENTS разделение.
-- API-агент (следующий): модели, эндпоинты `/api/v1/articles`, `/api/v1/cases`, валидация, middleware, интеграция фронта.
+- Инфраструктурный агент (текущий): структура монорепозитория, workspace, Docker, CI пути, мок `db.json`, AGENTS разделение — **завершён, backend теперь NestJS + Swagger**.
+- API-агент: расширение Nest модулей (`articles`, `cases`), добавление пагинации/фильтров/валидации, интеграция фронта (базовые эндпоинты уже реализованы).
 - Frontend-агент: компоненты `src/components/ui/`, утилиты `src/lib/utils.ts`, Storybook, стили.
 
 ## Где что искать
 
 - Общие факты монорепозитория — этот файл.
 - Правила Next.js/Tailwind/shadcn — `apps/frontend/AGENTS.md`.
-- Правила json-server/моков/Docker — `apps/backend/AGENTS.md`.
+- Правила NestJS/Swagger/моков/Docker — `apps/backend/AGENTS.md`.
 - Дизайн: `docs/design/*.pen`

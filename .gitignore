@@ -24,6 +24,8 @@
 
 # production
 /build
+/dist
+/apps/backend/dist
 
 # misc
 .DS_Store

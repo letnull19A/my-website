@@ -12,11 +12,11 @@ my-website/
 │   │   ├── public/
 │   │   ├── Dockerfile
 │   │   └── AGENTS.md
-│   └── backend/         # Node.js + json-server — мок API
+│   └── backend/         # NestJS 12 + Swagger — мок API (TypeScript)
+│       ├── src/         # articles, cases, health modules
 │       ├── data/db.json
-│       ├── routes.json  # /api/v1/* -> /*
-│       ├── server.js
-│       ├── Dockerfile
+│       ├── openapi.yaml # static OpenAPI (референс)
+│       ├── Dockerfile   # multi-stage: nest build → node dist/main
 │       └── AGENTS.md
 ├── docs/api-data-spec.md
 ├── pnpm-workspace.yaml  # packages: ["apps/*"]
@@ -33,12 +33,13 @@ my-website/
 ```bash
 pnpm install              # установить все workspace-зависимости
 pnpm dev:frontend          # Next.js dev → http://localhost:3000
-pnpm dev:backend           # json-server → http://localhost:4000
+pnpm dev:backend           # NestJS dev (watch) → http://localhost:4000
 pnpm build:frontend        # статический билд → apps/frontend/out
 pnpm lint:frontend         # eslint для фронтенда
+pnpm --filter backend build # nest build → apps/backend/dist
 ```
 
-Изнутри приложения — обычные `pnpm dev / build / lint` внутри `apps/frontend` или `apps/backend`.
+Изнутри приложения — обычные `pnpm dev / build` внутри `apps/frontend` или `apps/backend`.
 
 ## Docker
 
@@ -47,24 +48,21 @@ pnpm lint:frontend         # eslint для фронтенда
 ```bash
 docker build -t my-website-frontend ./apps/frontend
 docker build -t my-website-backend ./apps/backend
-# альтернативно:
-# docker build -f apps/frontend/Dockerfile -t my-website-frontend ./apps/frontend
-# docker build -f apps/backend/Dockerfile -t my-website-backend ./apps/backend
 
 docker run -p 3000:3000 my-website-frontend
 docker run -p 4000:4000 my-website-backend
 ```
 
 - Frontend: multi-stage `node:24-alpine` → `static-web-server` (раздаёт `/app` = `out` + `public`).
-- Backend: `node:24-alpine`, `node server.js` (json-server, `0.0.0.0:4000`).
+- Backend: multi-stage `node:24-alpine` (`pnpm build` → `node dist/main.js`), Swagger на `/api/docs`, данные из `data/db.json`.
 
 ## API
 
 - Спека: [`docs/api-data-spec.md`](docs/api-data-spec.md) — типы `Article` / `Case`, Markdown GFM.
-- Префикс будущего API: `/api/v1` (зарезервирован, не реализован в инфраструктурной задаче).
-- Моки: [`apps/backend/data/db.json`](apps/backend/data/db.json) — коллекции `articles`, `cases`.
-- Реврайт для совместимости: `apps/backend/routes.json` маппит `/api/v1/*` → `/*`.
-- Проектирование и реализация эндпоинтов — отдельная задача следующего агента.
+- Префикс: `/api/v1` — реализован в Nest (`@Controller('api/v1/...')` + алиасы `/articles`, `/cases`).
+- Эндпоинты: `GET /api/v1/articles` → `{ items: [] }`, `GET /api/v1/articles/:slug` → `{ item: {} }` (404 если нет), аналогично `cases`. Health: `GET /health`, `/api/health`.
+- Swagger: `http://localhost:4000/api/docs` (и `/docs`, `/api/v1/docs`), JSON: `/api/openapi.json`, статический `apps/backend/openapi.yaml`.
+- Моки: [`apps/backend/data/db.json`](apps/backend/data/db.json).
 
 ## Deployment
 
@@ -75,4 +73,4 @@ docker run -p 4000:4000 my-website-backend
 
 - Общая маршрутизация: [`AGENTS.md`](AGENTS.md)
 - Frontend: [`apps/frontend/AGENTS.md`](apps/frontend/AGENTS.md)
-- Backend: [`apps/backend/AGENTS.md`](apps/backend/AGENTS.md)
+- Backend: [`apps/backend/AGENTS.md`](apps/backend/AGENTS.md) — NestJS + Swagger
