@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# my-website — pnpm Monorepo
 
-## Getting Started
+Статический сайт-портфолио + мок-API. Два изолированных приложения в одном репозитории.
 
-First, run the development server:
+## Структура
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+my-website/
+├── apps/
+│   ├── frontend/        # Next.js 16.3 — static export (output: "export")
+│   │   ├── src/
+│   │   ├── public/
+│   │   ├── Dockerfile
+│   │   └── AGENTS.md
+│   └── backend/         # Node.js + json-server — мок API
+│       ├── data/db.json
+│       ├── routes.json  # /api/v1/* -> /*
+│       ├── server.js
+│       ├── Dockerfile
+│       └── AGENTS.md
+├── docs/api-data-spec.md
+├── pnpm-workspace.yaml  # packages: ["apps/*"]
+└── AGENTS.md            # entrypoint для агентов
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Требования
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Node.js 24
+- pnpm 11 (`npm install -g pnpm@11`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Команды (из корня)
 
-## Learn More
+```bash
+pnpm install              # установить все workspace-зависимости
+pnpm dev:frontend          # Next.js dev → http://localhost:3000
+pnpm dev:backend           # json-server → http://localhost:4000
+pnpm build:frontend        # статический билд → apps/frontend/out
+pnpm lint:frontend         # eslint для фронтенда
+```
 
-To learn more about Next.js, take a look at the following resources:
+Изнутри приложения — обычные `pnpm dev / build / lint` внутри `apps/frontend` или `apps/backend`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Docker
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Сборка из корня (контекст — корень монорепозитория):
 
-## Deploy on Vercel
+```bash
+docker build -f apps/frontend/Dockerfile -t my-website-frontend .
+docker build -f apps/backend/Dockerfile -t my-website-backend .
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+docker run -p 3000:3000 my-website-frontend
+docker run -p 4000:4000 my-website-backend
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Frontend: multi-stage `node:24-alpine` → `static-web-server` (раздаёт `apps/frontend/out` + `public`).
+- Backend: `node:24-alpine`, `node server.js` (json-server, `0.0.0.0:4000`).
+
+## API
+
+- Спека: [`docs/api-data-spec.md`](docs/api-data-spec.md) — типы `Article` / `Case`, Markdown GFM.
+- Префикс будущего API: `/api/v1` (зарезервирован, не реализован в инфраструктурной задаче).
+- Моки: [`apps/backend/data/db.json`](apps/backend/data/db.json) — коллекции `articles`, `cases`.
+- Реврайт для совместимости: `apps/backend/routes.json` маппит `/api/v1/*` → `/*`.
+- Проектирование и реализация эндпоинтов — отдельная задача следующего агента.
+
+## Deployment
+
+- Frontend: GitHub Pages (`.github/workflows/nextjs.yml` → `apps/frontend/out`).
+- Статический экспорт (`output: "export"`, `images.unoptimized: true`) — серверные фичи Next.js не используются.
+
+## AGENTS
+
+- Общая маршрутизация: [`AGENTS.md`](AGENTS.md)
+- Frontend: [`apps/frontend/AGENTS.md`](apps/frontend/AGENTS.md)
+- Backend: [`apps/backend/AGENTS.md`](apps/backend/AGENTS.md)

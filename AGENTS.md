@@ -1,43 +1,101 @@
-<!-- BEGIN:nextjs-agent-rules -->
+# AGENTS — Monorepo Entrypoint
 
-# This is NOT the Next.js you know
+Этот файл — корневой entrypoint монорепозитория. Общие правила и маршрутизация по приложениям.
+Детальные правила каждого приложения — в его собственном `AGENTS.md`.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
-
-## Project facts
-
-- **Package manager**: pnpm 11 (lockfile: `pnpm-lock.yaml`, pinned as `pnpm@11` in `Dockerfile:6`). Use `pnpm install`, not `npm install`.
-- **Next.js 16.3** — check `node_modules/next/dist/docs/` for API changes.
-- **Deployment**: Static export to GitHub Pages. CI pushes `./out` via `.github/workflows/nextjs.yml`. Do not add server-side features or API routes that require a Node server.
-- **Tailwind v4**: Uses `@tailwindcss/postcss` plugin. There is no `tailwind.config.js` — config lives in CSS via `@theme` directives and in `components.json`.
-- **shadcn/ui**: Config at `components.json`. Style: `base-nova`, RSC + TSX, icons from `lucide`. Add components with `npx shadcn@latest add <component>`.
-- **Path aliases**: `@/*` → `./src/*` (set in `tsconfig.json:22-24` + `components.json:15-21`).
-  - `@/components` → `src/components`, `@/components/ui` → `src/components/ui`, `@/lib` → `src/lib`, `@/lib/utils` → `src/lib/utils.ts`, `@/hooks` → `src/hooks`.
-  - Обращение к компонентам — через `@/components/${componentName}` (например, `import { Button } from "@/components/ui/button"`).
-  - Всегда используй алиас `@/` вместо относительных путей (`../`, `./`). Пример: `import { cn } from "@/lib/utils"` вместо `from "../../lib/utils"`.
-  - Алиас резолвится через `baseUrl: "."` + `paths` в `tsconfig.json`; дополнительной настройки bundler не требуется (Next.js подхватывает автоматически).
-- **Entry points**: `src/app/layout.tsx` (root layout), `src/app/page.tsx` (home), `src/app/about/page.tsx` (about).
-- **UI library**: `@base-ui/react` + `class-variance-authority` for component variants.
-- **Design files**: `docs/design/*.pen` (Penpot references for portfolio/shadcn designs).
-- **Theme**: Dark-only — светлой темы нет. `src/app/globals.css:67-161` defines `:root` and `.dark` with identical dark tokens (`--background: #0C0D0A`, `color-scheme: dark`). Не добавлять светлую тему, переключатель темы или `light` варианты — сайт всегда в тёмной теме.
-
-## Commands
+## Структура монорепозитория
 
 ```
-pnpm dev          # Start dev server (http://localhost:3000)
-pnpm build        # Build static export to ./out
-pnpm start        # Serve production build (not used in Pages deploy)
-pnpm lint         # ESLint (flat config in eslint.config.mjs)
-pnpm storybook    # Storybook on http://localhost:6006
+my-website/
+├── apps/
+│   ├── frontend/            # Next.js 16.3 — статический экспорт
+│   │   ├── src/
+│   │   ├── public/
+│   │   ├── Dockerfile
+│   │   ├── package.json     # name: frontend
+│   │   └── AGENTS.md        # детальные правила frontend
+│   └── backend/             # Node.js + json-server
+│       ├── data/db.json     # мок-данные (articles, cases)
+│       ├── routes.json      # маппинг /api/v1/* -> /*
+│       ├── server.js        # запуск json-server с поддержкой /api/v1
+│       ├── Dockerfile
+│       ├── package.json     # name: backend
+│       └── AGENTS.md        # детальные правила backend
+├── docs/
+│   ├── api-data-spec.md
+│   └── design/*.pen
+├── .github/workflows/nextjs.yml
+├── package.json             # workspace root (private, scripts с фильтрами)
+├── pnpm-workspace.yaml      # packages: ["apps/*"]
+└── AGENTS.md                # ← ты здесь
 ```
 
-## Conventions
+## Package manager
 
-- Components go in `src/components/ui/` (shadcn convention from `components.json`).
-- Shared utilities in `src/lib/utils.ts` (`cn` helper using `clsx` + `tailwind-merge`).
-- ESLint uses flat config (`eslint.config.mjs`) with `eslint-config-next/core-web-vitals` and `eslint-config-next/typescript`.
-- TypeScript: strict mode, no emit, incremental builds (`tsconfig.tsbuildinfo`).
+- **pnpm 11** — единственный пакетный менеджер. Используй `pnpm install`, не `npm install`.
+- Lockfile: `pnpm-lock.yaml` в корне (единый для всех workspace).
+- Workspace объявлен в `pnpm-workspace.yaml:1-2` как `packages: ["apps/*"]`.
+- Установка: `pnpm install --frozen-lockfile`
+- Изолированные команды: `pnpm --filter frontend <script>`, `pnpm --filter backend <script>`
+
+## Корневые команды
+
+```bash
+pnpm install              # установить зависимости всех workspace
+pnpm dev:frontend          # Next.js dev server (http://localhost:3000)
+pnpm dev:backend           # json-server на http://localhost:4000
+pnpm build:frontend        # pnpm --filter frontend build -> apps/frontend/out
+pnpm lint:frontend         # pnpm --filter frontend lint
+pnpm build                 # алиас build:frontend
+```
+
+## Приложения
+
+### frontend — `apps/frontend`
+
+- Next.js 16.3, static export (`output: "export"`), Tailwind v4, shadcn/ui (`base-nova`), `lucide`, `@base-ui/react`, Storybook.
+- Деплой: статика из `apps/frontend/out` на GitHub Pages (`.github/workflows/nextjs.yml`).
+- Алиасы: `@/*` → `apps/frontend/src/*` (см. `apps/frontend/tsconfig.json`, `apps/frontend/components.json`).
+- Тёмная тема only: не добавлять light тему или переключатель.
+- Подробнее: [`apps/frontend/AGENTS.md`](apps/frontend/AGENTS.md)
+
+### backend — `apps/backend`
+
+- Чистый Node.js + `json-server` (мок-данные, без реальной БД).
+- Данные: `apps/backend/data/db.json` (`articles`, `cases` по `docs/api-data-spec.md`).
+- Порт: `4000`, host `0.0.0.0`, health: `GET /` или `GET /api/v1/articles`.
+- Будущий API prefix: `/api/v1` — зарезервирован, но **не реализуется в этой задаче**. Проектирование и реализация API — отдельная задача другого агента (`routes.json` уже маппит `/api/v1/*` → `/*` для совместимости).
+- Подробнее: [`apps/backend/AGENTS.md`](apps/backend/AGENTS.md)
+
+## Docker
+
+Каждый сервис имеет свой Dockerfile, собирается из контекста корня:
+
+```bash
+docker build -f apps/frontend/Dockerfile -t my-website-frontend .
+docker build -f apps/backend/Dockerfile -t my-website-backend .
+docker run -p 3000:3000 my-website-frontend
+docker run -p 4000:4000 my-website-backend
+```
+
+- Frontend: multi-stage, `static-web-server` раздаёт `apps/frontend/out`.
+- Backend: `node:24-alpine`, `node server.js` (json-server + префикс).
+
+## API contract
+
+- Префикс: `/api/v1` (не `api/v1` без слэша).
+- Спека: `docs/api-data-spec.md` — источник правды для `Article`/`Case`.
+- Инфраструктурный агент **не** проектирует эндпоинты и не добавляет кастомные middleware — только каркас.
+
+## Границы ответственности
+
+- Инфраструктурный агент (текущий): структура монорепозитория, workspace, Docker, CI пути, мок `db.json`, AGENTS разделение.
+- API-агент (следующий): модели, эндпоинты `/api/v1/articles`, `/api/v1/cases`, валидация, middleware, интеграция фронта.
+- Frontend-агент: компоненты `src/components/ui/`, утилиты `src/lib/utils.ts`, Storybook, стили.
+
+## Где что искать
+
+- Общие факты монорепозитория — этот файл.
+- Правила Next.js/Tailwind/shadcn — `apps/frontend/AGENTS.md`.
+- Правила json-server/моков/Docker — `apps/backend/AGENTS.md`.
+- Дизайн: `docs/design/*.pen`
