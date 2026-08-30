@@ -46,11 +46,19 @@ ENV NODE_ENV=production
 ENV PORT=4000
 ENV HOST=0.0.0.0
 
-COPY --from=builder /app/apps/backend/dist ./dist
-COPY --from=builder /app/apps/backend/package.json ./package.json
-COPY --from=builder /app/apps/backend/data ./data
-COPY --from=builder /app/node_modules ./node_modules
+# Copy workspace manifests for pnpm prod install in runner (ensures correct pnpm virtual store)
+COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/apps/backend/package.json ./apps/backend/package.json
+# Copy built artifacts
+COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
+COPY --from=builder /app/apps/backend/data ./apps/backend/data
+
+RUN npm install -g pnpm@11 && pnpm install --frozen-lockfile --prod --ignore-scripts 2>&1 | tail -n 20
+
+WORKDIR /app/apps/backend
 
 EXPOSE 4000
 
