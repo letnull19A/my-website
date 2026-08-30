@@ -1,20 +1,14 @@
-FROM node:24-alpine AS base
+FROM node:24-alpine
 
 WORKDIR /app
 
 RUN npm install -g pnpm@11
 
-# Workspace manifests для кеша зависимостей
-COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
-COPY apps/backend/package.json ./apps/backend/package.json
-COPY apps/frontend/package.json ./apps/frontend/package.json
+COPY package.json ./
 
-RUN pnpm install --frozen-lockfile --filter backend --dangerously-allow-all-builds
+RUN pnpm install --dangerously-allow-all-builds
 
-# Копируем исходники backend
-COPY apps/backend ./apps/backend
-
-WORKDIR /app/apps/backend
+COPY . .
 
 ENV NODE_ENV=production
 ENV PORT=4000
