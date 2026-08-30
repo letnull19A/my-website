@@ -2,19 +2,38 @@ FROM node:24-alpine AS builder
 
 WORKDIR /app
 
-RUN npm install -g pnpm@11
+RUN apk add --no-cache git && npm install -g pnpm@11
 
-# Root workspace manifests + lockfile for layer caching
-COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
-COPY packages ./packages
-COPY apps/backend/package.json ./apps/backend/package.json
+# Dokploy may use either repo root or apps/backend as build context.
+# We copy whatever context we get to /tmp/context and detect.
+COPY . /tmp/context
+
+ARG GIT_REPO=https://github.com/letnull19A/my-website.git
+ARG GIT_REF=""
+
+RUN set -e; \
+    if [ -f /tmp/context/pnpm-workspace.yaml ]; then \
+      echo "[builder] Root context detected — using it"; \
+      cp -a /tmp/context/. /app/ 2>/dev/null || cp -a /tmp/context/* /app/ 2>/dev/null || true; \
+    else \
+      if [ -n "$GIT_REF" ]; then \
+        echo "[builder] App context detected — cloning $GIT_REPO branch $GIT_REF"; \
+        rm -rf /tmp/repo && \
+        git clone --depth 1 --branch "$GIT_REF" "$GIT_REPO" /tmp/repo 2>&1 || \
+          (echo "[builder] Branch $GIT_REF not found, cloning default branch" && rm -rf /tmp/repo && git clone --depth 1 "$GIT_REPO" /tmp/repo); \
+      else \
+        echo "[builder] App context detected — cloning $GIT_REPO default branch"; \
+        rm -rf /tmp/repo && git clone --depth 1 "$GIT_REPO" /tmp/repo; \
+      fi; \
+      cp -a /tmp/repo/. /app/ 2>/dev/null || cp -a /tmp/repo/* /app/ 2>/dev/null || true; \
+      echo "[builder] Cloned repo to /app"; \
+      ls -la /app | head -n 20; \
+    fi; \
+    ls -la /app/pnpm-workspace.yaml /app/packages 2>&1 | head -n 20; \
+    test -f /app/pnpm-workspace.yaml || (echo "ERROR: pnpm-workspace.yaml not found. Ensure Docker build context is repository root (docker build -f apps/backend/Dockerfile .) . In Dokploy set Build Context to '.' and Dockerfile to 'apps/backend/Dockerfile'. You can also set GIT_REF build-arg to the branch to clone for app-context fallback." && exit 1)
 
 RUN pnpm install --frozen-lockfile --dangerously-allow-all-builds 2>&1 | tail -n 20
 
-# Copy backend source (+ data)
-COPY apps/backend ./apps/backend
-
-# Build shared packages then backend
 RUN pnpm --filter @my-website/schemas build && \
     pnpm --filter @my-website/api build && \
     pnpm --filter backend build
