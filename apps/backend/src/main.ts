@@ -1,64 +1,50 @@
 import { NestFactory } from '@nestjs/core';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { TrpcService } from './trpc/trpc.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
-  app.enableCors({ origin: true, credentials: true });
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: false,
-      transform: true,
-    }),
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter({ logger: false }),
   );
 
-  const config = new DocumentBuilder()
-    .setTitle('My Website API')
-    .setDescription(
-      'Mock API for portfolio site — articles & cases. Source: `docs/api-data-spec.md`. Prefix `/api/v1`. Swagger at `/api/docs` and `/docs`.',
-    )
-    .setVersion('1.0.0')
-    .addServer('http://localhost:4000', 'Local dev (with /api/v1 prefix)')
-    .addTag('articles', 'Articles — markdown content, cover, share links')
-    .addTag('cases', 'Cases — portfolio works')
-    .addTag('meta', 'Service meta')
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-
-  // Serve swagger at both /api/docs and /docs (and /api/v1/docs for compat)
-  SwaggerModule.setup('api/docs', app, document, {
-    customSiteTitle: 'My Website API — Swagger',
-    swaggerOptions: { persistAuthorization: true },
-  });
-  SwaggerModule.setup('docs', app, document, {
-    customSiteTitle: 'My Website API — Swagger',
-    swaggerOptions: { persistAuthorization: true },
-  });
-  SwaggerModule.setup('api/v1/docs', app, document, {
-    customSiteTitle: 'My Website API — Swagger',
-    swaggerOptions: { persistAuthorization: true },
+  // CORS — @fastify/cors is installed; enable for all origins
+  await app.register(import('@fastify/cors'), {
+    origin: true,
+    credentials: true,
   });
 
-  // Expose OpenAPI JSON/YAML
-  // Nest swagger serves JSON at /api/docs-json, we also expose at /api/openapi.json
-  const httpAdapter = app.getHttpAdapter();
-  httpAdapter.get('/api/openapi.json', (req, res) => res.json(document));
-  httpAdapter.get('/openapi.json', (req, res) => res.json(document));
-  // For YAML, we keep static file fallback if needed, but JSON is enough
-  httpAdapter.get('/api/openapi.yaml', (req, res) =>
-    res.redirect('/api/docs-yaml'),
-  );
+  const trpcService = app.get(TrpcService);
+
+  // Mount tRPC on both prefixes
+  const fastify = app.getHttpAdapter().getInstance();
+  await fastify.register(fastifyTRPCPlugin, {
+    prefix: '/api/v1/trpc',
+    trpcOptions: {
+      router: trpcService.router,
+      createContext: trpcService.createContext,
+      onError: ({ error, path }) => {
+        console.error(`[tRPC] ${path} — ${error.code}: ${error.message}`);
+      },
+    },
+  } as any);
+
+  await fastify.register(fastifyTRPCPlugin, {
+    prefix: '/trpc',
+    trpcOptions: {
+      router: trpcService.router,
+      createContext: trpcService.createContext,
+    },
+  } as any);
 
   const port = Number(process.env.PORT ?? 4000);
   const host = process.env.HOST ?? '0.0.0.0';
   await app.listen(port, host);
-  console.log(`[backend] NestJS listening on http://${host}:${port}`);
-  console.log(`[backend] Swagger UI: http://${host}:${port}/api/docs and /docs`);
-  console.log(`[backend] OpenAPI JSON: http://${host}:${port}/api/openapi.json`);
-  console.log(`[backend] Articles: http://${host}:${port}/api/v1/articles`);
+  console.log(`[backend] NestJS (Fastify) listening on http://${host}:${port}`);
+  console.log(`[backend] tRPC: http://${host}:${port}/api/v1/trpc and /trpc`);
+  console.log(`[backend] health: http://${host}:${port}/health and /api/v1/health`);
 }
+
 bootstrap();

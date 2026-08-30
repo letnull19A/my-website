@@ -1,6 +1,6 @@
-// TODO: Заменить на реальный домен, когда появится. Сейчас используется
-// предсказуемый URL GitHub Pages для репозитория letnull19A/my-website.
-export const SITE_URL = "https://letnull19a.github.io/my-website";
+export const SITE_URL =
+  (process.env.NEXT_PUBLIC_SITE_URL || "").trim() ||
+  "https://letnull19a.github.io/my-website";
 
 export const SITE_TITLE = "Letnull19A — Web Developer Portfolio";
 

@@ -3,15 +3,15 @@
 ## Project facts — backend
 
 - **Workspace package**: `backend` (`apps/backend/package.json`, private). Node.js 24, TypeScript.
-- **Runtime**: **NestJS 12** (TypeScript, `@nestjs/*@11.1.8` — latest stable, заявлен как 12) + `@nestjs/swagger` — вместо чистого `json-server`. Данные остаются моковыми из `data/db.json` без реальной БД.
-- **Package manager**: pnpm 11. Установка через корень: `pnpm install --frozen-lockfile`. Запуск из корня: `pnpm --filter backend <script>` или `pnpm dev:backend`.
+- **Runtime**: **NestJS 12 Fastify** (`@nestjs/platform-fastify`, `@fastify/cors`) + **tRPC** (`@trpc/server` + `fastifyTRPCPlugin`), без Swagger, без REST-эндпоинтов articles/cases. Код — документация.
+- **Package manager**: pnpm 11. Установка через корень: `pnpm install --ignore-scripts` (или `--frozen-lockfile`). Запуск из корня: `pnpm --filter backend <script>` или `pnpm dev:backend`.
 - **Port / Host**: `PORT=4000`, `HOST=0.0.0.0`. Должен слушать на `0.0.0.0` для Docker. Health: `GET /health`, `GET /api/health`, `GET /api/v1/health`.
-- **Data**: `apps/backend/data/db.json` — единственный источник мок-данных. Коллекции: `articles`, `cases` (структура по `docs/api-data-spec.md`). Слаги — `a-z`, `0-9`, `-`, глобально уникальны.
-- **API prefix**: `/api/v1` — реализован как `@Controller('api/v1/...')` (+ алиасы без префикса `/articles`, `/cases` для совместимости с json-server). `routes.json` оставлен для истории, но не используется Nest. Полноценное проектирование уже выполнено: `GET /api/v1/articles`, `GET /api/v1/articles/:slug`, `GET /api/v1/cases`, `GET /api/v1/cases/:slug` с ответами `{ items: [] }` / `{ item: {} }` и 404.
-- **Swagger**: `@nestjs/swagger` + `swagger-ui-express`. UI: `http://localhost:4000/api/docs`, `http://localhost:4000/docs`, `http://localhost:4000/api/v1/docs`. JSON: `/api/openapi.json`, `/openapi.json`. Источник: `src/main.ts` (`DocumentBuilder`) + DTO с `@ApiProperty`; статический `openapi.yaml` дублирует спеке и остаётся в репо как референс (`docs/api-data-spec.md`).
-- **Server entry**: `src/main.ts` — bootstrap NestFactory, `enableCors`, `ValidationPipe`, `SwaggerModule.createDocument/setup`. `src/app.module.ts` импортирует `ArticlesModule`, `CasesModule`, `HealthModule`.
-- **Docker**: `apps/backend/Dockerfile` — multi-stage `node:24-alpine`: builder `pnpm install` → `pnpm build` (`nest build` → `dist/`), затем runner копирует `dist`, `node_modules`, `data`, `openapi.yaml`. Сборка из контекста приложения: `docker build -t my-website-backend ./apps/backend`. Запуск: `docker run -p 4000:4000 my-website-backend` → `node dist/main.js`.
-- **Frontend boundary**: фронтенд (`apps/frontend`) не импортирует код бэкенда напрямую. Связь — только по HTTP (`/api/v1`). Фронт остаётся static export (`output: "export"`).
+- **Data**: `apps/backend/data/db.json` — единственный источник мок-данных. Коллекции: `articles`, `cases` (структура по `packages/schemas`). Слаги — `a-z`, `0-9`, `-`, глобально уникальны.
+- **API**: tRPC — `POST /api/v1/trpc/*` и `/trpc/*` (алиас). Процедуры: `articles.list`, `articles.bySlug`, `cases.list`, `cases.bySlug`, `health.ping`. Контракт — `packages/schemas` (zod) + `packages/api` (AppRouter). Валидация — zod в процедурах, типы — `z.infer`. REST-контроллеры удалены (только `health` REST для совместимости).
+- **Swagger**: удалён. `openapi.yaml`, `routes.json` удалены.
+- **Server entry**: `src/main.ts` — `NestFactory.create<NestFastifyApplication>(new FastifyAdapter())`, `@fastify/cors`, `fastifyTRPCPlugin` на двух префиксах. `src/app.module.ts` импортирует `DbModule`, `TrpcModule`, `HealthModule`. Источники данных — `DbService` → `DataSources` (интерфейсы из `@my-website/schemas`).
+- **Docker**: `apps/backend/Dockerfile` — multi-stage `node:24-alpine`, **контекст — корень монорепозитория** (`docker build -f apps/backend/Dockerfile .`): builder `COPY pnpm-workspace.yaml, packages, apps/backend/package.json → pnpm install → COPY apps/backend → pnpm --filter schemas/api/backend build`, runner копирует `dist`, `node_modules`, `data`, `packages`. Запуск: `docker run -p 4000:4000 my-website-backend` → `node dist/main.js` (Fastify, tRPC).
+- **Frontend boundary**: фронтенд (`apps/frontend`) не импортирует код бэкенда напрямую. Связь — только tRPC по `POST /api/v1/trpc`.
 
 ## Commands
 
@@ -27,44 +27,43 @@ pnpm build  # nest build
 pnpm start  # node dist/main.js
 ```
 
-Swagger после `pnpm dev`:
-- `http://localhost:4000/api/docs` — UI
-- `http://localhost:4000/api/openapi.json` — JSON
-- `http://localhost:4000/api/v1/articles` — пример данных
+tRPC после `pnpm dev`:
+- `POST http://localhost:4000/api/v1/trpc/articles.list` — `{ items: [...] }`
+- `POST http://localhost:4000/api/v1/trpc/articles.bySlug` — input `{ slug }`
+- `GET http://localhost:4000/health` — health
 
 ## Data contract
 
-Источник правды: `docs/api-data-spec.md` + `src/**/dto/*.dto.ts` (декорированы `@ApiProperty`).
+Источник правды: `packages/schemas` (zod-схемы) + `packages/api` (AppRouter). `docs/api-data-spec.md` deprecated.
 
 Минимальный `data/db.json`:
 
 ```json
 {
   "articles": [{ "slug": "...", "title": "...", "description": "...", "subtitle": "...", "date": "2026-08-10", "readTime": "4 MIN READ", "category": "BACKEND // ARCHITECTURE", "content": "...", "coverImage": null }],
-  "cases": [{ "slug": "...", "title": "...", "role": "...", "description": "...", "fullTitle": "...", "subtitle": "...", "actions": [], "meta": { "role": "...", "duration": "...", "status": "...", "stack": "..." }, "problem": "...", "solution": "...", "results": "...", "logo": "/icons/...", "previewImage": null }]
+  "cases": [{ "slug": "...", "title": "...", "role": "...", "description": "...", "fullTitle": "...", "subtitle": "...", "actions": [], "meta": { "role": "...", "duration": "...", "status": "...", "stack": "..." }, "problem": "...", "solution": "...", "results": "...", "logo": "/icons/...", "previewImageSrc": null }]
 }
 ```
 
-- `coverImage`, `previewImage` могут быть `null`.
+- `coverImage`, `previewImageSrc` могут быть `null`.
 - `content` — Markdown + GFM.
-- Ответы: `GET /api/v1/articles` → `{ items: Article[] }`, `GET /api/v1/articles/:slug` → `{ item: Article }` (404 если нет), аналогично cases.
+- Ответы tRPC: `articles.list` → `{ items: Article[] }`, `articles.bySlug` → `{ item: Article }` (NOT_FOUND если нет), аналогично cases.
 
 ## Docker
 
-- Builder: `COPY package.json` → `pnpm install` → `COPY . .` → `pnpm build`.
-- Runner: `COPY dist, node_modules, data, openapi.yaml` → `node dist/main.js`.
-- Контекст — `apps/backend`.
+- Builder (root context): `COPY packages → pnpm install → COPY apps/backend → pnpm --filter schemas/api build → pnpm --filter backend build`.
+- Runner: `COPY dist, node_modules, data, packages` → `node dist/main.js`.
+- Контекст — **корень монорепозитория**: `docker build -f apps/backend/Dockerfile -t my-website-backend .`.
 
 ## Границы ответственности
 
-- Инфраструктурный агент: создал NestJS каркас, DTO, Swagger, `data/db.json`, Dockerfile.
-- Дальнейшая разработка: фильтры, пагинация, валидация `class-validator`, CORS fine-tuning, подключение реальной БД — делается в том же Nest приложении (расширение существующих модулей).
+- Код — документация; Swagger не используется.
+- Дальнейшая разработка: новые процедуры в `packages/api`, новые zod-схемы в `packages/schemas`, расширение `DbService`, подключение реальной БД — через те же модули.
 
 ## Где что искать
 
-- Спека: `docs/api-data-spec.md`
+- Контракт: `packages/schemas/src/`, `packages/api/src/`
 - Моки: `apps/backend/data/db.json`
-- Nest entry: `apps/backend/src/main.ts`
-- Модули: `apps/backend/src/articles/`, `apps/backend/src/cases/`, `apps/backend/src/health/`
-- Статический OpenAPI: `apps/backend/openapi.yaml`
+- Nest entry: `apps/backend/src/main.ts` (Fastify + fastifyTRPCPlugin)
+- Модули: `apps/backend/src/db/`, `apps/backend/src/trpc/`, `apps/backend/src/health/`
 - Общие правила: `AGENTS.md` в корне

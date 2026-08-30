@@ -4,13 +4,20 @@ WORKDIR /app
 
 RUN npm install -g pnpm@11
 
-COPY package.json ./
+# Root workspace manifests + lockfile for layer caching
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY packages ./packages
+COPY apps/backend/package.json ./apps/backend/package.json
 
-RUN pnpm install --dangerously-allow-all-builds
+RUN pnpm install --frozen-lockfile --dangerously-allow-all-builds 2>&1 | tail -n 20
 
-COPY . .
+# Copy backend source (+ data)
+COPY apps/backend ./apps/backend
 
-RUN pnpm build
+# Build shared packages then backend
+RUN pnpm --filter @my-website/schemas build && \
+    pnpm --filter @my-website/api build && \
+    pnpm --filter backend build
 
 FROM node:24-alpine
 
@@ -20,11 +27,11 @@ ENV NODE_ENV=production
 ENV PORT=4000
 ENV HOST=0.0.0.0
 
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/apps/backend/dist ./dist
+COPY --from=builder /app/apps/backend/package.json ./package.json
+COPY --from=builder /app/apps/backend/data ./data
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/data ./data
-COPY --from=builder /app/openapi.yaml ./openapi.yaml
+COPY --from=builder /app/packages ./packages
 
 EXPOSE 4000
 

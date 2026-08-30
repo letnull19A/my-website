@@ -2,10 +2,30 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { ArticleCard, ArticleCardProps } from '@/components/article-card';
 import { buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
-import { articles as siteArticles } from '@/config/articles';
+import { articles as fallbackArticles } from '@/config/articles';
+import { trpcClient } from '@/lib/trpc/client';
+import type { Article } from '@my-website/schemas';
+
+function mapArticleToCard(a: Article): ArticleCardProps {
+  return {
+    slug: a.slug,
+    title: a.title,
+    description: a.description,
+    subtitle: a.subtitle,
+    date: a.date,
+    readTime: a.readTime,
+    category: a.category,
+    content: a.content,
+    coverImage: a.coverImage ?? undefined,
+    linkedinHref: a.linkedinHref ?? undefined,
+    telegramHref: a.telegramHref ?? undefined,
+    readHref: `/articles/${a.slug}`,
+  };
+}
 
 export interface ArticlesSectionProps {
   title?: string;
@@ -17,9 +37,19 @@ export interface ArticlesSectionProps {
 export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
   title = 'ARTICLES.',
   readMoreHref = '/articles',
-  articles = siteArticles,
+  articles: propArticles,
   className = '',
 }) => {
+  const { data } = useQuery({
+    queryKey: ['trpc', 'articles', 'list'],
+    queryFn: () => trpcClient.articles.list.query(),
+    staleTime: 30_000,
+  });
+
+  const articles =
+    propArticles ??
+    (data?.items ? data.items.map(mapArticleToCard) : fallbackArticles);
+
   return (
     <section
       id="articles"
@@ -48,7 +78,7 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 items-stretch">
           {articles.map((article, idx) => (
             <ArticleCard
-              key={`${article.title}-${idx}`}
+              key={`${article.slug ?? article.title}-${idx}`}
               title={article.title}
               description={article.description}
               coverImage={article.coverImage}

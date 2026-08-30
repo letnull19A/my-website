@@ -13,7 +13,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - **Workspace package**: `frontend` (`apps/frontend/package.json`, private). Устанавливается через корень: `pnpm install --frozen-lockfile`.
 - **Package manager**: pnpm 11 (lockfile: `pnpm-lock.yaml` в корне, pinned как `pnpm@11` в `Dockerfile:6`). Внутри `apps/frontend` используй `pnpm --filter frontend <script>` из корня или `pnpm <script>` внутри директории.
 - **Next.js 16.3** — check `node_modules/next/dist/docs/` for API changes.
-- **Deployment**: Static export to GitHub Pages. CI pushes `apps/frontend/out` via `.github/workflows/nextjs.yml` (см. корень). Do not add server-side features or API routes that require a Node server.
+- **Deployment**: Static export (`output: "export"`), Docker-образ `static-web-server` из `apps/frontend/out` через Dokploy. `.github/workflows` удалён. Build-args: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_API_URL` (запекаются в static export, см. `src/lib/site.ts` и `src/lib/trpc/client.ts`).
 - **Tailwind v4**: Uses `@tailwindcss/postcss` plugin. There is no `tailwind.config.js` — config lives in CSS via `@theme` directives and in `components.json`.
 - **shadcn/ui**: Config at `apps/frontend/components.json`. Style: `base-nova`, RSC + TSX, icons from `lucide`. Add components with `pnpm --filter frontend dlx shadcn@latest add <component>` или `npx shadcn@latest add <component>` внутри `apps/frontend`.
 - **Path aliases**: `@/*` → `apps/frontend/src/*` (set in `apps/frontend/tsconfig.json:22-24` + `apps/frontend/components.json:15-21`).
@@ -30,9 +30,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 - Код фронтенда живёт **только** в `apps/frontend/`. Импорты `@/` резолвятся внутри этого пакета, а не из корня.
 - `next.config.ts:sassOptions.includePaths` указывает на `["./src/styles", "./src"]` относительно `apps/frontend/`.
-- Статический билд: `pnpm --filter frontend build` → `apps/frontend/out`. Локально: `pnpm dev:frontend` из корня или `pnpm dev` внутри `apps/frontend`.
-- Docker: `docker build -t my-website-frontend ./apps/frontend` (контекст — `apps/frontend`, приложение не знает о монорепозитории; Dockerfile копирует только `package.json` → `pnpm install` → `COPY . .` → `out`/`public`).
-- Backend: не импортировать напрямую `apps/backend` в frontend-коде. Взаимодействие — только через HTTP API `/api/v1` (будет реализовано другим агентом).
+- Статический билд: `pnpm --filter frontend build` → `apps/frontend/out`. Локально: `pnpm dev:frontend` из корня или `pnpm dev` внутри `apps/frontend`. Env: `NEXT_PUBLIC_SITE_URL` (дефолт `https://letnull19a.github.io/my-website`), `NEXT_PUBLIC_API_URL` (дефолт `http://localhost:4000`) — см. `src/lib/site.ts`.
+- Docker: **контекст — корень монорепозитория** (`docker build -f apps/frontend/Dockerfile -t my-website-frontend .`). Builder копирует `packages/` и `apps/frontend/package.json` → `pnpm install` → `pnpm --filter schemas/api build && pnpm --filter frontend build`.
+- Backend: не импортировать напрямую `apps/backend` в frontend-коде. Взаимодействие — только tRPC (`@trpc/client` → `POST /api/v1/trpc` + superjson) через `src/lib/trpc/`.
 
 ## Commands
 
@@ -59,6 +59,6 @@ pnpm lint:frontend
 
 ## API
 
-- Спецификация: `docs/api-data-spec.md` в корне.
-- Будущие эндпоинты: `/api/v1/articles`, `/api/v1/cases` — будут обслуживаться из `apps/backend`. До их реализации фронт использует локальные моки в `src/config/`.
-- Не реализовывать API-клиент с префиксом `/api/v1` в этой задаче сверх необходимого — это ответственность API-агента.
+- Источник правды: `packages/schemas` (zod) + `packages/api` (AppRouter). `docs/api-data-spec.md` deprecated.
+- tRPC-клиент: `src/lib/trpc/client.ts` (`httpBatchLink` → `/api/v1/trpc`, superjson), `src/lib/trpc/provider.tsx` (QueryClient). Секции `articles`/`cases` используют `useQuery` с фолбэком на `src/config/` моки (static export остаётся рабочим без бэкенда в рантайме).
+- Build-args запекаются в static export: `NEXT_PUBLIC_SITE_URL` (`src/lib/site.ts`), `NEXT_PUBLIC_API_URL` (`src/lib/trpc/client.ts`).
