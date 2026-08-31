@@ -18,10 +18,9 @@ async function bootstrap() {
 
   const trpcService = app.get(TrpcService);
 
-  // Mount tRPC on both prefixes
   const fastify = app.getHttpAdapter().getInstance();
   await fastify.register(fastifyTRPCPlugin, {
-    prefix: '/api/v1/trpc',
+    prefix: '/trpc',
     trpcOptions: {
       router: trpcService.router,
       createContext: trpcService.createContext,
@@ -31,19 +30,11 @@ async function bootstrap() {
     },
   } as any);
 
-  await fastify.register(fastifyTRPCPlugin, {
-    prefix: '/trpc',
-    trpcOptions: {
-      router: trpcService.router,
-      createContext: trpcService.createContext,
-    },
-  } as any);
-
   const port = Number(process.env.PORT ?? 4000);
   const host = process.env.HOST ?? '0.0.0.0';
   await app.listen(port, host);
   console.log(`[backend] NestJS (Fastify) listening on http://${host}:${port}`);
-  console.log(`[backend] tRPC: http://${host}:${port}/api/v1/trpc and /trpc`);
+  console.log(`[backend] tRPC: http://${host}:${port}/trpc`);
   console.log(`[backend] health: http://${host}:${port}/health and /api/v1/health`);
 }
 

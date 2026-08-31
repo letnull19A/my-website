@@ -32,7 +32,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - `next.config.ts:sassOptions.includePaths` указывает на `["./src/styles", "./src"]` относительно `apps/frontend/`.
 - Статический билд: `pnpm --filter frontend build` → `apps/frontend/out`. Локально: `pnpm dev:frontend` из корня или `pnpm dev` внутри `apps/frontend`. Env: `NEXT_PUBLIC_SITE_URL` (дефолт `https://letnull19a.github.io/my-website`), `NEXT_PUBLIC_API_URL` (дефолт `http://localhost:4000`) — см. `src/lib/site.ts`.
 - Docker: **контекст — корень монорепозитория** (`docker build -f apps/frontend/Dockerfile -t my-website-frontend .`). Builder копирует `packages/` и `apps/frontend/package.json` → `pnpm install` → `pnpm --filter schemas/api build && pnpm --filter frontend build`.
-- Backend: не импортировать напрямую `apps/backend` в frontend-коде. Взаимодействие — только tRPC (`@trpc/client` → `POST /api/v1/trpc` + superjson) через `src/lib/trpc/`.
+- Backend: не импортировать напрямую `apps/backend` в frontend-коде. Взаимодействие — только tRPC (`@trpc/client` → `POST /trpc` + superjson) через `src/lib/trpc/`.
 
 ## Commands
 
@@ -60,5 +60,5 @@ pnpm lint:frontend
 ## API
 
 - Источник правды: `packages/schemas` (zod) + `packages/api` (AppRouter). `docs/api-data-spec.md` deprecated.
-- tRPC-клиент: `src/lib/trpc/client.ts` (`httpBatchLink` → `/api/v1/trpc`, superjson), `src/lib/trpc/provider.tsx` (QueryClient). Секции `articles`/`cases` используют `useQuery` с фолбэком на `src/config/` моки (static export остаётся рабочим без бэкенда в рантайме).
+- tRPC-клиент: `src/lib/trpc/client.ts` (`httpBatchLink` → `/trpc`, superjson), `src/lib/trpc/provider.tsx` (QueryClient). Секции `articles`/`cases` используют `useQuery` с фолбэком на `src/config/` моки (static export остаётся рабочим без бэкенда в рантайме).
 - Build-args запекаются в static export: `NEXT_PUBLIC_SITE_URL` (`src/lib/site.ts`), `NEXT_PUBLIC_API_URL` (`src/lib/trpc/client.ts`).
