@@ -1,18 +1,15 @@
 import { z } from 'zod';
+import { SlugSchema } from './slug';
 
-export const CaseActionVariantSchema = z.enum([
-  'default',
-  'lime-light',
-  'outline',
-  'secondary',
-  'ghost',
-]);
+export const CaseActionEmphasisSchema = z.enum(['primary', 'secondary']);
+
+export type CaseActionEmphasis = z.infer<typeof CaseActionEmphasisSchema>;
 
 export const CaseActionSchema = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
   href: z.string().min(1),
-  variant: CaseActionVariantSchema.optional(),
+  emphasis: CaseActionEmphasisSchema.optional(),
 });
 
 export type CaseAction = z.infer<typeof CaseActionSchema>;
@@ -27,7 +24,7 @@ export const CaseMetaSchema = z.object({
 export type CaseMeta = z.infer<typeof CaseMetaSchema>;
 
 export const CaseSchema = z.object({
-  slug: z.string().regex(/^[a-z0-9-]+$/),
+  slug: SlugSchema,
   title: z.string().min(1),
   role: z.string().min(1),
   description: z.string().min(1),
@@ -39,16 +36,8 @@ export const CaseSchema = z.object({
   solution: z.string().min(1),
   results: z.string().min(1),
   logo: z.string().min(1),
-  previewImageSrc: z.string().nullable().optional(),
-  previewCaption: z.string().nullable().optional(),
+  previewImageSrc: z.string().nullish(),
+  previewCaption: z.string().nullish(),
 });
 
 export type Case = z.infer<typeof CaseSchema>;
-
-export const CaseListResponseSchema = z.object({
-  items: z.array(CaseSchema),
-});
-
-export const CaseItemResponseSchema = z.object({
-  item: CaseSchema,
-});

@@ -1,7 +1,8 @@
 import { z } from 'zod';
+import { SlugSchema } from './slug';
 
 export const ArticleSchema = z.object({
-  slug: z.string().regex(/^[a-z0-9-]+$/, 'slug must match ^[a-z0-9-]+$'),
+  slug: SlugSchema,
   title: z.string().min(1),
   description: z.string().min(1),
   subtitle: z.string().min(1),
@@ -9,17 +10,9 @@ export const ArticleSchema = z.object({
   readTime: z.string().min(1),
   category: z.string().min(1),
   content: z.string().min(1),
-  coverImage: z.string().nullable(),
-  linkedinHref: z.string().nullable().optional(),
-  telegramHref: z.string().nullable().optional(),
+  coverImage: z.string().nullish(),
+  linkedinHref: z.string().nullish(),
+  telegramHref: z.string().nullish(),
 });
 
 export type Article = z.infer<typeof ArticleSchema>;
-
-export const ArticleListResponseSchema = z.object({
-  items: z.array(ArticleSchema),
-});
-
-export const ArticleItemResponseSchema = z.object({
-  item: ArticleSchema,
-});
