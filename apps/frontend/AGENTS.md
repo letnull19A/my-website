@@ -7,6 +7,20 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+<!-- intent-skills:start -->
+# TanStack Intent - before editing files, run the matching guidance command.
+# Frontend tRPC skills — клиент, линки, React Query
+tanstackIntent:
+  - id: "@trpc/client#client-setup"
+    run: "pnpm dlx @tanstack/intent@latest load @trpc/client#client-setup"
+    for: "Create a vanilla tRPC client with createTRPCClient<AppRouter>(), configure link chain with httpBatchLink/httpLink, dynamic headers for auth, transformer on links (not client constructor). Infer types with inferRouterInputs and inferRouterOutputs. AbortController signal support. TRPCClientError typing."
+  - id: "@trpc/client#links"
+    run: "pnpm dlx @tanstack/intent@latest load @trpc/client#links"
+    for: "Configure the tRPC client link chain: httpLink, httpBatchLink, httpBatchStreamLink, splitLink, loggerLink, wsLink, createWSClient, httpSubscriptionLink, unstable_localLink, retryLink. Choose the right terminating link. Route subscriptions via splitLink. Build custom links for SOA routing. Link options: url, headers, transformer, maxURLLength, maxItems, connectionParams, EventSource ponyfill."
+  - id: "@trpc/tanstack-react-query#react-query-setup"
+    run: "pnpm dlx @tanstack/intent@latest load @trpc/tanstack-react-query#react-query-setup"
+    for: "Set up @trpc/tanstack-react-query with createTRPCContext(), TRPCProvider, useTRPC() hook, queryOptions/mutationOptions factories, query invalidation via queryClient.invalidateQueries with queryFilter, and type inference with inferInput/inferOutput."
+<!-- intent-skills:end -->
 
 ## Project facts — frontend
 
