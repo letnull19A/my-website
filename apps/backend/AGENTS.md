@@ -1,3 +1,24 @@
+<!-- intent-skills:start -->
+# TanStack Intent - before editing files, run the matching guidance command.
+# Backend tRPC skills — Fastify adapter, middleware, ошибки, auth
+tanstackIntent:
+  - id: "@trpc/server#adapter-fastify"
+    run: "pnpm dlx @tanstack/intent@latest load @trpc/server#adapter-fastify"
+    for: "Mount tRPC as a Fastify plugin with fastifyTRPCPlugin from @trpc/server/adapters/fastify. Configure prefix, trpcOptions (router, createContext, onError). Enable WebSocket subscriptions with useWSS and @fastify/websocket. Set routerOptions.maxParamLength for batch requests. Requires Fastify v5+. FastifyTRPCPluginOptions for type-safe onError. CreateFastifyContextOptions provides req, res."
+  - id: "@trpc/server#middlewares"
+    run: "pnpm dlx @tanstack/intent@latest load @trpc/server#middlewares"
+    for: "Create and compose tRPC middleware with t.procedure.use(), extend context via opts.next({ ctx }), build reusable middleware with .concat() and .unstable_pipe(), define base procedures like publicProcedure and authedProcedure. Access raw input with getRawInput(). Logging, timing, OTEL tracing patterns."
+  - id: "@trpc/server#error-handling"
+    run: "pnpm dlx @tanstack/intent@latest load @trpc/server#error-handling"
+    for: "Throw typed errors with TRPCError and error codes (NOT_FOUND, UNAUTHORIZED, BAD_REQUEST, INTERNAL_SERVER_ERROR), configure errorFormatter for client-side Zod error display, handle errors globally with onError callback, map tRPC errors to HTTP status codes with getHTTPStatusCodeFromError()."
+  - id: "@trpc/server#auth"
+    run: "pnpm dlx @tanstack/intent@latest load @trpc/server#auth"
+    for: "Implement JWT/cookie authentication and authorization in tRPC using createContext for user extraction, t.middleware with opts.next({ ctx }) for context narrowing to non-null user, protectedProcedure base pattern, client-side Authorization headers via httpBatchLink headers(), WebSocket connectionParams, and SSE auth via cookies or EventSource polyfill custom headers."
+  - id: "@trpc/server#caching"
+    run: "pnpm dlx @tanstack/intent@latest load @trpc/server#caching"
+    for: "Set HTTP cache headers on tRPC query responses via responseMeta callback for CDN and browser caching. Configure Cache-Control, s-maxage, stale-while-revalidate. Handle caching with batching and authenticated requests. Avoid caching mutations, errors, and authenticated responses."
+<!-- intent-skills:end -->
+
 # Backend — AGENTS
 
 ## Project facts — backend
