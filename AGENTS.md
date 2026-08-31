@@ -1,12 +1,19 @@
 <!-- intent-skills:start -->
-## Skill Loading
-
-Before editing files for a substantial task:
-- Run `pnpm dlx @tanstack/intent@latest list` from the workspace root to see available local skills.
-- If a listed skill matches the task, run `pnpm dlx @tanstack/intent@latest load <package>#<skill>` before changing files.
-- Use the loaded `SKILL.md` guidance while making the change.
-- Monorepos: when working across packages, run the skill check from the workspace root and prefer the local skill for the package being changed.
-- Multiple matches: prefer the most specific local skill for the package or concern you are changing; load additional skills only when the task spans multiple packages or concerns.
+# TanStack Intent - before editing files, run the matching guidance command.
+# Shared tRPC skills (root) — контракт и трансформер, общие для frontend/backend
+tanstackIntent:
+  - id: "@trpc/server#server-setup"
+    run: "pnpm dlx @tanstack/intent@latest load @trpc/server#server-setup"
+    for: "Initialize tRPC with initTRPC.create(), define routers with t.router(), create procedures with .query()/.mutation()/.subscription(), configure context with createContext(), export AppRouter type, merge routers with t.mergeRouters(), lazy-load routers with lazy()."
+  - id: "@trpc/server#validators"
+    run: "pnpm dlx @tanstack/intent@latest load @trpc/server#validators"
+    for: "Configure input and output validation with .input() and .output() using Zod, Yup, Superstruct, ArkType, Valibot, Effect, or custom validator functions. Chain multiple .input() calls to merge object schemas. Standard Schema protocol support. Output validation returns INTERNAL_SERVER_ERROR on failure."
+  - id: "@trpc/client#superjson"
+    run: "pnpm dlx @tanstack/intent@latest load @trpc/client#superjson"
+    for: "Configure SuperJSON transformer on both server initTRPC.create({ transformer: superjson }) and every client terminating link (httpBatchLink, httpLink, wsLink, httpSubscriptionLink) to support Date, Map, Set, BigInt over the wire. Transformer must match on both sides. In v11, transformer goes on individual links, not the client constructor."
+  - id: "@trpc/server#trpc-router"
+    run: "pnpm dlx @tanstack/intent@latest load @trpc/server#trpc-router"
+    for: "Entry point for all tRPC skills. Decision tree routing by task: initTRPC.create(), t.router(), t.procedure, createTRPCClient, adapters, subscriptions, React Query, Next.js, links, middleware, validators, error handling, caching, FormData."
 <!-- intent-skills:end -->
 
 # AGENTS — Monorepo Entrypoint
