@@ -25,6 +25,32 @@
       "coverImage": "/images/stack-cube-frontend.webp",
       "linkedinHref": null,
       "telegramHref": null
+    },
+    {
+      "slug": "trpc-contract-first-api",
+      "title": "CONTRACT-FIRST API WITH T RPC AND SHARED ZOD SCHEMAS",
+      "description": "Why the API contract lives in code: shared zod schemas, envelope-less tRPC responses, and fail-fast data validation.",
+      "subtitle": "One source of truth for backend and frontend: schemas package, AppRouter types, and runtime validation at the data boundary.",
+      "date": "2026-08-28",
+      "readTime": "6 MIN READ",
+      "category": "BACKEND // ARCHITECTURE",
+      "content": "# Contract-First API\n\nA tRPC contract is not a document — it is code that both applications import.\n\n## The layers\n\n* `packages/schemas` — zod schemas and `z.infer` types. The single source of truth.\n* `packages/api` — tRPC routers built on top of those schemas.\n* Frontend imports only `type AppRouter` and gets end-to-end inference.\n\n## Validation boundaries\n\n1. Input validation — zod schemas on every procedure.\n2. Data validation — `db.json` is parsed at startup, the server fails fast on invalid data.\n3. Transport — queries use `GET`, mutations use `POST`, superjson for serialization.\n\n> If the schema does not run anywhere, it is documentation, not a contract.\n\n## Responses without envelopes\n\n`articles.list` returns `Article[]` directly. tRPC already namespaces procedures by path, so `{ items: [...] }` wrappers only add noise on the client.",
+      "coverImage": null,
+      "linkedinHref": null,
+      "telegramHref": null
+    },
+    {
+      "slug": "static-export-deployment",
+      "title": "STATIC EXPORT DEPLOYMENT WITH DOCKER AND DOKPLOY",
+      "description": "Shipping a Next.js static export as a static-web-server Docker image with build-args baked into the bundle.",
+      "subtitle": "Root-context Docker builds, NEXT_PUBLIC env baking, and runtime fallbacks that keep the site alive without a backend.",
+      "date": "2026-08-31",
+      "readTime": "4 MIN READ",
+      "category": "DEVOPS // DEPLOYMENT",
+      "content": "# Static Export Deployment\n\n`output: \"export\"` turns the frontend into plain files. The question is how to serve and configure them.\n\n## Docker build\n\n1. Build from the monorepo root context so `packages/` are visible.\n2. Compile shared packages first, then the frontend.\n3. Copy `out/` and `public/` into a `static-web-server` image.\n\n## Env vars are baked in\n\n`NEXT_PUBLIC_*` values are inlined into the bundle at build time. Changing `NEXT_PUBLIC_API_URL` means rebuilding the image, not restarting the container.\n\n## Runtime resilience\n\nSections use react-query with a fallback to local mocks. The static export stays fully renderable even when the API is unreachable.",
+      "coverImage": "/images/stack-cube-frontend.webp",
+      "linkedinHref": null,
+      "telegramHref": null
     }
   ],
   "cases": [
@@ -89,6 +115,68 @@
       "logo": "/icons/bimar-logo.svg",
       "previewImageSrc": "/images/process-step-2.webp",
       "previewCaption": "FIGMA/DEV-001 // System Interactive backend operation matrix"
+    },
+    {
+      "slug": "voyage-analytics",
+      "title": "VOYAGE ANALYTICS",
+      "role": "FRONTEND",
+      "description": "Real-time travel analytics dashboard with interactive maps and cohort-based reporting",
+      "fullTitle": "REAL-TIME TRAVEL ANALYTICS WITH INTERACTIVE MAPS AND COHORT REPORTING.",
+      "subtitle": "Travel operators needed live demand signals instead of weekly CSV exports and static pivot tables.",
+      "actions": [
+        {
+          "id": "view",
+          "label": "VIEW CASE",
+          "href": "/cases/voyage-analytics",
+          "emphasis": "primary"
+        },
+        {
+          "id": "demo",
+          "label": "LIVE DEMO",
+          "href": "https://voyage.example.com",
+          "emphasis": "secondary"
+        }
+      ],
+      "meta": {
+        "role": "FRONTEND DEVELOPER",
+        "duration": "2 MONTHS",
+        "status": "PRODUCTION",
+        "stack": "REACT / TYPESCRIPT / D3 / MAPLIBRE"
+      },
+      "problem": "Travel operators made pricing and capacity decisions from weekly CSV exports. Demand signals arrived too late to act on, and every team built its own pivot tables in spreadsheets.",
+      "solution": "A single analytics dashboard with live event ingestion, interactive region-level maps, and saved cohort reports. Filters are URL-driven so any view can be shared as a link.",
+      "results": "Decision latency dropped from a weekly reporting cycle to minutes. Adoption spread to three departments without a single training session — the dashboard became the default entry point for demand review.",
+      "logo": "/icons/voyage-logo.svg",
+      "previewImageSrc": null,
+      "previewCaption": "FIGMA/DEV-001 // Voyage analytics demand heatmap"
+    },
+    {
+      "slug": "knowledge-graph",
+      "title": "KNOWLEDGE GRAPH",
+      "role": "FULLSTACK",
+      "description": "Graph-based knowledge base that turns documents and notes into a queryable entity network",
+      "fullTitle": "TURNING UNSTRUCTURED DOCUMENTS INTO A QUERYABLE ENTITY NETWORK.",
+      "subtitle": "Notes, papers, and code docs converted into a persistent graph with community detection and path search.",
+      "actions": [
+        {
+          "id": "view",
+          "label": "VIEW CASE",
+          "href": "/cases/knowledge-graph",
+          "emphasis": "primary"
+        }
+      ],
+      "meta": {
+        "role": "FULL-STACK DEVELOPER",
+        "duration": "6 MONTHS",
+        "status": "IN DEVELOPMENT",
+        "stack": "NODE.JS / TYPESCRIPT / NEO4J / REACT"
+      },
+      "problem": "Personal research scattered across documents, notes, and browser tabs cannot be queried. Connections between sources exist but stay invisible without manual cross-referencing.",
+      "solution": "An ingestion pipeline converts arbitrary inputs into typed entities and relations stored in a graph database. Community detection clusters the graph, and a path-search API answers 'how are these two concepts related' queries.",
+      "results": "The graph persisted through multiple pipeline rewrites without data loss. Retrieval by entity relation replaced keyword search as the primary way to explore the knowledge base.",
+      "logo": "/icons/kg-logo.svg",
+      "previewImageSrc": "/images/process-step-3.webp",
+      "previewCaption": "FIGMA/DEV-001 // Knowledge graph community clusters"
     }
   ]
 }
