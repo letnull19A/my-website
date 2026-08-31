@@ -27,12 +27,12 @@ tanstackIntent:
 - **Runtime**: **NestJS 12 Fastify** (`@nestjs/platform-fastify`, `@fastify/cors`) + **tRPC** (`@trpc/server` + `fastifyTRPCPlugin`), без Swagger, без REST-эндпоинтов articles/cases. Код — документация.
 - **Package manager**: pnpm 11. Установка через корень: `pnpm install --ignore-scripts` (или `--frozen-lockfile`). Запуск из корня: `pnpm --filter backend <script>` или `pnpm dev:backend`.
 - **Port / Host**: `PORT=4000`, `HOST=0.0.0.0`. Должен слушать на `0.0.0.0` для Docker. Health: `GET /health`, `GET /api/health`, `GET /api/v1/health`.
-- **Data**: `apps/backend/data/db.json` — единственный источник мок-данных. Коллекции: `articles`, `cases` (структура по `packages/schemas`). Слаги — `a-z`, `0-9`, `-`, глобально уникальны.
-- **API**: tRPC — `POST /trpc/*`. Процедуры: `articles.list`, `articles.bySlug`, `cases.list`, `cases.bySlug`, `health.ping`. Контракт — `packages/schemas` (zod) + `packages/api` (AppRouter). Валидация — zod в процедурах, типы — `z.infer`. REST-контроллеры удалены (только `health` REST для совместимости).
+- **Data**: `apps/backend/data/db.json` — единственный источник мок-данных. Коллекции: `articles`, `cases` (структура по `packages/schemas`). Слаги — `a-z`, `0-9`, `-`, глобально уникальны. `DbService` валидирует `db.json` zod-схемами при старте — fail-fast при невалидных данных.
+- **API**: tRPC — `GET /trpc/*` (queries, `?input={"json":{...}}` в superjson-формате), `POST` — только для mutations. Процедуры: `articles.list`, `articles.bySlug`, `cases.list`, `cases.bySlug`, `health.ping`. Контракт — `packages/schemas` (zod) + `packages/api` (AppRouter). Валидация — zod: input в процедурах, `db.json` — в `DbService` на старте; типы — `z.infer`. REST-контроллеры удалены (только `health` REST для совместимости).
 - **Swagger**: удалён. `openapi.yaml`, `routes.json` удалены.
-- **Server entry**: `src/main.ts` — `NestFactory.create<NestFastifyApplication>(new FastifyAdapter())`, `@fastify/cors`, `fastifyTRPCPlugin` на двух префиксах. `src/app.module.ts` импортирует `DbModule`, `TrpcModule`, `HealthModule`. Источники данных — `DbService` → `DataSources` (интерфейсы из `@my-website/schemas`).
+- **Server entry**: `src/main.ts` — `NestFactory.create<NestFastifyApplication>(new FastifyAdapter())`, `@fastify/cors`, `fastifyTRPCPlugin` на префиксе `/trpc`. `src/app.module.ts` импортирует `DbModule`, `TrpcModule`, `HealthModule`. Источники данных — `DbService` → `DataSources` (интерфейсы из `@my-website/schemas`).
 - **Docker**: `apps/backend/Dockerfile` — multi-stage `node:24-alpine`, **контекст — корень монорепозитория** (`docker build -f apps/backend/Dockerfile .`): builder `COPY pnpm-workspace.yaml, packages, apps/backend/package.json → pnpm install → COPY apps/backend → pnpm --filter schemas/api/backend build`, runner копирует `dist`, `node_modules`, `data`, `packages`. Запуск: `docker run -p 4000:4000 my-website-backend` → `node dist/main.js` (Fastify, tRPC).
-- **Frontend boundary**: фронтенд (`apps/frontend`) не импортирует код бэкенда напрямую. Связь — только tRPC по `POST /trpc`.
+- **Frontend boundary**: фронтенд (`apps/frontend`) не импортирует код бэкенда напрямую. Связь — только tRPC по `/trpc` (queries — `GET`, mutations — `POST`).
 
 ## Commands
 
@@ -48,9 +48,9 @@ pnpm build  # nest build
 pnpm start  # node dist/main.js
 ```
 
-tRPC после `pnpm dev`:
-- `POST http://localhost:4000/trpc/articles.list` — `{ items: [...] }`
-- `POST http://localhost:4000/trpc/articles.bySlug` — input `{ slug }`
+tRPC после `pnpm dev` (queries — `GET`, superjson-обёртка input `{"json": ...}`):
+- `GET http://localhost:4000/trpc/articles.list` — `Article[]` (без конвертов)
+- `GET http://localhost:4000/trpc/articles.bySlug?input={"json":{"slug":"..."}}` — `Article` (NOT_FOUND если нет)
 - `GET http://localhost:4000/health` — health
 
 ## Data contract
@@ -68,7 +68,8 @@ tRPC после `pnpm dev`:
 
 - `coverImage`, `previewImageSrc` могут быть `null`.
 - `content` — Markdown + GFM.
-- Ответы tRPC: `articles.list` → `{ items: Article[] }`, `articles.bySlug` → `{ item: Article }` (NOT_FOUND если нет), аналогично cases.
+- `cases[].actions[]`: `emphasis: 'primary' | 'secondary'` (опционально) — семантика; UI-варианты кнопок в контракт не входят.
+- Ответы tRPC без конвертов: `articles.list` → `Article[]`, `articles.bySlug` → `Article` (NOT_FOUND если нет), аналогично cases.
 
 ## Docker
 
