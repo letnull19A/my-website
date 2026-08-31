@@ -5,7 +5,7 @@ import type { AppRouter } from '@my-website/api';
 function getTrpcUrl() {
   const raw = (process.env.NEXT_PUBLIC_API_URL || "").trim();
   const base = raw || 'http://localhost:4000';
-  return `${base.replace(/\/$/, '')}/api/v1/trpc`;
+  return `${base.replace(/\/$/, '')}/trpc`;
 }
 
 export const trpcClient = createTRPCClient<AppRouter>({

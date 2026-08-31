@@ -7,11 +7,11 @@
 - **Package manager**: pnpm 11. Установка через корень: `pnpm install --ignore-scripts` (или `--frozen-lockfile`). Запуск из корня: `pnpm --filter backend <script>` или `pnpm dev:backend`.
 - **Port / Host**: `PORT=4000`, `HOST=0.0.0.0`. Должен слушать на `0.0.0.0` для Docker. Health: `GET /health`, `GET /api/health`, `GET /api/v1/health`.
 - **Data**: `apps/backend/data/db.json` — единственный источник мок-данных. Коллекции: `articles`, `cases` (структура по `packages/schemas`). Слаги — `a-z`, `0-9`, `-`, глобально уникальны.
-- **API**: tRPC — `POST /api/v1/trpc/*` и `/trpc/*` (алиас). Процедуры: `articles.list`, `articles.bySlug`, `cases.list`, `cases.bySlug`, `health.ping`. Контракт — `packages/schemas` (zod) + `packages/api` (AppRouter). Валидация — zod в процедурах, типы — `z.infer`. REST-контроллеры удалены (только `health` REST для совместимости).
+- **API**: tRPC — `POST /trpc/*`. Процедуры: `articles.list`, `articles.bySlug`, `cases.list`, `cases.bySlug`, `health.ping`. Контракт — `packages/schemas` (zod) + `packages/api` (AppRouter). Валидация — zod в процедурах, типы — `z.infer`. REST-контроллеры удалены (только `health` REST для совместимости).
 - **Swagger**: удалён. `openapi.yaml`, `routes.json` удалены.
 - **Server entry**: `src/main.ts` — `NestFactory.create<NestFastifyApplication>(new FastifyAdapter())`, `@fastify/cors`, `fastifyTRPCPlugin` на двух префиксах. `src/app.module.ts` импортирует `DbModule`, `TrpcModule`, `HealthModule`. Источники данных — `DbService` → `DataSources` (интерфейсы из `@my-website/schemas`).
 - **Docker**: `apps/backend/Dockerfile` — multi-stage `node:24-alpine`, **контекст — корень монорепозитория** (`docker build -f apps/backend/Dockerfile .`): builder `COPY pnpm-workspace.yaml, packages, apps/backend/package.json → pnpm install → COPY apps/backend → pnpm --filter schemas/api/backend build`, runner копирует `dist`, `node_modules`, `data`, `packages`. Запуск: `docker run -p 4000:4000 my-website-backend` → `node dist/main.js` (Fastify, tRPC).
-- **Frontend boundary**: фронтенд (`apps/frontend`) не импортирует код бэкенда напрямую. Связь — только tRPC по `POST /api/v1/trpc`.
+- **Frontend boundary**: фронтенд (`apps/frontend`) не импортирует код бэкенда напрямую. Связь — только tRPC по `POST /trpc`.
 
 ## Commands
 
@@ -28,8 +28,8 @@ pnpm start  # node dist/main.js
 ```
 
 tRPC после `pnpm dev`:
-- `POST http://localhost:4000/api/v1/trpc/articles.list` — `{ items: [...] }`
-- `POST http://localhost:4000/api/v1/trpc/articles.bySlug` — input `{ slug }`
+- `POST http://localhost:4000/trpc/articles.list` — `{ items: [...] }`
+- `POST http://localhost:4000/trpc/articles.bySlug` — input `{ slug }`
 - `GET http://localhost:4000/health` — health
 
 ## Data contract

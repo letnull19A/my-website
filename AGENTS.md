@@ -1,3 +1,14 @@
+<!-- intent-skills:start -->
+## Skill Loading
+
+Before editing files for a substantial task:
+- Run `pnpm dlx @tanstack/intent@latest list` from the workspace root to see available local skills.
+- If a listed skill matches the task, run `pnpm dlx @tanstack/intent@latest load <package>#<skill>` before changing files.
+- Use the loaded `SKILL.md` guidance while making the change.
+- Monorepos: when working across packages, run the skill check from the workspace root and prefer the local skill for the package being changed.
+- Multiple matches: prefer the most specific local skill for the package or concern you are changing; load additional skills only when the task spans multiple packages or concerns.
+<!-- intent-skills:end -->
+
 # AGENTS — Monorepo Entrypoint
 
 Этот файл — корневой entrypoint монорепозитория. Общие правила и маршрутизация по приложениям.
@@ -57,7 +68,7 @@ pnpm build                 # алиас build:frontend
 - Next.js 16.3, static export (`output: "export"`), Tailwind v4, shadcn/ui (`base-nova`), `lucide`, `@base-ui/react`, Storybook, tRPC (`@trpc/client`, `@trpc/tanstack-react-query`, `@tanstack/react-query`, `superjson`).
 - Деплой: Docker-образ `static-web-server` из `apps/frontend/out` через Dokploy (не GitHub Pages).
 - Env (build-args, запекаются в static export): `NEXT_PUBLIC_SITE_URL` (дефолт `https://letnull19a.github.io/my-website`), `NEXT_PUBLIC_API_URL` (дефолт `http://localhost:4000`). Меняются пересборкой образа.
-- tRPC-клиент: `src/lib/trpc/client.ts` (httpBatchLink → `/api/v1/trpc` + superjson), `src/lib/trpc/provider.tsx` (QueryClient), секции `articles`/`cases` используют `useQuery` с фолбэком на `src/config/` моки.
+- tRPC-клиент: `src/lib/trpc/client.ts` (httpBatchLink → `/trpc` + superjson), `src/lib/trpc/provider.tsx` (QueryClient), секции `articles`/`cases` используют `useQuery` с фолбэком на `src/config/` моки.
 - Алиасы: `@/*` → `apps/frontend/src/*`.
 - Тёмная тема only.
 - Подробнее: [`apps/frontend/AGENTS.md`](apps/frontend/AGENTS.md)
@@ -66,7 +77,7 @@ pnpm build                 # алиас build:frontend
 
 - NestJS 12 Fastify (`@nestjs/platform-fastify`, `@fastify/cors`), tRPC (`@trpc/server` + `fastifyTRPCPlugin`) — без Swagger, без REST-эндпоинтов articles/cases.
 - Данные: `apps/backend/data/db.json` (через `DbService` → `DataSources`).
-- Порт: `4000`, host `0.0.0.0`, health: `GET /health`, `GET /api/health`, `GET /api/v1/health`; tRPC: `POST /api/v1/trpc/*` и `/trpc/*`.
+- Порт: `4000`, host `0.0.0.0`, health: `GET /health`, `GET /api/health`, `GET /api/v1/health`; tRPC: `POST /trpc/*`.
 - Контракт — код: `packages/schemas` (zod) + `packages/api` (AppRouter).
 - Подробнее: [`apps/backend/AGENTS.md`](apps/backend/AGENTS.md)
 
@@ -95,7 +106,7 @@ docker run -p 4000:4000 my-website-backend
 
 ## API contract
 
-- Префикс tRPC: `/api/v1/trpc` (алиас `/trpc`).
+- Префикс tRPC: `/trpc`.
 - Источник правды: `packages/schemas` (zod-схемы) + `packages/api` (AppRouter). `docs/api-data-spec.md` deprecated.
 - Валидация: zod (в процедурах), типы — `z.infer`. Код и есть документация.
 
