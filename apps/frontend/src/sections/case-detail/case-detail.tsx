@@ -44,8 +44,8 @@ const defaultOtherCases: CaseCardProps[] = [
       'A client-facing specification editor designed around progress transparency and predictable delivery signal',
     logo: '/images/project-speka.webp',
     actions: [
-      { id: 'view', label: 'VIEW CASE', href: '/cases/speka', variant: 'lime-light' },
-      { id: 'try', label: 'TRY OUT', href: 'https://speka.example.com', variant: 'default' },
+      { id: 'view', label: 'VIEW CASE', href: '/cases/speka', emphasis: 'primary' },
+      { id: 'try', label: 'TRY OUT', href: 'https://speka.example.com', emphasis: 'secondary' },
     ],
   },
   {
@@ -55,7 +55,7 @@ const defaultOtherCases: CaseCardProps[] = [
       'Construction workflows, product data, and 3D configuration logic in one browser platform',
     logo: '/images/project-bimar.webp',
     actions: [
-      { id: 'view', label: 'VIEW CASE', href: '/cases/bimar-system', variant: 'lime-light' },
+      { id: 'view', label: 'VIEW CASE', href: '/cases/bimar-system', emphasis: 'primary' },
     ],
   },
 ];

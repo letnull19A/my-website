@@ -7,7 +7,7 @@ import { ArticleCard, ArticleCardProps } from '@/components/article-card';
 import { buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
 import { articles as fallbackArticles } from '@/config/articles';
-import { trpcClient } from '@/lib/trpc/client';
+import { trpc } from '@/lib/trpc/client';
 import type { Article } from '@my-website/schemas';
 
 function mapArticleToCard(a: Article): ArticleCardProps {
@@ -40,15 +40,10 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
   articles: propArticles,
   className = '',
 }) => {
-  const { data } = useQuery({
-    queryKey: ['trpc', 'articles', 'list'],
-    queryFn: () => trpcClient.articles.list.query(),
-    staleTime: 30_000,
-  });
+  const { data } = useQuery(trpc.articles.list.queryOptions());
 
   const articles =
-    propArticles ??
-    (data?.items ? data.items.map(mapArticleToCard) : fallbackArticles);
+    propArticles ?? (data ? data.map(mapArticleToCard) : fallbackArticles);
 
   return (
     <section

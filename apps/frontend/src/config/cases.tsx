@@ -17,13 +17,13 @@ export const spekaCase: CaseCardProps = {
       id: 'view',
       label: 'VIEW CASE',
       href: '/cases/speka',
-      variant: 'lime-light',
+      emphasis: 'primary',
     },
     {
       id: 'try',
       label: 'TRY OUT',
       href: 'https://speka.example.com',
-      variant: 'default',
+      emphasis: 'secondary',
     },
   ],
 
@@ -78,7 +78,7 @@ export const bimarCase: CaseCardProps = {
       id: 'view',
       label: 'VIEW CASE',
       href: '/cases/bimar-system',
-      variant: 'lime-light',
+      emphasis: 'primary',
     },
   ],
 

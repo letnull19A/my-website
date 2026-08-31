@@ -1,1 +1,1 @@
-export { CaseCard, type CaseCardProps } from './case-card'
+export { CaseCard, type CaseCardProps, type CaseAction } from './case-card'

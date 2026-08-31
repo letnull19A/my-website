@@ -3,12 +3,21 @@
 import React from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { CaseCard, CaseCardProps } from '@/components/case-card';
+import { CaseCard, CaseCardProps, type CaseAction } from '@/components/case-card';
 import { buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
 import { cases as fallbackCases } from '@/config/cases';
-import { trpcClient } from '@/lib/trpc/client';
+import { trpc } from '@/lib/trpc/client';
 import type { Case } from '@my-website/schemas';
+
+function mapActionToCard(a: Case['actions'][number]): CaseAction {
+  return {
+    id: a.id,
+    label: a.label,
+    href: a.href,
+    emphasis: a.emphasis,
+  };
+}
 
 function mapCaseToCard(c: Case): CaseCardProps {
   return {
@@ -19,7 +28,7 @@ function mapCaseToCard(c: Case): CaseCardProps {
     fullTitle: c.fullTitle,
     subtitle: c.subtitle,
     logo: c.logo,
-    actions: c.actions,
+    actions: c.actions.map(mapActionToCard),
     meta: c.meta,
     problem: c.problem,
     solution: c.solution,
@@ -42,13 +51,9 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
   cases: propCases,
   className = '',
 }) => {
-  const { data } = useQuery({
-    queryKey: ['trpc', 'cases', 'list'],
-    queryFn: () => trpcClient.cases.list.query(),
-    staleTime: 30_000,
-  });
+  const { data } = useQuery(trpc.cases.list.queryOptions());
 
-  const cases = propCases ?? (data?.items ? data.items.map(mapCaseToCard) : fallbackCases);
+  const cases = propCases ?? (data ? data.map(mapCaseToCard) : fallbackCases);
 
   return (
     <section

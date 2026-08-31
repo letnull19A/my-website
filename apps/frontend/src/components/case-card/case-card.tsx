@@ -5,13 +5,28 @@ import Image, { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import { Button, buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
+import type { CaseActionEmphasis } from '@my-website/schemas';
 
 export interface CaseAction {
   id: string;
   label: string;
   href?: string;
   onClick?: () => void;
+  emphasis?: CaseActionEmphasis;
   variant?: 'default' | 'lime-light' | 'outline' | 'secondary' | 'ghost';
+}
+
+const emphasisToVariant: Record<CaseActionEmphasis, CaseAction['variant']> = {
+  primary: 'lime-light',
+  secondary: 'default',
+};
+
+function resolveVariant(act: CaseAction, idx: number): CaseAction['variant'] {
+  return (
+    act.variant ??
+    (act.emphasis ? emphasisToVariant[act.emphasis] : undefined) ??
+    (idx === 0 ? 'lime-light' : 'default')
+  );
 }
 
 export interface CaseMeta {
@@ -100,7 +115,7 @@ export const CaseCard: React.FC<CaseCardProps> = ({
           {actions.map((act, idx) => {
             const buttonClass = cn(
               buttonVariants({
-                variant: act.variant || (idx === 0 ? 'lime-light' : 'default'),
+                variant: resolveVariant(act, idx),
               }),
               'h-15 sm:h-16 w-full rounded-none text-lg font-bold uppercase tracking-wider transition-transform hover:brightness-105 active:scale-[0.99] flex items-center justify-center',
               actions.length > 1 && idx === 0
@@ -141,7 +156,7 @@ export const CaseCard: React.FC<CaseCardProps> = ({
             return (
               <Button
                 key={act.id}
-                variant={act.variant || (idx === 0 ? 'lime-light' : 'default')}
+                variant={resolveVariant(act, idx)}
                 className={buttonClass}
                 onClick={act.onClick}
               >
