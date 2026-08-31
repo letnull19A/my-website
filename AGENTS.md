@@ -84,7 +84,7 @@ pnpm build                 # алиас build:frontend
 
 - NestJS 12 Fastify (`@nestjs/platform-fastify`, `@fastify/cors`), tRPC (`@trpc/server` + `fastifyTRPCPlugin`) — без Swagger, без REST-эндпоинтов articles/cases.
 - Данные: `apps/backend/data/db.json` (через `DbService` → `DataSources`). `DbService` валидирует `db.json` zod-схемами при старте — fail-fast при невалидных данных.
-- Порт: `4000`, host `0.0.0.0`, health: `GET /health`, `GET /api/health`, `GET /api/v1/health`; tRPC: `GET /trpc/*` (queries, superjson input `{"json": ...}`), `POST` — только для mutations.
+- Порт: `4000`, host `0.0.0.0`, health: `GET /health`, `GET /api/health`; tRPC: `GET /trpc/*` (queries), `POST` — только для mutations.
 - Контракт — код: `packages/schemas` (zod) + `packages/api` (AppRouter).
 - Подробнее: [`apps/backend/AGENTS.md`](apps/backend/AGENTS.md)
 
@@ -113,7 +113,7 @@ docker run -p 4000:4000 my-website-backend
 
 ## API contract
 
-- Префикс tRPC: `/trpc`.
+- Префикс tRPC: `/trpc` (без версионирования).
 - Источник правды: `packages/schemas` (zod-схемы) + `packages/api` (AppRouter). `docs/api-data-spec.md` deprecated.
 - Валидация: zod (input в процедурах, `db.json` — в `DbService` на старте), типы — `z.infer`. Код и есть документация.
 - Ответы без конвертов: `articles.list` → `Article[]`, `articles.bySlug` → `Article`, `cases.list` → `Case[]`, `cases.bySlug` → `Case` (NOT_FOUND если нет), `health.ping` → `{ status: 'ok', uptime }`.

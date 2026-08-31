@@ -26,7 +26,7 @@ tanstackIntent:
 - **Workspace package**: `backend` (`apps/backend/package.json`, private). Node.js 24, TypeScript.
 - **Runtime**: **NestJS 12 Fastify** (`@nestjs/platform-fastify`, `@fastify/cors`) + **tRPC** (`@trpc/server` + `fastifyTRPCPlugin`), без Swagger, без REST-эндпоинтов articles/cases. Код — документация.
 - **Package manager**: pnpm 11. Установка через корень: `pnpm install --ignore-scripts` (или `--frozen-lockfile`). Запуск из корня: `pnpm --filter backend <script>` или `pnpm dev:backend`.
-- **Port / Host**: `PORT=4000`, `HOST=0.0.0.0`. Должен слушать на `0.0.0.0` для Docker. Health: `GET /health`, `GET /api/health`, `GET /api/v1/health`.
+- **Port / Host**: `PORT=4000`, `HOST=0.0.0.0`. Должен слушать на `0.0.0.0` для Docker. Health: `GET /health`, `GET /api/health`.
 - **Data**: `apps/backend/data/db.json` — единственный источник мок-данных. Коллекции: `articles`, `cases` (структура по `packages/schemas`). Слаги — `a-z`, `0-9`, `-`, глобально уникальны. `DbService` валидирует `db.json` zod-схемами при старте — fail-fast при невалидных данных.
 - **API**: tRPC — `GET /trpc/*` (queries, `?input={"json":{...}}` в superjson-формате), `POST` — только для mutations. Процедуры: `articles.list`, `articles.bySlug`, `cases.list`, `cases.bySlug`, `health.ping`. Контракт — `packages/schemas` (zod) + `packages/api` (AppRouter). Валидация — zod: input в процедурах, `db.json` — в `DbService` на старте; типы — `z.infer`. REST-контроллеры удалены (только `health` REST для совместимости).
 - **Swagger**: удалён. `openapi.yaml`, `routes.json` удалены.

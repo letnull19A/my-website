@@ -30,6 +30,7 @@ async function bootstrap() {
     },
   };
 
+  // Mount tRPC
   const fastify = app.getHttpAdapter().getInstance();
   await fastify.register(fastifyTRPCPlugin, {
     prefix: '/trpc',
@@ -41,7 +42,7 @@ async function bootstrap() {
   await app.listen(port, host);
   console.log(`[backend] NestJS (Fastify) listening on http://${host}:${port}`);
   console.log(`[backend] tRPC: http://${host}:${port}/trpc`);
-  console.log(`[backend] health: http://${host}:${port}/health`);
+  console.log(`[backend] health: http://${host}:${port}/health and /api/health`);
 }
 
 bootstrap();

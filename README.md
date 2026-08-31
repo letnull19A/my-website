@@ -54,14 +54,12 @@ docker run -p 4000:4000 my-website-backend
 ```
 
 - Frontend: multi-stage `node:24-alpine` → `static-web-server` (раздаёт `/app` = `out` + `public`).
-- Backend: multi-stage `node:24-alpine` (`pnpm build` → `node dist/main.js`), Swagger на `/api/docs`, данные из `data/db.json`.
+- Backend: multi-stage `node:24-alpine` (`pnpm build` → `node dist/main.js`), tRPC на `/trpc`, данные из `data/db.json`.
 
 ## API
 
-- Спека: [`docs/api-data-spec.md`](docs/api-data-spec.md) — типы `Article` / `Case`, Markdown GFM.
-- Префикс: `/api/v1` — реализован в Nest (`@Controller('api/v1/...')` + алиасы `/articles`, `/cases`).
-- Эндпоинты: `GET /api/v1/articles` → `{ items: [] }`, `GET /api/v1/articles/:slug` → `{ item: {} }` (404 если нет), аналогично `cases`. Health: `GET /health`, `/api/health`.
-- Swagger: `http://localhost:4000/api/docs` (и `/docs`, `/api/v1/docs`), JSON: `/api/openapi.json`, статический `apps/backend/openapi.yaml`.
+- Контракт — код: [`packages/schemas`](packages/schemas) (zod) + [`packages/api`](packages/api) (tRPC AppRouter). `docs/api-data-spec.md` deprecated.
+- tRPC: `GET /trpc/articles.list` → `Article[]`, `GET /trpc/articles.bySlug?input={"json":{"slug":"..."}}` → `Article` (404, если нет), аналогично `cases`; queries — `GET`, mutations — `POST`. Health: `GET /health`, `/api/health`.
 - Моки: [`apps/backend/data/db.json`](apps/backend/data/db.json).
 
 ## Deployment
