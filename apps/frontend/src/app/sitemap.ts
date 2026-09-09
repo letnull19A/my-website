@@ -1,11 +1,17 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
-import { articles } from "@/config/articles";
-import { cases } from "@/config/cases";
+import { getArticlesServer, getCasesServer } from "@/lib/server-api";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // SSR: sitemap строится в рантайме из свежих данных бэкенда
+  // (server-api сам откатывается на локальные моки при ошибке).
+  const [articles, cases] = await Promise.all([
+    getArticlesServer(),
+    getCasesServer(),
+  ]);
+
   const articleEntries: MetadataRoute.Sitemap = articles
     .filter((a) => Boolean(a.slug))
     .map((a) => ({

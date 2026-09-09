@@ -1,4 +1,4 @@
-# Stage 1: Build frontend — supports both repo root and apps/frontend as build context
+# Stage 1: Build frontend (SSR, standalone) — supports both repo root and apps/frontend as build context
 FROM node:24-alpine AS builder
 
 WORKDIR /app
@@ -9,10 +9,12 @@ COPY . /tmp/context
 
 ARG GIT_REPO=https://github.com/letnull19A/my-website.git
 ARG GIT_REF=""
-ARG NEXT_PUBLIC_API_URL
-ARG NEXT_PUBLIC_SITE_URL
+# Baked into the client bundle at build time (NEXT_PUBLIC_* are inlined by Next.js).
+ARG NEXT_PUBLIC_API_URL=http://localhost:4000
+ARG NEXT_PUBLIC_SITE_URL=https://letnull19a.github.io/my-website
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN set -e; \
     if [ -f /tmp/context/pnpm-workspace.yaml ]; then \
@@ -39,24 +41,36 @@ RUN pnpm install --frozen-lockfile --dangerously-allow-all-builds 2>&1 | tail -n
 
 RUN pnpm --filter @my-website/schemas build && \
     pnpm --filter @my-website/api build && \
-    pnpm --filter frontend build && \
+    # webpack-сборка вместо Turbopack по умолчанию: ей нужно в разы меньше
+    # RAM (Turbopack требует >1.3 ГБ и падает на небольших билд-хостах),
+    # результат (standalone-сервер) идентичен.
+    pnpm --filter frontend exec next build --webpack && \
     npm uninstall -g pnpm && \
     npm cache clean --force && \
     rm -rf /root/.local/share/pnpm /root/.cache
 
-# Stage 2: Ultra-minimal static server
-FROM joseluisq/static-web-server:2-debian
+# Stage 2: Minimal Node SSR runtime (Next.js standalone server)
+FROM node:24-alpine AS runner
 
-WORKDIR /
+WORKDIR /app
 
-COPY --from=builder /app/apps/frontend/out /app
-COPY --from=builder /app/apps/frontend/public /app
-
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
-ENV SERVER_PORT=${PORT}
-ENV SERVER_ROOT=/app
-ENV SERVER_HEALTH=true
-ENV SERVER_FALLBACK_PAGE=/app/index.html
-ENV SERVER_IGNORE_HIDDEN_FILES=true
+ENV HOSTNAME=0.0.0.0
+# Runtime backend URL for SSR data fetching (server components read it per request).
+# Override at run time, e.g. `-e API_URL=http://backend:4000`.
+# Falls back to NEXT_PUBLIC_API_URL, then http://localhost:4000 (see src/lib/server-api.ts).
+ENV API_URL=http://localhost:4000
 
-EXPOSE ${PORT}
+# Monorepo standalone layout: server entry lands at apps/frontend/server.js
+COPY --from=builder /app/apps/frontend/.next/standalone ./
+COPY --from=builder /app/apps/frontend/.next/static ./apps/frontend/.next/static
+COPY --from=builder /app/apps/frontend/public ./apps/frontend/public
+
+EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget -qO- http://127.0.0.1:3000/api/health | grep -q '"status":"ok"' || exit 1
+
+CMD ["node", "apps/frontend/server.js"]

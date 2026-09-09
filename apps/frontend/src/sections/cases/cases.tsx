@@ -51,7 +51,10 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
   cases: propCases,
   className = '',
 }) => {
-  const { data } = useQuery(trpc.cases.list.queryOptions());
+  const { data } = useQuery({
+    ...trpc.cases.list.queryOptions(),
+    enabled: propCases === undefined,
+  });
 
   const cases = propCases ?? (data ? data.map(mapCaseToCard) : fallbackCases);
 

@@ -4,6 +4,7 @@ import { Header } from '@/components/header';
 import { AskSection } from '@/sections/ask';
 import { ContactSection } from '@/sections/contact';
 import { OtherArticles } from '@/sections/other-articles';
+import { getArticlesServer } from '@/lib/server-api';
 
 export const metadata: Metadata = {
   title: 'Articles — Technical Insights',
@@ -23,12 +24,19 @@ const navData = {
   action: { label: 'Contact me', href: '#contact' },
 };
 
-export default function ArticlesPage() {
+// SSR: страница всегда рендерится на сервере в рантайме,
+// билд пропускает её пререндер.
+export const dynamic = 'force-dynamic';
+
+export default async function ArticlesPage() {
+  // SSR: список статей рендерится на сервере в рантайме.
+  const articles = await getArticlesServer();
+
   return (
     <div className="min-h-screen bg-background text-foreground font-mono">
       <Header {...navData} />
       <main id="main-content" className="divide-y divide-border">
-        <OtherArticles />
+        <OtherArticles articles={articles} />
       </main>
       <AskSection />
       <ContactSection />

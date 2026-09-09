@@ -1,4 +1,5 @@
 export const SITE_URL =
+  (process.env.SITE_URL || "").trim() ||
   (process.env.NEXT_PUBLIC_SITE_URL || "").trim() ||
   "https://letnull19a.github.io/my-website";
 

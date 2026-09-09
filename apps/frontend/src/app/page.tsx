@@ -1,5 +1,6 @@
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
+import { getArticlesServer, getCasesServer } from "@/lib/server-api";
 import { AboutStackSection } from "@/sections/about";
 import { ArticlesSection } from "@/sections/articles";
 import { AskSection } from "@/sections/ask";
@@ -20,17 +21,26 @@ const navData = {
   action: { label: 'Contact me', href: '#contact' },
 };
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  // SSR: данные подтягиваются на сервере в рантайме, клиентские секции
+  // получают их через props и не делают повторный запрос.
+  const [cases, articles] = await Promise.all([
+    getCasesServer(),
+    getArticlesServer(),
+  ]);
+
   return (
    <div className="min-h-screen bg-background text-foreground font-mono">
       <Header {...navData} />
       <main id="main-content" className="divide-y divide-border">
         <HeroSection/>
-        <CasesSection/>
+        <CasesSection cases={cases}/>
         <AboutStackSection/>
         <WorkProcessSection/>
         <AskSection/>
-        <ArticlesSection/>
+        <ArticlesSection articles={articles}/>
         <ContactSection/>
       </main>
       <Footer/>

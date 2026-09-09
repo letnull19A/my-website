@@ -1,12 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export",
-  images: {
-    // Статический экспорт на GitHub Pages не имеет Node-сервера для
-    // серверной оптимизации изображений, поэтому unoptimized задан глобально.
-    unoptimized: true,
-  },
+  // SSR-режим: Node-сервер (`next start`), Docker-образ на базе standalone.
+  // Статического экспорта (`output: "export"`) больше нет.
+  output: "standalone",
   sassOptions: {
     // Современный SCSS API — @use / @forward, без legacy @import
     // includePaths позволяет писать `@use "variables"` вместо `@use "@/styles/variables"`

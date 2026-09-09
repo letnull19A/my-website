@@ -5,26 +5,21 @@ import { Header } from '@/components/header';
 import { AskSection } from '@/sections/ask';
 import { ContactSection } from '@/sections/contact';
 import { CaseDetailSection } from '@/sections/case-detail';
-import { cases } from '@/config/cases';
+import { getCaseBySlugServer, getCasesServer } from '@/lib/server-api';
 import { SITE_URL, SITE_TITLE, SITE_OG_IMAGE } from '@/lib/site';
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-// 1. Обязательная функция для output: 'export'
-export async function generateStaticParams() {
-  return cases
-    .filter((c) => Boolean(c.slug))
-    .map((c) => ({
-      slug: c.slug as string,
-    }));
-}
+// SSR: детальный кейс рендерится на сервере в рантайме,
+// данные всегда свежие из бэкенда с фолбэком на локальные моки.
+export const dynamic = 'force-dynamic';
 
 // 2. Генерация метатегов для конкретного кейса
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const currentCase = cases.find((c) => c.slug === slug);
+  const currentCase = await getCaseBySlugServer(slug);
   if (!currentCase) return {};
 
   const title = `${currentCase.title} — Case Study`;
@@ -70,13 +65,14 @@ const navData = {
 // 3. Компонент страницы
 export default async function CaseDetailPage({ params }: Props) {
   const { slug } = await params;
-  const currentCase = cases.find((c) => c.slug === slug);
+  const currentCase = await getCaseBySlugServer(slug);
 
   if (!currentCase) {
     notFound();
   }
 
-  const otherCases = cases.filter((c) => c.slug !== slug);
+  const allCases = await getCasesServer();
+  const otherCases = allCases.filter((c) => c.slug !== slug);
 
   return (
     <div className="min-h-screen bg-background text-foreground font-mono">

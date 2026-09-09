@@ -40,7 +40,10 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
   articles: propArticles,
   className = '',
 }) => {
-  const { data } = useQuery(trpc.articles.list.queryOptions());
+  const { data } = useQuery({
+    ...trpc.articles.list.queryOptions(),
+    enabled: propArticles === undefined,
+  });
 
   const articles =
     propArticles ?? (data ? data.map(mapArticleToCard) : fallbackArticles);

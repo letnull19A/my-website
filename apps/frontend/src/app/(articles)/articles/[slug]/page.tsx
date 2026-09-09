@@ -5,24 +5,20 @@ import { Header } from '@/components/header';
 import { AskSection } from '@/sections/ask';
 import { ContactSection } from '@/sections/contact';
 import { ArticleDetailSection } from '@/sections/article-detail';
-import { articles } from '@/config/articles';
+import { getArticleBySlugServer, getArticlesServer } from '@/lib/server-api';
 import { SITE_URL, SITE_TITLE, SITE_OG_IMAGE } from '@/lib/site';
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  return articles
-    .filter((a) => Boolean(a.slug))
-    .map((a) => ({
-      slug: String(a.slug),
-    }));
-}
+// SSR: детальная статья рендерится на сервере в рантайме,
+// данные всегда свежие из бэкенда с фолбэком на локальные моки.
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const currentArticle = articles.find((a) => a.slug === slug);
+  const currentArticle = await getArticleBySlugServer(slug);
   if (!currentArticle) return {};
 
   const title = `${currentArticle.title} — Article`;
@@ -64,14 +60,15 @@ const navData = {
 
 export default async function ArticleDetailPage({ params }: Props) {
   const { slug } = await params;
-  const currentArticle = articles.find((a) => a.slug === slug);
+  const currentArticle = await getArticleBySlugServer(slug);
 
   if (!currentArticle) {
     notFound();
   }
 
   // Фильтруем остальные статьи для блока "MORE ARTICLES"
-  const otherArticles = articles.filter((a) => a.slug !== slug);
+  const allArticles = await getArticlesServer();
+  const otherArticles = allArticles.filter((a) => a.slug !== slug);
 
   return (
     <div className="min-h-screen bg-background text-foreground font-mono">

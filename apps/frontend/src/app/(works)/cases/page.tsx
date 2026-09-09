@@ -4,6 +4,7 @@ import { Header } from "@/components/header";
 import { AskSection } from "@/sections/ask";
 import { ContactSection } from "@/sections/contact";
 import { OtherWorkSection } from "@/sections/other-works";
+import { getCasesServer } from "@/lib/server-api";
 
 export const metadata: Metadata = {
   title: "Cases — Selected Work",
@@ -23,12 +24,19 @@ const navData = {
   action: { label: 'Contact me', href: '#contact' },
 };
 
-export default function Cases() {
+// SSR: страница всегда рендерится на сервере в рантайме,
+// билд пропускает её пререндер.
+export const dynamic = 'force-dynamic';
+
+export default async function Cases() {
+  // SSR: список кейсов рендерится на сервере в рантайме.
+  const cases = await getCasesServer();
+
   return (
    <div className="min-h-screen bg-background text-foreground font-mono">
       <Header {...navData} />
       <main id="main-content" className="divide-y divide-border">
-        <OtherWorkSection/>
+        <OtherWorkSection cases={cases} />
       </main>
       <AskSection/>
       <ContactSection/>
