@@ -176,6 +176,7 @@ export const WorkProcessSection: React.FC<WorkProcessSectionProps> = ({
                 progressPercent={currentStep.progressPercent}
                 variantIndex={currentStepIdx + 1}
                 totalSteps={steps.length}
+                onSelectStep={setCurrentStepIdx}
               />
             </div>
           </div>

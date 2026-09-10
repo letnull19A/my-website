@@ -5,9 +5,7 @@ import { Button } from '@/components/button';
 import { vibrateOnTap } from '@/lib/utils';
 
 export interface ContactFormData {
-  name: string;
   email: string;
-  company?: string;
   description: string;
   agreed: boolean;
 }
@@ -22,9 +20,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({
   className = '',
 }) => {
   const [formData, setFormData] = useState<ContactFormData>({
-    name: '',
     email: '',
-    company: '',
     description: '',
     agreed: false,
   });
@@ -52,20 +48,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({
       onSubmit={handleSubmit}
       className={`flex flex-col gap-3 sm:gap-3.5 font-mono select-none ${className}`}
     >
-      <label className="sr-only" htmlFor="contact-name">
-        Name
-      </label>
-      <input
-        type="text"
-        id="contact-name"
-        name="name"
-        required
-        placeholder="Name"
-        value={formData.name}
-        onChange={handleChange}
-        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-xl xl:text-2xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
-      />
-
       <label className="sr-only" htmlFor="contact-email">
         Email
       </label>
@@ -76,19 +58,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({
         required
         placeholder="Email"
         value={formData.email}
-        onChange={handleChange}
-        className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-xl xl:text-2xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
-      />
-
-      <label className="sr-only" htmlFor="contact-company">
-        Company
-      </label>
-      <input
-        type="text"
-        id="contact-company"
-        name="company"
-        placeholder="Company [ optional ]"
-        value={formData.company}
         onChange={handleChange}
         className="w-full h-11 sm:h-12 bg-transparent border border-lime-soft px-4 text-xl xl:text-2xl text-green-mid placeholder:text-lime-soft/70 outline-none focus:border-lime focus:ring-1 focus:ring-lime"
       />

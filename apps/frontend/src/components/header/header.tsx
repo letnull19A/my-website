@@ -168,7 +168,9 @@ export const Header: React.FC<HeaderProps> = ({
         <div ref={brandRef} className="flex items-stretch border-r border-border">
           <Link
             href={brand.href}
-            onClick={(e) => handleAnchorClick(e, brand.href)}
+            onClick={(e: React.MouseEvent<HTMLAnchorElement>) =>
+              handleAnchorClick(e, brand.href)
+            }
             className="flex items-center w-full py-4 px-4 xl:px-6 text-xl xl:text-base font-normal tracking-wide text-foreground transition-colors hover:bg-lime/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {brand.title}

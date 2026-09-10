@@ -100,7 +100,7 @@ export const AskSection: React.FC<AskSectionProps> = ({
           <Button
             type="submit"
             variant="lime-light"
-            className="mt-1 h-16 w-full text-xl font-bold uppercase tracking-wider rounded-none shrink-0"
+            className="h-12 w-full sm:w-auto sm:px-8 text-xl font-bold uppercase tracking-wider rounded-none shrink-0"
           >
             FIND AN ANSWER
           </Button>

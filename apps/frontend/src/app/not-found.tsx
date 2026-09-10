@@ -85,8 +85,7 @@ export default function NotFound() {
                 alt="404 — Isometric cubes"
                 width={720}
                 height={540}
-                priority
-                unoptimized
+                preload
                 draggable={false}
                 className="w-full h-auto object-contain pointer-events-none select-none drop-shadow-[0_0_24px_rgba(154,208,0,0.18)]"
               />

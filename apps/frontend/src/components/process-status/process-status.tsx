@@ -7,6 +7,7 @@ export interface ProcessStatusProps {
   progressPercent: number; // например: 21, 46, 83, 100
   variantIndex: number; // 1, 2, 3, 4
   totalSteps?: number; // по умолчанию 4
+  onSelectStep?: (index: number) => void; // клик по сегменту прогресс-бара
   className?: string;
 }
 
@@ -15,6 +16,7 @@ export const ProcessStatus: React.FC<ProcessStatusProps> = ({
   progressPercent,
   variantIndex,
   totalSteps = 4,
+  onSelectStep,
   className = '',
 }) => {
   const formattedVariant = String(variantIndex).padStart(3, '0');
@@ -69,11 +71,15 @@ export const ProcessStatus: React.FC<ProcessStatusProps> = ({
         {Array.from({ length: totalSteps }).map((_, idx) => {
           const isFilled = idx < variantIndex;
           return (
-            <div
+            <button
               key={idx}
-              className={`h-2 sm:h-2.5 border border-lime-soft transition-colors duration-200 ${
+              type="button"
+              aria-label={`Go to step ${idx + 1}`}
+              aria-current={idx === variantIndex - 1 ? 'true' : undefined}
+              onClick={() => onSelectStep?.(idx)}
+              className={`h-2 sm:h-2.5 border border-lime-soft transition-colors duration-200 cursor-pointer ${
                 isFilled ? 'bg-lime-soft' : 'bg-transparent'
-              }`}
+              } hover:bg-lime focus-visible:bg-lime focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-lime`}
             />
           );
         })}
