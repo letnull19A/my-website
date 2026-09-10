@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
+import { DataUnavailable } from '@/components/data-unavailable';
 import { AskSection } from '@/sections/ask';
 import { ContactSection } from '@/sections/contact';
 import { CaseDetailSection } from '@/sections/case-detail';
@@ -68,7 +68,19 @@ export default async function CaseDetailPage({ params }: Props) {
   const currentCase = await getCaseBySlugServer(slug);
 
   if (!currentCase) {
-    notFound();
+    return (
+      <div className="min-h-screen bg-background text-foreground font-mono">
+        <Header {...navData} />
+        <main id="main-content" className="flex flex-col items-center justify-center min-h-[60vh] px-4">
+          <DataUnavailable
+            message="This case could not be loaded. Please try again later."
+            backHref="/cases"
+            backLabel="BACK TO CASES"
+          />
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   const allCases = await getCasesServer();

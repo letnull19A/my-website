@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { CaseCard, CaseCardProps } from '@/components/case-card';
 import { buttonVariants } from '@/components/button';
+import { DataUnavailable } from '@/components/data-unavailable';
 import { cn, vibrateOnTap } from '@/lib/utils';
 
 export interface CasesSectionProps {
@@ -12,27 +13,6 @@ export interface CasesSectionProps {
   cases?: CaseCardProps[];
   className?: string;
 }
-
-const DataUnavailable: React.FC = () => (
-  <div className="w-full border border-lime/40 bg-card p-8 flex flex-col items-center justify-center gap-4 text-center">
-    <span className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-lime">
-      DATA UNAVAILABLE
-    </span>
-    <span className="text-sm sm:text-base text-lime-light/70 max-w-md">
-      Cases could not be loaded. Please try again later.
-    </span>
-    <button
-      type="button"
-      onClick={() => window.location.reload()}
-      className={cn(
-        buttonVariants({ variant: 'lime-light' }),
-        'h-12 px-5 text-sm font-bold uppercase rounded-none tracking-wider cursor-pointer'
-      )}
-    >
-      TRY AGAIN
-    </button>
-  </div>
-);
 
 export const CasesSection: React.FC<CasesSectionProps> = ({
   title = 'SELECTED WORK.',
@@ -66,7 +46,7 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
         </div>
 
         {cases.length === 0 ? (
-          <DataUnavailable />
+          <DataUnavailable message="Cases could not be loaded. Please try again later." />
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">

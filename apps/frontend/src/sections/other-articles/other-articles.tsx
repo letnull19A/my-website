@@ -5,6 +5,7 @@ import Image, { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import { buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
+import { DataUnavailable } from '@/components/data-unavailable';
 import { ArticleCard, ArticleCardProps } from '@/components/article-card';
 
 export interface OtherArticlesProps {
@@ -62,24 +63,7 @@ export const OtherArticles: React.FC<OtherArticlesProps> = ({
 
         {/* Сетка: 1 колонка на мобилках, 2 в ряд на десктопе */}
         {articles.length === 0 ? (
-          <div className="w-full border border-lime/40 bg-card p-8 flex flex-col items-center justify-center gap-4 text-center">
-            <span className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-lime">
-              DATA UNAVAILABLE
-            </span>
-            <span className="text-sm sm:text-base text-lime-light/70 max-w-md">
-              Articles could not be loaded. Please try again later.
-            </span>
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className={cn(
-                buttonVariants({ variant: 'lime-light' }),
-                'h-12 px-5 text-sm font-bold uppercase rounded-none tracking-wider cursor-pointer'
-              )}
-            >
-              TRY AGAIN
-            </button>
-          </div>
+          <DataUnavailable message="Articles could not be loaded. Please try again later." backHref="/articles" backLabel="BACK TO ARTICLES" />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-stretch">
             {articles.map((article, idx) => (

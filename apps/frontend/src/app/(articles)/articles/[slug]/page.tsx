@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { Footer } from '@/components/footer';
 import { Header } from '@/components/header';
+import { DataUnavailable } from '@/components/data-unavailable';
 import { AskSection } from '@/sections/ask';
 import { ContactSection } from '@/sections/contact';
 import { ArticleDetailSection } from '@/sections/article-detail';
@@ -63,7 +63,19 @@ export default async function ArticleDetailPage({ params }: Props) {
   const currentArticle = await getArticleBySlugServer(slug);
 
   if (!currentArticle) {
-    notFound();
+    return (
+      <div className="min-h-screen bg-background text-foreground font-mono">
+        <Header {...navData} />
+        <main id="main-content" className="flex flex-col items-center justify-center min-h-[60vh] px-4">
+          <DataUnavailable
+            message="This article could not be loaded. Please try again later."
+            backHref="/articles"
+            backLabel="BACK TO ARTICLES"
+          />
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   // Фильтруем остальные статьи для блока "MORE ARTICLES"
