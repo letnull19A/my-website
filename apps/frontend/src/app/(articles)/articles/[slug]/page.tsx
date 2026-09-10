@@ -94,8 +94,7 @@ export default async function ArticleDetailPage({ params }: Props) {
           category={currentArticle.category}
           content={currentArticle.content || ''}
           coverImage={currentArticle.coverImage}
-          linkedinHref={currentArticle.linkedinHref}
-          telegramHref={currentArticle.telegramHref}
+          slug={currentArticle.slug}
           otherArticles={otherArticles}
         />
       </main>

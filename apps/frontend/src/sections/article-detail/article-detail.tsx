@@ -8,6 +8,7 @@ import { ArticleCard, ArticleCardProps } from '@/components/article-card';
 import { MarkdownRenderer } from '@/components/markdown-renderer';
 import { RemoteImage } from '@/components/remote-image';
 import { cn, vibrateOnTap } from '@/lib/utils';
+import { getLinkedinShareUrl, getTelegramShareUrl, resolveArticleUrl } from '@/lib/share';
 import { Check, Copy } from 'lucide-react';
 
 export interface ArticleDetailProps {
@@ -20,10 +21,7 @@ export interface ArticleDetailProps {
   coverImage?: string | StaticImageData;
   principlesImageSrc?: string | StaticImageData;
   content: string;
-  linkedinHref?: string;
-  telegramHref?: string;
-  linkedinIconSrc?: string;
-  telegramIconSrc?: string;
+  slug?: string;
   otherArticles?: ArticleCardProps[];
   className?: string;
 }
@@ -42,15 +40,16 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
   coverImage,
   principlesImageSrc = '/images/principles-widget-small.webp',
   content,
-  linkedinHref = '#',
-  telegramHref = '#',
-  linkedinIconSrc = '/icons/linkedin.svg',
-  telegramIconSrc = '/icons/telegram.svg',
+  slug,
   otherArticles = [],
   className = '',
 }) => {
   const router = useRouter();
   const [copiedLink, setCopiedLink] = useState(false);
+
+  const articleUrl = resolveArticleUrl(slug ? `/articles/${slug}` : undefined);
+  const linkedinShareHref = getLinkedinShareUrl(articleUrl);
+  const telegramShareHref = getTelegramShareUrl(articleUrl, title);
 
   const handleCopyLink = () => {
     if (typeof window !== 'undefined') {
@@ -166,10 +165,11 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 w-full md:w-auto">
             {/* Linkedin */}
             <a
-              href={linkedinHref}
+              href={linkedinShareHref}
               target="_blank"
               rel="noopener noreferrer"
               onClick={vibrateOnTap}
+              aria-label={`Share ${title} on LinkedIn`}
               className={cn(
                 buttonVariants({ variant: 'outline', size: 'sm' }),
                 'h-10 sm:h-11 px-3 text-xs font-bold rounded-none flex items-center justify-center gap-1.5 w-full sm:w-auto'
@@ -177,8 +177,8 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
             >
               <span
                 style={{
-                  mask: `url(${linkedinIconSrc}) no-repeat center / contain`,
-                  WebkitMask: `url(${linkedinIconSrc}) no-repeat center / contain`,
+                  mask: `url(/icons/linkedin.svg) no-repeat center / contain`,
+                  WebkitMask: `url(/icons/linkedin.svg) no-repeat center / contain`,
                 }}
                 className="w-3.5 h-3.5 bg-lime pointer-events-none shrink-0"
               />
@@ -187,10 +187,11 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
 
             {/* Telegram */}
             <a
-              href={telegramHref}
+              href={telegramShareHref}
               target="_blank"
               rel="noopener noreferrer"
               onClick={vibrateOnTap}
+              aria-label={`Share ${title} on Telegram`}
               className={cn(
                 buttonVariants({ variant: 'outline', size: 'sm' }),
                 'h-10 sm:h-11 px-3 text-xs font-bold rounded-none flex items-center justify-center gap-1.5 w-full sm:w-auto'
@@ -198,8 +199,8 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
             >
               <span
                 style={{
-                  mask: `url(${telegramIconSrc}) no-repeat center / contain`,
-                  WebkitMask: `url(${telegramIconSrc}) no-repeat center / contain`,
+                  mask: `url(/icons/telegram.svg) no-repeat center / contain`,
+                  WebkitMask: `url(/icons/telegram.svg) no-repeat center / contain`,
                 }}
                 className="w-3.5 h-3.5 bg-lime pointer-events-none shrink-0"
               />
@@ -247,9 +248,8 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
                   title={art.title}
                   description={art.description}
                   coverImage={art.coverImage}
+                  slug={art.slug}
                   readHref={art.readHref}
-                  linkedinHref={art.linkedinHref}
-                  telegramHref={art.telegramHref}
                 />
               ))}
             </div>

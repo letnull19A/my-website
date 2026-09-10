@@ -6,16 +6,13 @@ import Link from 'next/link';
 import { buttonVariants } from '@/components/button';
 import { RemoteImage } from '@/components/remote-image';
 import { cn, vibrateOnTap } from '@/lib/utils';
+import { getLinkedinShareUrl, getTelegramShareUrl, resolveArticleUrl } from '@/lib/share';
 
 export interface ArticleCardProps {
   title: string;
   description: string;
   coverImage?: string | StaticImageData;
-  linkedinHref?: string;
-  telegramHref?: string;
   readHref?: string;
-  linkedinIconSrc?: string;
-  telegramIconSrc?: string;
   className?: string;
 
   // Опциональные поля для детальной страницы статьи
@@ -35,14 +32,14 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   title,
   description,
   coverImage,
-  linkedinHref = '#',
-  telegramHref = '#',
+  slug,
   readHref = '#',
-  linkedinIconSrc = '/icons/linkedin.svg',
-  telegramIconSrc = '/icons/telegram.svg',
   className = '',
 }) => {
   const isExternalRead = /^https?:\/\//.test(readHref);
+  const articleUrl = resolveArticleUrl(slug ? `/articles/${slug}` : readHref);
+  const linkedinShareHref = getLinkedinShareUrl(articleUrl);
+  const telegramShareHref = getTelegramShareUrl(articleUrl, title);
 
   return (
     <article
@@ -90,10 +87,11 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
         <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-2">
           {/* Linkedin */}
           <a
-            href={linkedinHref}
+            href={linkedinShareHref}
             target="_blank"
             rel="noopener noreferrer"
             onClick={vibrateOnTap}
+            aria-label={`Share ${title} on LinkedIn`}
             className={cn(
               buttonVariants({ variant: 'outline', size: 'sm' }),
               'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold rounded-none flex items-center justify-center gap-1.5'
@@ -101,8 +99,8 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
           >
             <span
               style={{
-                mask: `url(${linkedinIconSrc}) no-repeat center / contain`,
-                WebkitMask: `url(${linkedinIconSrc}) no-repeat center / contain`,
+                mask: `url(/icons/linkedin.svg) no-repeat center / contain`,
+                WebkitMask: `url(/icons/linkedin.svg) no-repeat center / contain`,
               }}
               className="w-4 h-4 mr-1 shrink-0 bg-lime transition-colors pointer-events-none"
               aria-hidden="true"
@@ -112,10 +110,11 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
 
           {/* Telegram */}
           <a
-            href={telegramHref}
+            href={telegramShareHref}
             target="_blank"
             rel="noopener noreferrer"
             onClick={vibrateOnTap}
+            aria-label={`Share ${title} on Telegram`}
             className={cn(
               buttonVariants({ variant: 'outline', size: 'sm' }),
               'h-11 sm:h-12 px-2 text-xs sm:text-sm md:text-base font-bold rounded-none flex items-center justify-center gap-1.5'
@@ -123,8 +122,8 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
           >
             <span
               style={{
-                mask: `url(${telegramIconSrc}) no-repeat center / contain`,
-                WebkitMask: `url(${telegramIconSrc}) no-repeat center / contain`,
+                mask: `url(/icons/telegram.svg) no-repeat center / contain`,
+                WebkitMask: `url(/icons/telegram.svg) no-repeat center / contain`,
               }}
               className="w-4 h-4 mr-1 shrink-0 bg-lime transition-colors pointer-events-none"
               aria-hidden="true"

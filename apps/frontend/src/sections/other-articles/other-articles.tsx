@@ -72,11 +72,8 @@ export const OtherArticles: React.FC<OtherArticlesProps> = ({
                 title={article.title}
                 description={article.description}
                 coverImage={article.coverImage}
-                linkedinHref={article.linkedinHref}
-                telegramHref={article.telegramHref}
+                slug={article.slug}
                 readHref={article.readHref}
-                linkedinIconSrc={article.linkedinIconSrc}
-                telegramIconSrc={article.telegramIconSrc}
               />
             ))}
           </div>

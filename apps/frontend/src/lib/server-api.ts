@@ -58,8 +58,6 @@ export function mapArticleToCard(a: Article): ArticleCardProps {
     category: a.category,
     content: a.content,
     coverImage: a.coverImage ?? undefined,
-    linkedinHref: a.linkedinHref ?? undefined,
-    telegramHref: a.telegramHref ?? undefined,
     readHref: `/articles/${a.slug}`,
   };
 }

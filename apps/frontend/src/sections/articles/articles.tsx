@@ -56,8 +56,7 @@ export const ArticlesSection: React.FC<ArticlesSectionProps> = ({
                   title={article.title}
                   description={article.description}
                   coverImage={article.coverImage}
-                  linkedinHref={article.linkedinHref}
-                  telegramHref={article.telegramHref}
+                  slug={article.slug}
                   readHref={article.readHref}
                 />
               ))}
