@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/button';
+import { trpc } from '@/lib/trpc/client';
 
 export interface AskSectionProps {
   title?: string;
@@ -26,18 +28,35 @@ export const AskSection: React.FC<AskSectionProps> = ({
   className = '',
 }) => {
   const [query, setQuery] = useState('');
+  const mutation = useMutation(trpc.ask.answer.mutationOptions());
+
+  const runAsk = (q: string) => {
+    if (onSubmit) {
+      onSubmit(q);
+      return;
+    }
+    mutation.mutate({ query: q });
+  };
 
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!query.trim()) return;
-    if (onSubmit) onSubmit(query.trim());
+    runAsk(query.trim());
   };
 
   const handleSuggestionClick = (text: string) => {
     const cleanText = text.replace(/\s*>>$/, '');
     setQuery(cleanText);
-    if (onSubmit) onSubmit(cleanText);
+    runAsk(cleanText);
   };
+
+  const buttonLabel = mutation.isPending
+    ? 'SEARCHING…'
+    : mutation.isSuccess
+      ? 'ANSWERED'
+      : mutation.isError
+        ? 'ERROR — TRY AGAIN'
+        : 'FIND AN ANSWER';
 
   return (
     <section
@@ -100,11 +119,30 @@ export const AskSection: React.FC<AskSectionProps> = ({
           <Button
             type="submit"
             variant="lime-light"
+            disabled={mutation.isPending}
             className="h-12 w-full sm:w-auto sm:px-8 text-xl font-bold uppercase tracking-wider rounded-none shrink-0"
           >
-            FIND AN ANSWER
+            {buttonLabel}
           </Button>
         </form>
+
+        {/* Ответ / ошибка */}
+        {mutation.isSuccess && (
+          <div className="w-full border border-lime/40 bg-background/40 p-4 text-lime text-sm sm:text-base leading-relaxed">
+            <span className="block mb-1 text-xs uppercase tracking-wider text-lime/70">
+              &gt;&gt; ANSWER
+            </span>
+            {mutation.data.answer}
+          </div>
+        )}
+        {mutation.isError && (
+          <div className="w-full border border-lime/40 bg-background/40 p-4 text-lime text-sm sm:text-base">
+            <span className="block mb-1 text-xs uppercase tracking-wider text-lime/70">
+              &gt;&gt; ERROR
+            </span>
+            The answer could not be retrieved. Please try again.
+          </div>
+        )}
 
         {/* Список быстрых подсказок (Suggestions) */}
         {suggestions.length > 0 && (

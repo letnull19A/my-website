@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image, { StaticImageData } from 'next/image';
+import type { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import { buttonVariants } from '@/components/button';
 import { RemoteImage } from '@/components/remote-image';

@@ -10,13 +10,17 @@ export interface ContactFormData {
   agreed: boolean;
 }
 
+export type ContactFormStatus = 'idle' | 'pending' | 'success' | 'error';
+
 export interface ContactFormProps {
   onSubmit?: (data: ContactFormData) => void;
+  status?: ContactFormStatus;
   className?: string;
 }
 
 export const ContactForm: React.FC<ContactFormProps> = ({
   onSubmit,
+  status = 'idle',
   className = '',
 }) => {
   const [formData, setFormData] = useState<ContactFormData>({
@@ -42,6 +46,15 @@ export const ContactForm: React.FC<ContactFormProps> = ({
     if (!formData.agreed) return;
     if (onSubmit) onSubmit(formData);
   };
+
+  const buttonLabel =
+    status === 'pending'
+      ? 'SENDING…'
+      : status === 'success'
+        ? 'SENT'
+        : status === 'error'
+          ? 'ERROR — TRY AGAIN'
+          : 'SEND PROJECT BRIEF';
 
   return (
     <form
@@ -80,9 +93,10 @@ export const ContactForm: React.FC<ContactFormProps> = ({
       <Button
         type="submit"
         variant="lime-light"
+        disabled={status === 'pending'}
         className="mt-1 h-16 w-full text-xl font-bold uppercase tracking-wider rounded-none shrink-0"
       >
-        SEND PROJECT BRIEF
+        {buttonLabel}
       </Button>
 
       {/* Чекбокс согласия с политикой */}

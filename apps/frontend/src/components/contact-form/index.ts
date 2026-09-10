@@ -1,1 +1,1 @@
-export { ContactForm, type ContactFormData} from './contact-form'
+export { ContactForm, type ContactFormData, type ContactFormStatus } from './contact-form'

@@ -2,8 +2,10 @@
 
 import React from 'react';
 import Image, { StaticImageData } from 'next/image';
-import { ContactForm, ContactFormData } from '@/components/contact-form';
+import { useMutation } from '@tanstack/react-query';
+import { ContactForm, ContactFormData, ContactFormStatus } from '@/components/contact-form';
 import { email as siteEmail } from '@/config/social';
+import { trpc } from '@/lib/trpc/client';
 
 export interface ContactSectionProps {
   title?: string;
@@ -55,6 +57,27 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   onSubmit,
   className = '',
 }) => {
+  const mutation = useMutation(trpc.contact.send.mutationOptions());
+
+  const handleSubmit = (data: ContactFormData) => {
+    if (onSubmit) {
+      onSubmit(data);
+      return;
+    }
+    mutation.mutate({
+      email: data.email,
+      description: data.description,
+      agreed: true,
+    });
+  };
+
+  const status: ContactFormStatus = mutation.isPending
+    ? 'pending'
+    : mutation.isSuccess
+      ? 'success'
+      : mutation.isError
+        ? 'error'
+        : 'idle';
 
   return (
     <section
@@ -72,7 +95,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
               {subtitle}
             </p>
 
-            <ContactForm onSubmit={onSubmit} />
+            <ContactForm onSubmit={handleSubmit} status={status} />
 
             {/* Мобильный подвал (< lg) */}
             <div

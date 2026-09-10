@@ -1,9 +1,7 @@
 import { z } from 'zod';
 
 export const ContactInputSchema = z.object({
-  name: z.string().min(1),
   email: z.string().email(),
-  company: z.string().optional(),
   description: z.string().min(1),
   agreed: z.literal(true),
 });
