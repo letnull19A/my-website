@@ -24,6 +24,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `${currentArticle.title} — Article`;
   const description = currentArticle.description;
   const url = `${SITE_URL}/articles/${currentArticle.slug}`;
+  const ogImage =
+    typeof currentArticle.coverImage === 'string' && currentArticle.coverImage
+      ? currentArticle.coverImage
+      : SITE_OG_IMAGE;
 
   return {
     title,
@@ -38,13 +42,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       url,
       publishedTime: currentArticle.date,
-      images: [{ url: SITE_OG_IMAGE }],
+      images: [{ url: ogImage }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [SITE_OG_IMAGE],
+      images: [ogImage],
     },
   };
 }

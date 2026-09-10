@@ -36,15 +36,26 @@ function fetchNoStore(input: Parameters<typeof fetch>[0], init?: Parameters<type
 }
 
 function createServerTrpcClient() {
-  return createTRPCClient<AppRouter>({
-    links: [
-      httpBatchLink({
-        url: `${getServerApiBaseUrl()}/trpc`,
-        transformer: superjson,
-        fetch: fetchNoStore,
-      }),
-    ],
-  });
+  const baseUrl = getServerApiBaseUrl();
+  return {
+    baseUrl,
+    client: createTRPCClient<AppRouter>({
+      links: [
+        httpBatchLink({
+          url: `${baseUrl}/trpc`,
+          transformer: superjson,
+          fetch: fetchNoStore,
+        }),
+      ],
+    }),
+  };
+}
+
+function logSsrError(fn: string, error: unknown, baseUrl: string) {
+  console.error(
+    `[ssr] ${fn} failed. Resolved backend: ${baseUrl}/trpc. Check the API_URL/BACKEND_URL/NEXT_PUBLIC_API_URL env of the frontend container.`,
+    error,
+  );
 }
 
 export function mapArticleToCard(a: Article): ArticleCardProps {
@@ -87,41 +98,45 @@ export function mapCaseToCard(c: Case): CaseCardProps {
 }
 
 export async function getArticlesServer(): Promise<ArticleCardProps[]> {
+  const { baseUrl, client } = createServerTrpcClient();
   try {
-    const data = await createServerTrpcClient().articles.list.query();
+    const data = await client.articles.list.query();
     return data.map(mapArticleToCard);
   } catch (error) {
-    console.error('[ssr] articles.list failed:', error);
+    logSsrError('articles.list', error, baseUrl);
     return [];
   }
 }
 
 export async function getCasesServer(): Promise<CaseCardProps[]> {
+  const { baseUrl, client } = createServerTrpcClient();
   try {
-    const data = await createServerTrpcClient().cases.list.query();
+    const data = await client.cases.list.query();
     return data.map(mapCaseToCard);
   } catch (error) {
-    console.error('[ssr] cases.list failed:', error);
+    logSsrError('cases.list', error, baseUrl);
     return [];
   }
 }
 
 export async function getArticleBySlugServer(slug: string): Promise<ArticleCardProps | null> {
+  const { baseUrl, client } = createServerTrpcClient();
   try {
-    const data = await createServerTrpcClient().articles.bySlug.query({ slug });
+    const data = await client.articles.bySlug.query({ slug });
     return data ? mapArticleToCard(data) : null;
   } catch (error) {
-    console.error(`[ssr] articles.bySlug(${slug}) failed:`, error);
+    logSsrError(`articles.bySlug(${slug})`, error, baseUrl);
     return null;
   }
 }
 
 export async function getCaseBySlugServer(slug: string): Promise<CaseCardProps | null> {
+  const { baseUrl, client } = createServerTrpcClient();
   try {
-    const data = await createServerTrpcClient().cases.bySlug.query({ slug });
+    const data = await client.cases.bySlug.query({ slug });
     return data ? mapCaseToCard(data) : null;
   } catch (error) {
-    console.error(`[ssr] cases.bySlug(${slug}) failed:`, error);
+    logSsrError(`cases.bySlug(${slug})`, error, baseUrl);
     return null;
   }
 }
