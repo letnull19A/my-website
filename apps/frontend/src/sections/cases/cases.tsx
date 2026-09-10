@@ -2,41 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
-import { CaseCard, CaseCardProps, type CaseAction } from '@/components/case-card';
+import { CaseCard, CaseCardProps } from '@/components/case-card';
 import { buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
-import { cases as fallbackCases } from '@/config/cases';
-import { trpc } from '@/lib/trpc/client';
-import type { Case } from '@my-website/schemas';
-
-function mapActionToCard(a: Case['actions'][number]): CaseAction {
-  return {
-    id: a.id,
-    label: a.label,
-    href: a.href,
-    emphasis: a.emphasis,
-  };
-}
-
-function mapCaseToCard(c: Case): CaseCardProps {
-  return {
-    slug: c.slug,
-    title: c.title,
-    role: c.role,
-    description: c.description,
-    fullTitle: c.fullTitle,
-    subtitle: c.subtitle,
-    logo: c.logo,
-    actions: c.actions.map(mapActionToCard),
-    meta: c.meta,
-    problem: c.problem,
-    solution: c.solution,
-    results: c.results,
-    previewImageSrc: c.previewImageSrc ?? undefined,
-    previewCaption: c.previewCaption ?? undefined,
-  };
-}
 
 export interface CasesSectionProps {
   title?: string;
@@ -45,19 +13,33 @@ export interface CasesSectionProps {
   className?: string;
 }
 
+const DataUnavailable: React.FC = () => (
+  <div className="w-full border border-lime/40 bg-card p-8 flex flex-col items-center justify-center gap-4 text-center">
+    <span className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-lime">
+      DATA UNAVAILABLE
+    </span>
+    <span className="text-sm sm:text-base text-lime-light/70 max-w-md">
+      Cases could not be loaded. Please try again later.
+    </span>
+    <button
+      type="button"
+      onClick={() => window.location.reload()}
+      className={cn(
+        buttonVariants({ variant: 'lime-light' }),
+        'h-12 px-5 text-sm font-bold uppercase rounded-none tracking-wider cursor-pointer'
+      )}
+    >
+      TRY AGAIN
+    </button>
+  </div>
+);
+
 export const CasesSection: React.FC<CasesSectionProps> = ({
   title = 'SELECTED WORK.',
   viewAllHref = '/cases',
-  cases: propCases,
+  cases = [],
   className = '',
 }) => {
-  const { data } = useQuery({
-    ...trpc.cases.list.queryOptions(),
-    enabled: propCases === undefined,
-  });
-
-  const cases = propCases ?? (data ? data.map(mapCaseToCard) : fallbackCases);
-
   return (
     <section
       id="cases"
@@ -69,35 +51,42 @@ export const CasesSection: React.FC<CasesSectionProps> = ({
             {title}
           </h2>
 
-          <Link
-            href={viewAllHref}
-            onClick={vibrateOnTap}
-            className={cn(
-              buttonVariants({ variant: 'lime-light' }),
-              'hidden md:inline-flex h-15 sm:h-16 px-4 sm:px-6 text-base sm:text-lg font-bold uppercase rounded-none tracking-wider transition-transform hover:brightness-105 active:scale-[0.99]'
-            )}
-          >
-            VIEW ALL CASES
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-          {cases.map((card) => (
-            <CaseCard key={card.slug ?? card.title} {...card} />
-          ))}
-        </div>
-
-        {/* Кнопка VIEW ALL на мобилке — внизу секции */}
-        <Link
-          href={viewAllHref}
-          onClick={vibrateOnTap}
-          className={cn(
-            buttonVariants({ variant: 'lime-light' }),
-            'md:hidden h-14 px-4 text-base font-bold uppercase rounded-none tracking-wider w-full justify-center'
+          {cases.length > 0 && (
+            <Link
+              href={viewAllHref}
+              onClick={vibrateOnTap}
+              className={cn(
+                buttonVariants({ variant: 'lime-light' }),
+                'hidden md:inline-flex h-15 sm:h-16 px-4 sm:px-6 text-base sm:text-lg font-bold uppercase rounded-none tracking-wider transition-transform hover:brightness-105 active:scale-[0.99]'
+              )}
+            >
+              VIEW ALL CASES
+            </Link>
           )}
-        >
-          VIEW ALL CASES
-        </Link>
+        </div>
+
+        {cases.length === 0 ? (
+          <DataUnavailable />
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              {cases.map((card) => (
+                <CaseCard key={card.slug ?? card.title} {...card} />
+              ))}
+            </div>
+
+            <Link
+              href={viewAllHref}
+              onClick={vibrateOnTap}
+              className={cn(
+                buttonVariants({ variant: 'lime-light' }),
+                'md:hidden h-14 px-4 text-base font-bold uppercase rounded-none tracking-wider w-full justify-center'
+              )}
+            >
+              VIEW ALL CASES
+            </Link>
+          </>
+        )}
       </div>
     </section>
   );

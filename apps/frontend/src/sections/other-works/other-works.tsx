@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
 import { CaseCard, CaseCardProps } from '@/components/case-card';
-import { cases as siteCases } from '@/config/cases';
 
 export interface OtherWorkSectionProps {
   title?: string;
@@ -20,7 +19,7 @@ export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
   title = 'SELECTED WORK.',
   backHref = '/',
   principlesImageSrc = '/images/principles-widget.webp',
-  cases = siteCases,
+  cases = [],
   className = '',
 }) => {
   return (
@@ -61,18 +60,39 @@ export const OtherWorkSection: React.FC<OtherWorkSectionProps> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-stretch">
-          {cases.map((card, idx) => (
-            <CaseCard
-              key={`${card.title}-${idx}`}
-              title={card.title}
-              role={card.role}
-              description={card.description}
-              logo={card.logo}
-              actions={card.actions}
-            />
-          ))}
-        </div>
+        {cases.length === 0 ? (
+          <div className="w-full border border-lime/40 bg-card p-8 flex flex-col items-center justify-center gap-4 text-center">
+            <span className="text-xl sm:text-2xl font-bold uppercase tracking-wider text-lime">
+              DATA UNAVAILABLE
+            </span>
+            <span className="text-sm sm:text-base text-lime-light/70 max-w-md">
+              Cases could not be loaded. Please try again later.
+            </span>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className={cn(
+                buttonVariants({ variant: 'lime-light' }),
+                'h-12 px-5 text-sm font-bold uppercase rounded-none tracking-wider cursor-pointer'
+              )}
+            >
+              TRY AGAIN
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-stretch">
+            {cases.map((card, idx) => (
+              <CaseCard
+                key={`${card.title}-${idx}`}
+                title={card.title}
+                role={card.role}
+                description={card.description}
+                logo={card.logo}
+                actions={card.actions}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

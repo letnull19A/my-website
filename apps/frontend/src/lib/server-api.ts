@@ -2,9 +2,9 @@
  * Server-only слой данных для SSR.
  *
  * Импортировать только из Server Components / Route Handlers / generateMetadata.
- * Каждый запрос к бэкенду выполняется в рантайме (request time) и при ошибке
- * откатывается на локальные моки из `src/config/*`, поэтому страница
- * рендерится даже при недоступном бэкенде.
+ * Каждый запрос к бэкенду выполняется в рантайме (request time). При ошибке
+ * возвращается пустой список / null — страница показывает фолбэк «данные
+ * недоступны», а не подменяет реальные данные локальными моками.
  */
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import superjson from 'superjson';
@@ -12,8 +12,6 @@ import type { AppRouter } from '@my-website/api';
 import type { Article, Case } from '@my-website/schemas';
 import type { ArticleCardProps } from '@/components/article-card';
 import type { CaseCardProps } from '@/components/case-card';
-import { articles as fallbackArticles } from '@/config/articles';
-import { cases as fallbackCases } from '@/config/cases';
 
 const FETCH_TIMEOUT_MS = 5000;
 
@@ -93,43 +91,39 @@ export function mapCaseToCard(c: Case): CaseCardProps {
 export async function getArticlesServer(): Promise<ArticleCardProps[]> {
   try {
     const data = await createServerTrpcClient().articles.list.query();
-    if (Array.isArray(data) && data.length > 0) {
-      return data.map(mapArticleToCard);
-    }
+    return data.map(mapArticleToCard);
   } catch (error) {
-    console.error('[ssr] articles.list failed, using fallback:', error);
+    console.error('[ssr] articles.list failed:', error);
+    return [];
   }
-  return fallbackArticles;
 }
 
 export async function getCasesServer(): Promise<CaseCardProps[]> {
   try {
     const data = await createServerTrpcClient().cases.list.query();
-    if (Array.isArray(data) && data.length > 0) {
-      return data.map(mapCaseToCard);
-    }
+    return data.map(mapCaseToCard);
   } catch (error) {
-    console.error('[ssr] cases.list failed, using fallback:', error);
+    console.error('[ssr] cases.list failed:', error);
+    return [];
   }
-  return fallbackCases;
 }
 
 export async function getArticleBySlugServer(slug: string): Promise<ArticleCardProps | null> {
   try {
     const data = await createServerTrpcClient().articles.bySlug.query({ slug });
-    if (data) return mapArticleToCard(data);
+    return data ? mapArticleToCard(data) : null;
   } catch (error) {
-    console.error(`[ssr] articles.bySlug(${slug}) failed, using fallback:`, error);
+    console.error(`[ssr] articles.bySlug(${slug}) failed:`, error);
+    return null;
   }
-  return fallbackArticles.find((a) => a.slug === slug) ?? null;
 }
 
 export async function getCaseBySlugServer(slug: string): Promise<CaseCardProps | null> {
   try {
     const data = await createServerTrpcClient().cases.bySlug.query({ slug });
-    if (data) return mapCaseToCard(data);
+    return data ? mapCaseToCard(data) : null;
   } catch (error) {
-    console.error(`[ssr] cases.bySlug(${slug}) failed, using fallback:`, error);
+    console.error(`[ssr] cases.bySlug(${slug}) failed:`, error);
+    return null;
   }
-  return fallbackCases.find((c) => c.slug === slug) ?? null;
 }
