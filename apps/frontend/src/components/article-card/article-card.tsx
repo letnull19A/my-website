@@ -4,6 +4,7 @@ import React from 'react';
 import Image, { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import { buttonVariants } from '@/components/button';
+import { RemoteImage } from '@/components/remote-image';
 import { cn, vibrateOnTap } from '@/lib/utils';
 
 export interface ArticleCardProps {
@@ -58,13 +59,13 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
       <div className="relative w-full aspect-16/8 sm:aspect-16/7.5 border border-lime-light bg-card flex items-center justify-center overflow-hidden">
         {coverImage ? (
           isImageSource(coverImage) ? (
-            <Image
+            <RemoteImage
               src={coverImage}
               alt={title}
               width={400}
               height={250}
-              draggable={false}
               className="object-cover w-full h-full pointer-events-none"
+              fallback={<div className="w-full h-full bg-background/30" />}
             />
           ) : (
             (coverImage as React.ReactNode)

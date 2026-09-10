@@ -4,6 +4,7 @@ import React from 'react';
 import Image, { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import { Button, buttonVariants } from '@/components/button';
+import { RemoteImage } from '@/components/remote-image';
 import { cn, vibrateOnTap } from '@/lib/utils';
 import type { CaseActionEmphasis } from '@my-website/schemas';
 
@@ -82,13 +83,17 @@ export const CaseCard: React.FC<CaseCardProps> = ({
       {/* Контейнер с логотипом */}
       <div className="relative w-full aspect-16/8 sm:aspect-16/7.5 border border-lime-light flex items-center justify-center bg-card overflow-hidden px-4">
         {isImageSrc(logo) ? (
-          <Image
+          <RemoteImage
             src={logo}
             alt={title}
             width={320}
             height={120}
-            draggable={false}
             className="object-contain max-h-[70%] max-w-[85%] pointer-events-none"
+            fallback={
+              <span className="text-2xl sm:text-3xl font-black tracking-tight text-lime-light text-center px-2">
+                {title}
+              </span>
+            }
           />
         ) : (
           (logo as React.ReactNode)

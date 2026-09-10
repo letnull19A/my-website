@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button, buttonVariants } from '@/components/button';
 import { ArticleCard, ArticleCardProps } from '@/components/article-card';
 import { MarkdownRenderer } from '@/components/markdown-renderer';
+import { RemoteImage } from '@/components/remote-image';
 import { cn, vibrateOnTap } from '@/lib/utils';
 import { Check, Copy } from 'lucide-react';
 
@@ -122,13 +123,17 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
             <div className="w-full aspect-16/10 border border-lime-light bg-card flex items-center justify-center overflow-hidden">
               {coverImage ? (
                 isImageSource(coverImage) ? (
-                  <Image
+                  <RemoteImage
                     src={coverImage}
                     alt={title}
                     width={440}
                     height={275}
-                    draggable={false}
                     className="object-cover w-full h-full pointer-events-none"
+                    fallback={
+                      <div className="w-full h-full bg-background/40 flex items-center justify-center text-lime/40 text-xs tracking-widest uppercase">
+                        [ ARTICLE_COVER_SIGNAL ]
+                      </div>
+                    }
                   />
                 ) : (
                   (coverImage as React.ReactNode)

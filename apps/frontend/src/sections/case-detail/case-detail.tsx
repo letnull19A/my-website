@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/button';
 import { CaseCard, CaseCardProps } from '@/components/case-card';
 import { CaseMetaGrid } from '@/components/case-meta-grid';
+import { RemoteImage } from '@/components/remote-image';
 
 export interface CaseMeta {
   role: string;
@@ -146,7 +147,7 @@ export const CaseDetailSection: React.FC<CaseDetailProps> = ({
         <div className="w-full border-y sm:border border-border bg-green-dark p-3 sm:p-6 md:p-8 flex flex-col gap-2">
           <div className="relative w-full aspect-video bg-dark-green border border-lime/60 flex items-center justify-center overflow-hidden">
             {previewImageSrc ? (
-              <Image
+              <RemoteImage
                 src={previewImageSrc}
                 alt="Case Preview"
                 fill
