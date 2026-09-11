@@ -12,12 +12,14 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@ai-sdk/react": "^4.0.100",
     "@base-ui/react": "^1.7.0",
     "@my-website/api": "workspace:*",
     "@my-website/schemas": "workspace:*",
     "@tanstack/react-query": "^5.90.2",
     "@trpc/client": "^11.6.0",
     "@trpc/tanstack-react-query": "^11.6.0",
+    "ai": "^7.0.97",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "gsap": "^3.15.0",
