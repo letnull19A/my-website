@@ -2,7 +2,37 @@
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
+import Link from 'next/link';
 import { useState } from 'react';
+
+type ChatAttachment = {
+  kind: 'article' | 'case';
+  slug: string;
+  title: string;
+  description: string;
+  subtitle?: string;
+  category?: string;
+  role?: string;
+  href: string;
+  logo?: string;
+};
+
+function AttachmentCard({ data }: { data: ChatAttachment }) {
+  const isArticle = data.kind === 'article';
+  return (
+    <Link
+      href={data.href}
+      className="block border border-lime/40 bg-background p-3 hover:bg-muted transition-colors"
+    >
+      <div className="text-xs uppercase tracking-wider text-lime mb-1">
+        {isArticle ? 'Статья' : 'Кейс'} // {data.slug}
+      </div>
+      <div className="text-sm font-bold text-foreground">{data.title}</div>
+      <div className="text-xs text-muted-foreground mt-1 line-clamp-2">{data.description}</div>
+      <div className="text-xs text-lime mt-2 underline">Открыть → {data.href}</div>
+    </Link>
+  );
+}
 
 export default function ChatPage() {
   const [input, setInput] = useState('');
@@ -38,7 +68,7 @@ export default function ChatPage() {
       <div className="flex-1 flex flex-col max-w-3xl w-full mx-auto p-4 gap-4">
         <div className="text-xs text-muted-foreground border border-dashed border-border p-2">
           <div>Backend: GET /ai-chat (SSE) → Next /api/chat → useChat (ai-sdk). POST /ai-chat также доступен.</div>
-          <div>Длина ответа — рандом 40-120 слов Lorem ipsum. Stateless, без БД.</div>
+          <div>Длина ответа — рандом 40-120 слов Lorem ipsum. ~50% без вложения, ~25% статья, ~25% кейс. Stateless.</div>
         </div>
 
         <div className="flex-1 border border-border bg-card min-h-[50vh] flex flex-col overflow-hidden">
@@ -52,12 +82,24 @@ export default function ChatPage() {
                   {m.role === 'user' ? 'USER' : 'ASSISTANT'} // {m.id.slice(0, 8)}
                 </div>
                 <div className="whitespace-pre-wrap break-words">
-                  {m.parts.map((part, i) => {
-                    if (part.type === 'text') {
-                      return <span key={i}>{part.text}</span>;
-                    }
-                    return null;
-                  })}
+                  {m.parts
+                    .filter((part) => part.type === 'text')
+                    .map((part, i) => (
+                      <span key={i}>{(part as { text: string }).text}</span>
+                    ))}
+                </div>
+                <div className="mt-2 space-y-2">
+                  {m.parts
+                    .filter(
+                      (part) =>
+                        part.type === 'data-attachment' ||
+                        (typeof part.type === 'string' && part.type.startsWith('data-')),
+                    )
+                    .map((part, i) => {
+                      const data = (part as unknown as { data: ChatAttachment }).data;
+                      if (!data || typeof data !== 'object' || !('kind' in data)) return null;
+                      return <AttachmentCard key={`att-${m.id}-${i}`} data={data as ChatAttachment} />;
+                    })}
                 </div>
               </div>
             ))}

@@ -62,7 +62,21 @@ export async function POST(req: Request) {
             if (!dataStr) continue;
 
             try {
-              const parsed: { token?: string; done?: boolean } = JSON.parse(dataStr);
+              const parsed: {
+                token?: string;
+                attachment?: {
+                  kind: 'article' | 'case';
+                  slug: string;
+                  title: string;
+                  description: string;
+                  subtitle?: string;
+                  category?: string;
+                  role?: string;
+                  href: string;
+                  logo?: string;
+                };
+                done?: boolean;
+              } = JSON.parse(dataStr);
               if (parsed.done) {
                 // end
                 break;
@@ -73,6 +87,12 @@ export async function POST(req: Request) {
                   id: textId,
                   delta: parsed.token,
                 });
+              }
+              if (parsed.attachment) {
+                writer.write({
+                  type: 'data-attachment' as const,
+                  data: parsed.attachment,
+                } as unknown as Parameters<typeof writer.write>[0]);
               }
             } catch {
               // if not JSON, treat raw as token
