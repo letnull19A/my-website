@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import type { MessageEvent } from '@nestjs/common';
+import type { AiChatAttachment } from '@my-website/schemas';
+import { DbService } from '../db/db.service';
 
 const LOREM_WORDS = [
   'Lorem',
@@ -116,6 +118,8 @@ function chunkWords(words: string[], chunkSize: number): string[] {
 
 @Injectable()
 export class AiChatService {
+  constructor(private readonly db: DbService) {}
+
   /**
    * Generate full Lorem ipsum text of arbitrary length (stateless, no storage).
    */
@@ -129,12 +133,52 @@ export class AiChatService {
   }
 
   /**
+   * Randomly pick an article or case attachment (or null).
+   * ~50% no attachment, ~25% article, ~25% case. Uses real db data if available.
+   */
+  generateRandomAttachment(): AiChatAttachment | null {
+    const roll = Math.random();
+    if (roll < 0.5) return null;
+
+    const isArticle = Math.random() < 0.5;
+    if (isArticle) {
+      const articles = this.db.findAll();
+      if (articles.length === 0) return null;
+      const a = articles[randomInt(0, articles.length - 1)];
+      return {
+        kind: 'article' as const,
+        slug: a.slug,
+        title: a.title,
+        description: a.description,
+        subtitle: a.subtitle,
+        category: a.category,
+        href: `/articles/${a.slug}`,
+      };
+    } else {
+      const cases = this.db.findAllCases();
+      if (cases.length === 0) return null;
+      const c = cases[randomInt(0, cases.length - 1)];
+      return {
+        kind: 'case' as const,
+        slug: c.slug,
+        title: c.title,
+        description: c.description,
+        role: c.role,
+        href: `/cases/${c.slug}`,
+        logo: c.logo,
+      };
+    }
+  }
+
+  /**
    * Create SSE Observable that streams Lorem ipsum tokens with random delays.
-   * Each emitted MessageEvent.data is JSON-stringified { token, done? }.
-   * Final event has done:true and no token. Stateless — длина рандомная 40-120 слов.
+   * Each emitted MessageEvent.data is JSON-stringified { token, attachment?, done? }.
+   * Final event has done:true and no token. Randomly (50%) attaches article/case card.
+   * Stateless — длина рандомная 40-120 слов.
    */
   streamLoremIpsum(options?: { signal?: AbortSignal }): Observable<MessageEvent> {
     const wordCount = randomInt(40, 120);
+    const attachment = this.generateRandomAttachment();
     const words = generateLoremWords(wordCount);
     const chunkSize = randomInt(2, 6);
     const chunks = chunkWords(words, chunkSize);
@@ -142,6 +186,7 @@ export class AiChatService {
     return new Observable<MessageEvent>((subscriber) => {
       let index = 0;
       let timer: NodeJS.Timeout | null = null;
+      let attachmentSent = false;
 
       const scheduleNext = () => {
         if (options?.signal?.aborted) {
@@ -151,6 +196,14 @@ export class AiChatService {
         }
 
         if (index >= chunks.length) {
+          if (attachment && !attachmentSent) {
+            attachmentSent = true;
+            subscriber.next({
+              data: JSON.stringify({ attachment, done: false }),
+            } as MessageEvent);
+            timer = setTimeout(scheduleNext, 30);
+            return;
+          }
           // Final event
           subscriber.next({
             data: JSON.stringify({ token: '', done: true }),

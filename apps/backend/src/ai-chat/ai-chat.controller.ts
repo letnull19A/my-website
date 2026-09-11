@@ -31,12 +31,14 @@ export class AiChatController {
     }
 
     const reply = this.aiChatService.generateFullText();
+    const attachment = this.aiChatService.generateRandomAttachment();
 
     return {
       id: randomUUID(),
       role: 'assistant' as const,
       content: reply,
       echo: parsed.data.message,
+      attachment: attachment ?? null,
     };
   }
 
