@@ -115,7 +115,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     >
       <FloatingCard
         id="philosophy"
-        imageSrc="/images/philosophy.webp"
+        imageSrc="/images/philosophy.svg"
         imageAlt="Philosophy Text Window"
         width={240}
         height={220}
@@ -127,7 +127,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       />
       <FloatingCard
         id="developer"
-        imageSrc="/images/developer.webp"
+        imageSrc="/images/developer.svg"
         imageAlt="Developer Photo Window"
         width={260}
         height={260}

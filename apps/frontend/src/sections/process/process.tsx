@@ -27,7 +27,7 @@ const defaultSteps: ProcessStep[] = [
     title: 'FRAME THE PROBLEM',
     description:
       'Define user, operational, and technical constraints before interface work starts.',
-    imageSrc: '/images/process-step-1.webp',
+    imageSrc: '/images/process-step-1.svg',
     status: 'ACTIVE',
     progressPercent: 21,
   },
@@ -36,7 +36,7 @@ const defaultSteps: ProcessStep[] = [
     title: 'EXPOSE THE STATE',
     description:
       'Design the product so progress, risk, and next steps remain visible to non-engineers.',
-    imageSrc: '/images/process-step-2.webp',
+    imageSrc: '/images/process-step-2.svg',
     status: 'ACTIVE',
     progressPercent: 46,
   },
@@ -45,7 +45,7 @@ const defaultSteps: ProcessStep[] = [
     title: 'SHIP IN SLICES',
     description:
       'Prefer incremental releases that preserve momentum and keep assumptions testable.',
-    imageSrc: '/images/process-step-3.webp',
+    imageSrc: '/images/process-step-3.svg',
     status: 'ACTIVE',
     progressPercent: 83,
   },
@@ -54,7 +54,7 @@ const defaultSteps: ProcessStep[] = [
     title: 'REVIEW THE EVIDENCE',
     description:
       'Measure outcomes, revisit tradeoffs, and decide the next engineering move with shared context.',
-    imageSrc: '/images/process-step-4.webp',
+    imageSrc: '/images/process-step-4.svg',
     status: 'READY',
     progressPercent: 100,
   },
