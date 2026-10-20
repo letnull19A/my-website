@@ -18,6 +18,7 @@ const navLinks = [
   { label: 'Process', href: '#process' },
   { label: 'About', href: '#about' },
   { label: 'Ask', href: '#ask' },
+  { label: 'AI Assistant', href: '/ai' },
   { label: 'Articles', href: '#articles' },
   { label: 'Contact me', href: '#contact' },
   { label: 'Privacy policy', href: '#privacy' },

@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { ContactForm, ContactFormData, ContactFormStatus } from '@/components/contact-form';
 import { email as siteEmail } from '@/config/social';
 import { trpc } from '@/lib/trpc/client';
+import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
 
 const IsometricFormLoopCluster = dynamic(
@@ -78,7 +79,10 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   return (
     <section
       id="contact"
-      className={`w-full border border-border border-t border-b mt-20 bg-green-dark text-lime font-mono select-none ${className}`}
+      className={cn(
+        'w-full border border-border border-t border-b mt-20 bg-green-dark text-lime font-mono select-none',
+        className
+      )}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 p-6">
         {/* Левая колонка: Форма */}

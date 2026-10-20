@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
-import { useMutation } from '@tanstack/react-query';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/button';
-import { trpc } from '@/lib/trpc/client';
 
 export interface AskSectionProps {
   title?: string;
@@ -15,7 +15,6 @@ export interface AskSectionProps {
   badgeBottomSrc?: string | StaticImageData;
   desktopBgSrc?: string | StaticImageData;
   mobileBgSrc?: string | StaticImageData;
-  micIconSrc?: string;
   onSubmit?: (query: string) => void;
   className?: string;
 }
@@ -34,85 +33,30 @@ export const AskSection: React.FC<AskSectionProps> = ({
   badgeBottomSrc = '/images/AiFormBadge2.svg',
   desktopBgSrc = '/images/AiFormDesktopBackground.svg',
   mobileBgSrc = '/images/AiFormMobileBackground.svg',
-  micIconSrc = '/icons/microphone.svg',
   onSubmit,
   className = '',
 }) => {
   const [query, setQuery] = useState('');
-  const [isListening, setIsListening] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const mutation = useMutation(trpc.ask.answer.mutationOptions());
+  const router = useRouter();
 
   const runAsk = (q: string) => {
+    const clean = q.trim();
+    if (!clean) return;
     if (onSubmit) {
-      onSubmit(q);
+      onSubmit(clean);
       return;
     }
-    mutation.mutate({ query: q });
+    router.push(`/chat?q=${encodeURIComponent(clean)}`);
   };
 
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!query.trim()) return;
-    runAsk(query.trim());
+    runAsk(query);
   };
 
   const handleSuggestionClick = (text: string) => {
-    const cleanText = text.replace(/\s*>>$/, '');
-    setQuery(cleanText);
-    runAsk(cleanText);
+    setQuery(text.replace(/\s*>>$/, ''));
   };
-
-  const handleMic = () => {
-    interface SpeechRecognitionResult {
-      transcript: string;
-    }
-    interface SpeechRecognitionEvent {
-      results: SpeechRecognitionResult[][];
-    }
-    interface SpeechRecognitionInstance {
-      lang: string;
-      interimResults: boolean;
-      maxAlternatives: number;
-      onresult: ((e: SpeechRecognitionEvent) => void) | null;
-      onend: (() => void) | null;
-      onerror: (() => void) | null;
-      start: () => void;
-    }
-    const w = window as unknown as {
-      SpeechRecognition?: new () => SpeechRecognitionInstance;
-      webkitSpeechRecognition?: new () => SpeechRecognitionInstance;
-    };
-    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
-    if (!SR) {
-      inputRef.current?.focus();
-      return;
-    }
-    try {
-      const rec = new SR();
-      rec.lang = 'en-US';
-      rec.interimResults = false;
-      rec.maxAlternatives = 1;
-      setIsListening(true);
-      rec.onresult = (e: SpeechRecognitionEvent) => {
-        setQuery(e.results[0][0].transcript);
-      };
-      rec.onend = () => setIsListening(false);
-      rec.onerror = () => setIsListening(false);
-      rec.start();
-    } catch {
-      setIsListening(false);
-      inputRef.current?.focus();
-    }
-  };
-
-  const buttonLabel = mutation.isPending
-    ? 'SEARCHING…'
-    : mutation.isSuccess
-      ? 'ANSWERED'
-      : mutation.isError
-        ? 'ERROR — TRY AGAIN'
-        : 'FIND AN ANSWER';
 
   return (
     <section id="ask" className="mt-20 border border-y">
@@ -136,57 +80,22 @@ export const AskSection: React.FC<AskSectionProps> = ({
                   {placeholder}
                 </label>
                 <input
-                  ref={inputRef}
                   type="text"
                   id="ask-query"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={placeholder}
-                  className="w-full h-12 bg-transparent border border-green-dark pl-4 pr-11 text-lg sm:text-xl text-green-dark placeholder:text-green-dark/60 outline-none focus:ring-1 focus:ring-green-dark tracking-wide"
+                  className="w-full h-12 bg-transparent border border-green-dark px-4 text-lg sm:text-xl text-green-dark placeholder:text-green-dark/60 outline-none focus:ring-1 focus:ring-green-dark tracking-wide"
                 />
-                <button
-                  type="button"
-                  onClick={handleMic}
-                  aria-label="Voice input"
-                  title="Voice input"
-                  className={`absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-transparent border-none cursor-pointer transition-colors ${
-                    isListening ? 'text-green-dark animate-pulse' : 'text-green-dark/70 hover:text-green-dark'
-                  }`}
-                >
-                  <span
-                    aria-hidden
-                    style={{ mask: `url(${micIconSrc}) no-repeat center / contain` }}
-                    className="block w-5 h-5 bg-current"
-                  />
-                </button>
               </div>
 
               <Button
                 type="submit"
-                disabled={mutation.isPending}
                 className="h-12 w-full sm:w-auto sm:px-8 text-xl font-bold uppercase tracking-wider rounded-none shrink-0 bg-green-dark text-lime-light hover:bg-green-mid active:bg-green-deep"
               >
-                {buttonLabel}
+                FIND AN ANSWER
               </Button>
             </form>
-
-            {/* Ответ / ошибка */}
-            {mutation.isSuccess && (
-              <div className="w-full border border-green-dark/40 bg-green-dark/5 p-4 text-green-dark text-sm sm:text-base leading-relaxed">
-                <span className="block mb-1 text-xs uppercase tracking-wider text-green-dark/70">
-                  &gt;&gt; ANSWER
-                </span>
-                {mutation.data.answer}
-              </div>
-            )}
-            {mutation.isError && (
-              <div className="w-full border border-green-dark/40 bg-green-dark/5 p-4 text-green-dark text-sm sm:text-base">
-                <span className="block mb-1 text-xs uppercase tracking-wider text-green-dark/70">
-                  &gt;&gt; ERROR
-                </span>
-                The answer could not be retrieved. Please try again.
-              </div>
-            )}
 
             {/* Список быстрых подсказок (Suggestions) */}
             {suggestions.length > 0 && (
@@ -201,6 +110,12 @@ export const AskSection: React.FC<AskSectionProps> = ({
                     {item}
                   </button>
                 ))}
+                <Link
+                  href="/ai"
+                  className="text-left underline underline-offset-4 decoration-green-dark/50 text-green-dark hover:decoration-green-dark tracking-wide transition-colors font-mono"
+                >
+                  OPEN FULL AI ASSISTANT &gt;&gt;
+                </Link>
               </div>
             )}
           </div>
