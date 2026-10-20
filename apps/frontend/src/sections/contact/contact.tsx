@@ -1,17 +1,32 @@
 'use client';
 
 import React from 'react';
-import Image, { StaticImageData } from 'next/image';
+import dynamic from 'next/dynamic';
 import { useMutation } from '@tanstack/react-query';
 import { ContactForm, ContactFormData, ContactFormStatus } from '@/components/contact-form';
 import { email as siteEmail } from '@/config/social';
 import { trpc } from '@/lib/trpc/client';
+import { useInView } from '@/hooks/use-in-view';
+
+const IsometricFormLoopCluster = dynamic(
+  () => import('@/components/isometric').then((m) => m.IsometricFormLoopCluster),
+  { ssr: false, loading: () => null }
+);
+
+const LazyIllustration: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [ref, inView] = useInView<HTMLDivElement>(0.1);
+  return (
+    <div ref={ref} className="w-full h-full flex items-center justify-center">
+      {inView ? children : null}
+    </div>
+  );
+};
 
 export interface ContactSectionProps {
   title?: string;
   subtitle?: string;
-  illustrationSrc?: string | StaticImageData;
-  statusBadgeSrc?: string | StaticImageData;
+  panelTitle?: string;
+  panelFooter?: string;
   directEmail?: string;
   onSubmit?: (data: ContactFormData) => void;
   className?: string;
@@ -29,30 +44,11 @@ const EmailLink: React.FC<{ email: string; className?: string }> = ({
   </p>
 );
 
-const StatusBadgeImage: React.FC<{
-  src: string | StaticImageData;
-  width: number;
-  height: number;
-  className?: string;
-}> = ({ src, width, height, className = '' }) => (
-  <div className={`hidden lg:block shrink-0 overflow-hidden ${className}`}>
-    <Image
-      src={src}
-      alt="Ready for collaboration badge"
-      width={width}
-      height={height}
-      loading="lazy"
-      draggable={false}
-      className="w-full h-auto object-contain pointer-events-none block"
-    />
-  </div>
-);
-
 export const ContactSection: React.FC<ContactSectionProps> = ({
   title = "LET'S WORK TOGETHER",
   subtitle = 'A new product, an unfinished system or something that needs fixing? Tell me about your project!',
-  illustrationSrc = '/images/contact-cube-matrix.webp',
-  statusBadgeSrc = '/images/contact-status-badge.webp',
+  panelTitle = 'YOUR PROJECT STARTS HERE',
+  panelFooter = 'LETNULL19A PORTFOLIO',
   directEmail = siteEmail.toUpperCase(),
   onSubmit,
   className = '',
@@ -96,6 +92,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
             </p>
 
             <ContactForm onSubmit={handleSubmit} status={status} />
+          </div>
+
+          {/* Email внизу левой колонки (desktop) */}
+          <div className="hidden lg:block pt-8 mt-auto">
+            <EmailLink email={directEmail} className="text-xl" />
+          </div>
 
             {/* Мобильный подвал (< lg) */}
             <div
@@ -109,9 +111,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
               className="mt-6 border border-lime/50 p-4 sm:p-5 flex flex-col gap-4 items-center text-center lg:hidden"
             >
               <EmailLink email={directEmail} className="text-lg sm:text-xl leading-snug text-center" />
-              <StatusBadgeImage src={statusBadgeSrc} width={130} height={80} className="w-40 sm:w-32.5" />
             </div>
-          </div>
         </div>
 
         {/* Правая колонка (только >= lg) */}
@@ -125,33 +125,24 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
           }}
           className="hidden lg:flex relative border border-lime/50 p-4 flex-col justify-between min-h-130 overflow-hidden"
         >
-          {/* Виджет Ready for collaboration */}
-          <StatusBadgeImage
-            src={statusBadgeSrc}
-            width={240}
-            height={140}
-            className="relative z-10 self-end w-full max-w-55"
-          />
+          {/* Заголовок панели */}
+          <p className="relative z-10 text-center text-2xl uppercase tracking-wider text-lime-light">
+            {panelTitle}
+          </p>
 
-          {/* Центральный кубик */}
-          <div className="absolute inset-0 flex items-center justify-center p-6 pointer-events-none z-0">
+          {/* Центральная анимация */}
+          <div className="relative z-0 flex-1 flex items-center justify-center p-6 pointer-events-none min-h-0">
             <div className="relative w-full max-w-130 aspect-square flex items-center justify-center">
-              <Image
-                src={illustrationSrc}
-                alt="Collaboration matrix isometric diagram"
-                width={600}
-                height={600}
-                loading="lazy"
-                draggable={false}
-                className="object-contain w-full h-full pointer-events-none"
-              />
+              <LazyIllustration>
+                <IsometricFormLoopCluster showControls={false} />
+              </LazyIllustration>
             </div>
           </div>
 
-          {/* Email внизу */}
-          <div className="relative z-10 pt-6 mt-auto mx-auto">
-            <EmailLink email={directEmail} className="text-xl" />
-          </div>
+          {/* Подпись внизу */}
+          <p className="relative z-10 text-center text-2xl uppercase tracking-wider text-lime-light">
+            {panelFooter}
+          </p>
         </div>
       </div>
     </section>
