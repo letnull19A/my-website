@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Header } from '@/components/header';
+import { trackChatFailed, trackChatMessageSent } from '@/lib/analytics';
 
 const navData = {
   brand: { title: 'Letnull19A Portfolio', href: '/' },
@@ -244,6 +245,8 @@ function ChatPageInner() {
       }
       setFailed(false);
     } catch {
+      // chat_failed — сбой стрима/таймаут: сигнал о проблемах чат-бэкенда.
+      trackChatFailed();
       if (!ctrl.signal.aborted) setFailed(true);
       else setFailed(true);
     } finally {
@@ -256,6 +259,9 @@ function ChatPageInner() {
     const clean = text.trim();
     if (!clean || busyRef.current) return;
     busyRef.current = true;
+    // chat_message_sent — конверсия: сообщение ушло ассистенту.
+    // Текст сообщения НЕ трекаем (приватность) — только факт отправки.
+    trackChatMessageSent();
     setFailed(false);
     setQuery('');
     setMsgs((prev) => [

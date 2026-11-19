@@ -6,6 +6,7 @@ import { Menu, X } from 'lucide-react';
 import { buttonVariants } from '@/components/button';
 import { cn, vibrateOnTap } from '@/lib/utils';
 import { socialLinks } from '@/config/social';
+import { trackContactChannelClick } from '@/lib/analytics';
 
 export interface NavItem {
   id: string;
@@ -307,6 +308,7 @@ export const Header: React.FC<HeaderProps> = ({
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackContactChannelClick(item.id)}
                   className={`group flex flex-col items-start justify-between p-3 min-h-25 hover:bg-lime/10 transition-colors ${
                     item.id === 'email' ? 'col-span-2' : ''
                   }`}

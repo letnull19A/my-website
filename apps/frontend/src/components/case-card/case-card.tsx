@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Button, buttonVariants } from '@/components/button';
 import { RemoteImage } from '@/components/remote-image';
 import { cn, vibrateOnTap } from '@/lib/utils';
+import { trackCaseActionClick } from '@/lib/analytics';
 import type { CaseActionEmphasis } from '@my-website/schemas';
 
 export interface CaseAction {
@@ -67,6 +68,7 @@ export const CaseCard: React.FC<CaseCardProps> = ({
   description,
   logo,
   actions,
+  slug,
   className = '',
 }) => {
   return (
@@ -128,6 +130,14 @@ export const CaseCard: React.FC<CaseCardProps> = ({
                 : ''
             );
 
+            // case_action_click — действие в карточке кейса: какие кейсы конвертят.
+            const trackAction = () =>
+              trackCaseActionClick({
+                label: act.label,
+                emphasis: act.emphasis,
+                contentId: slug,
+              });
+
             if (act.href) {
               const isExternal = /^https?:\/\//.test(act.href);
 
@@ -138,7 +148,10 @@ export const CaseCard: React.FC<CaseCardProps> = ({
                     href={act.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={vibrateOnTap}
+                    onClick={(e) => {
+                      vibrateOnTap(e);
+                      trackAction();
+                    }}
                     className={buttonClass}
                   >
                     {act.label}
@@ -150,7 +163,10 @@ export const CaseCard: React.FC<CaseCardProps> = ({
                 <Link
                   key={act.id}
                   href={act.href}
-                  onClick={vibrateOnTap}
+                  onClick={(e) => {
+                    vibrateOnTap(e);
+                    trackAction();
+                  }}
                   className={buttonClass}
                 >
                   {act.label}
@@ -163,7 +179,10 @@ export const CaseCard: React.FC<CaseCardProps> = ({
                 key={act.id}
                 variant={resolveVariant(act, idx)}
                 className={buttonClass}
-                onClick={act.onClick}
+                onClick={() => {
+                  trackAction();
+                  act.onClick?.();
+                }}
               >
                 {act.label}
               </Button>

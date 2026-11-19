@@ -7,6 +7,7 @@ import { buttonVariants } from '@/components/button';
 import { RemoteImage } from '@/components/remote-image';
 import { cn, vibrateOnTap } from '@/lib/utils';
 import { getLinkedinShareUrl, getTelegramShareUrl, resolveArticleUrl } from '@/lib/share';
+import { trackShareClick } from '@/lib/analytics';
 
 export interface ArticleCardProps {
   title: string;
@@ -90,7 +91,11 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             href={linkedinShareHref}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={vibrateOnTap}
+            onClick={(e) => {
+              vibrateOnTap(e);
+              // share_click — репост статьи в LinkedIn (какой контент ценят).
+              trackShareClick('linkedin', slug);
+            }}
             aria-label={`Share ${title} on LinkedIn`}
             className={cn(
               buttonVariants({ variant: 'outline', size: 'sm' }),
@@ -113,7 +118,11 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             href={telegramShareHref}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={vibrateOnTap}
+            onClick={(e) => {
+              vibrateOnTap(e);
+              // share_click — репост статьи в Telegram (какой контент ценят).
+              trackShareClick('telegram', slug);
+            }}
             aria-label={`Share ${title} on Telegram`}
             className={cn(
               buttonVariants({ variant: 'outline', size: 'sm' }),

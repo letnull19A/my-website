@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from '@/components/button';
 import { vibrateOnTap } from '@/lib/utils';
+import { trackContactFormStart, trackContactFormSubmit } from '@/lib/analytics';
 
 export interface ContactFormData {
   email: string;
@@ -29,9 +30,17 @@ export const ContactForm: React.FC<ContactFormProps> = ({
     agreed: false,
   });
 
+  // Первый выстрел contact_form_start — на самом первом касании поля формы.
+  // Дальше в рамках одного просмотра события больше не шлём (startedRef).
+  const startedRef = useRef(false);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    if (!startedRef.current) {
+      startedRef.current = true;
+      trackContactFormStart();
+    }
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
@@ -44,6 +53,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.agreed) return;
+    // contact_form_submit — сабмит валидной формы (нативная валидация уже пройдена).
+    trackContactFormSubmit();
     if (onSubmit) onSubmit(formData);
   };
 

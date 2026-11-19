@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Button, buttonVariants } from '@/components/button';
@@ -9,6 +9,7 @@ import { MarkdownRenderer } from '@/components/markdown-renderer';
 import { RemoteImage } from '@/components/remote-image';
 import { cn, vibrateOnTap } from '@/lib/utils';
 import { getLinkedinShareUrl, getTelegramShareUrl, resolveArticleUrl } from '@/lib/share';
+import { trackArticleCopyLink, trackArticleEngaged, trackShareClick } from '@/lib/analytics';
 import { Check, Copy } from 'lucide-react';
 
 export interface ArticleDetailProps {
@@ -47,6 +48,28 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
   const router = useRouter();
   const [copiedLink, setCopiedLink] = useState(false);
 
+  // article_engaged — статья реально прочитана: 30 сек на странице ИЛИ скролл >50%.
+  // Один выстрел за просмотр (fired-guard), независимо от порядка наступления.
+  useEffect(() => {
+    if (!slug) return;
+    let fired = false;
+    const fire = () => {
+      if (fired) return;
+      fired = true;
+      trackArticleEngaged(slug);
+    };
+    const timer = window.setTimeout(fire, 30_000);
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      if (max > 0 && window.scrollY / max > 0.5) fire();
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [slug]);
+
   const articleUrl = resolveArticleUrl(slug ? `/articles/${slug}` : undefined);
   const linkedinShareHref = getLinkedinShareUrl(articleUrl);
   const telegramShareHref = getTelegramShareUrl(articleUrl, title);
@@ -54,6 +77,8 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
   const handleCopyLink = () => {
     if (typeof window !== 'undefined') {
       navigator.clipboard.writeText(window.location.href);
+      // article_copy_link — намерение поделиться без перехода в соцсеть.
+      trackArticleCopyLink(slug);
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2000);
     }
@@ -168,7 +193,11 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
               href={linkedinShareHref}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={vibrateOnTap}
+              onClick={(e) => {
+                vibrateOnTap(e);
+                // share_click — репост со страницы статьи в LinkedIn.
+                trackShareClick('linkedin', slug);
+              }}
               aria-label={`Share ${title} on LinkedIn`}
               className={cn(
                 buttonVariants({ variant: 'outline', size: 'sm' }),
@@ -190,7 +219,11 @@ export const ArticleDetailSection: React.FC<ArticleDetailProps> = ({
               href={telegramShareHref}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={vibrateOnTap}
+              onClick={(e) => {
+                vibrateOnTap(e);
+                // share_click — репост со страницы статьи в Telegram.
+                trackShareClick('telegram', slug);
+              }}
               aria-label={`Share ${title} on Telegram`}
               className={cn(
                 buttonVariants({ variant: 'outline', size: 'sm' }),

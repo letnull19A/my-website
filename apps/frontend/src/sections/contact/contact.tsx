@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useMutation } from '@tanstack/react-query';
 import { ContactForm, ContactFormData, ContactFormStatus } from '@/components/contact-form';
 import { email as siteEmail } from '@/config/social';
+import { trackContactChannelClick, trackContactFormError, trackContactFormSuccess } from '@/lib/analytics';
 import { trpc } from '@/lib/trpc/client';
 import { cn } from '@/lib/utils';
 import { useInView } from '@/hooks/use-in-view';
@@ -39,7 +40,11 @@ const EmailLink: React.FC<{ email: string; className?: string }> = ({
 }) => (
   <p className={`font-bold uppercase tracking-wide text-lime-light break-words ${className}`}>
     YOU CAN ALSO WRITE AN EMAIL ON{' '}
-    <a href={`mailto:${email.toLowerCase()}`} className="underline hover:text-lime-soft transition-colors ">
+    <a
+      href={`mailto:${email.toLowerCase()}`}
+      onClick={() => trackContactChannelClick('email')}
+      className="underline hover:text-lime-soft transition-colors "
+    >
       {email}
     </a>
   </p>
@@ -75,6 +80,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
       : mutation.isError
         ? 'error'
         : 'idle';
+
+  // contact_form_success / contact_form_error — результат отправки по факту ответа бэкенда.
+  useEffect(() => {
+    if (status === 'success') trackContactFormSuccess();
+    else if (status === 'error') trackContactFormError();
+  }, [status]);
 
   return (
     <section

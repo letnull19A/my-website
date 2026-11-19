@@ -39,7 +39,7 @@ tanstackIntent:
 - **UI library**: `@base-ui/react` + `class-variance-authority` for component variants.
 - **Design files**: `docs/design/*.pen` (Penpot references for portfolio/shadcn designs) — в корне.
 - **Theme**: Dark-only — светлой темы нет. `src/app/globals.css:67-161` defines `:root` and `.dark` with identical dark tokens (`--background: #0C0D0A`, `color-scheme: dark`). Не добавлять светлую тему, переключатель темы или `light` варианты — сайт всегда в тёмной теме.
-- **Аналитика**: GTM (`GTM-5PLT35CF` = `GTM_ID` в `src/lib/site.ts`) через `@next/third-parties`. Загрузку гейтит `src/components/gtm-gate` — `gtm.js` инжектится только после cookie-согласия (`src/lib/consent.ts` + `CookieBanner`; «OK» → `accepted`, «X»/«DECLINE» → `declined`). Не рендерить `GoogleTagManager` в layout напрямую — только через `GtmGate`; в SSR HTML `gtm.js` не попадает.
+- **Аналитика**: GTM (`GTM-T53CFPJ4` = `GTM_ID` в `src/lib/site.ts`) через `@next/third-parties`. Загрузку гейтит `src/components/gtm-gate` — `gtm.js` инжектится только после cookie-согласия (`src/lib/consent.ts` + `CookieBanner`; «OK» → `accepted`, «X»/«DECLINE» → `declined`). Не рендерить `GoogleTagManager` в layout напрямую — только через `GtmGate`; в SSR HTML `gtm.js` не попадает. Клиентские события — каталог в `src/lib/analytics.ts` (обёртки над `sendGTMEvent` с комментариями, что каждая метрика отвечает): конверсии `contact_form_submit`/`chat_message_sent`, каналы `contact_channel_click`, контент `share_click`/`article_engaged`/`case_action_click`, сбой `chat_failed`. Новые события добавлять туда же, не дергать `sendGTMEvent` напрямую в компонентах.
 
 ## Monorepo notes
 
