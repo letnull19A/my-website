@@ -13,4 +13,4 @@ export const SITE_AUTHOR = "Letnull19A";
 export const SITE_OG_IMAGE = "/images/og_site.jpg";
 
 /** GTM-контейнер; грузится компонентом GtmGate только после согласия на cookies. */
-export const GTM_ID = "GTM-5PLT35CF";
+export const GTM_ID = "GTM-T53CFPJ4";
