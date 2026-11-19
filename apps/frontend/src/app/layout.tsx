@@ -8,6 +8,7 @@ import {
 } from "@/lib/site";
 import "./globals.css";
 import "@/styles/main.scss";
+import { GtmGate } from "@/components/gtm-gate";
 import { CookieBanner } from "@/components/cookie-banner";
 import { TRPCProvider } from "@/lib/trpc/provider";
 
@@ -85,6 +86,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${ptMono.variable} h-full antialiased`}>
+      <GtmGate />
       <body className="min-h-full flex flex-col overflow-x-hidden bg-background text-foreground">
         <a
           href="#main-content"

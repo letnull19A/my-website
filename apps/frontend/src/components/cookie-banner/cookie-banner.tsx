@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/button';
-
-const COOKIE_CONSENT_KEY = 'portfolio_cookie_consent';
+import { getCookieConsent, setCookieConsent, type CookieConsent } from '@/lib/consent';
 
 export const CookieBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -11,7 +10,7 @@ export const CookieBanner: React.FC = () => {
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
+    const consent = getCookieConsent();
     if (!consent) {
       const timer = setTimeout(() => {
         setIsVisible(true);
@@ -31,8 +30,8 @@ export const CookieBanner: React.FC = () => {
     };
   }, [isVisible]);
 
-  const close = useCallback((consent: 'accepted' | 'declined') => {
-    localStorage.setItem(COOKIE_CONSENT_KEY, consent);
+  const close = useCallback((consent: CookieConsent) => {
+    setCookieConsent(consent);
     setIsVisible(false);
   }, []);
 
