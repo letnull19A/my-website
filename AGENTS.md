@@ -26,7 +26,7 @@ tanstackIntent:
 ```
 my-website/
 ├── apps/
-│   ├── frontend/            # Next.js 16.3 — статический экспорт, tRPC-клиент
+│   ├── frontend/            # Next.js 16.3 — SSR (standalone), tRPC
 │   │   ├── src/
 │   │   ├── public/
 │   │   ├── Dockerfile       # из контекста корня: docker build -f apps/frontend/Dockerfile .
@@ -63,7 +63,7 @@ my-website/
 pnpm install              # установить зависимости всех workspace
 pnpm dev:frontend          # Next.js dev server (http://localhost:3000)
 pnpm dev:backend           # NestJS dev (http://localhost:4000, watch)
-pnpm build:frontend        # pnpm --filter frontend build -> apps/frontend/out
+pnpm build:frontend        # pnpm --filter frontend build -> apps/frontend/.next (standalone SSR)
 pnpm lint:frontend         # pnpm --filter frontend lint
 pnpm build                 # алиас build:frontend
 ```
@@ -72,10 +72,11 @@ pnpm build                 # алиас build:frontend
 
 ### frontend — `apps/frontend`
 
-- Next.js 16.3, static export (`output: "export"`), Tailwind v4, shadcn/ui (`base-nova`), `lucide`, `@base-ui/react`, Storybook, tRPC (`@trpc/client`, `@trpc/tanstack-react-query`, `@tanstack/react-query`, `superjson`).
-- Деплой: Docker-образ `static-web-server` из `apps/frontend/out` через Dokploy (не GitHub Pages).
-- Env (build-args, запекаются в static export): `NEXT_PUBLIC_SITE_URL` (дефолт `https://letnull19a.github.io/my-website`), `NEXT_PUBLIC_API_URL` (дефолт `http://localhost:4000`). Меняются пересборкой образа.
-- tRPC-клиент: `src/lib/trpc/client.ts` (`httpBatchLink` → `/trpc` + superjson + `createTRPCOptionsProxy`), `src/lib/trpc/provider.tsx` (QueryClient), секции `articles`/`cases` используют `useQuery(trpc.<router>.list.queryOptions())` с фолбэком на `src/config/` моки.
+- Next.js 16.3, SSR (`output: "standalone"`), Tailwind v4, shadcn/ui (`base-nova`), `lucide`, `@base-ui/react`, Storybook, tRPC (`@trpc/client`, `@trpc/tanstack-react-query`, `@tanstack/react-query`, `superjson`), `@next/third-parties`.
+- Деплой: Docker-образ Node SSR-сервера (`.next/standalone`, CMD `node apps/frontend/server.js`) через Dokploy (не GitHub Pages).
+- Env: build-args `NEXT_PUBLIC_SITE_URL` (дефолт `https://letnull19a.github.io/my-website`) и `NEXT_PUBLIC_API_URL` (дефолт `http://localhost:4000`) инлайнятся в клиентский бандл при сборке; runtime-переменные `SITE_URL` (`src/lib/site.ts`) и `API_URL` (`src/lib/server-api.ts`) читаются на сервере в рантайме и перекрывают их.
+- Данные: SSR-страницы (`articles`, `cases`, home) читают данные в рантайме через `src/lib/server-api.ts` (tRPC, `no-store`, таймаут 5 c; при ошибке — фолбэк «данные недоступны», без подмены моками). tRPC-клиент `src/lib/trpc/client.ts` (`httpBatchLink` → `/trpc` + superjson + `createTRPCOptionsProxy`) + `provider.tsx` (QueryClient) — для клиентских компонентов.
+- Аналитика: GTM (`GTM-5PLT35CF`, константа `GTM_ID` в `src/lib/site.ts`) грузится компонентом `GtmGate` **только после cookie-согласия**: `CookieBanner` пишет решение в localStorage (`src/lib/consent.ts`), `GtmGate` подписан на событие и инжектит `gtm.js` после «OK». В SSR HTML `gtm.js` не попадает никогда — не рендерить `GoogleTagManager` в layout напрямую.
 - Алиасы: `@/*` → `apps/frontend/src/*`.
 - Тёмная тема only.
 - Подробнее: [`apps/frontend/AGENTS.md`](apps/frontend/AGENTS.md)
@@ -98,16 +99,16 @@ pnpm build                 # алиас build:frontend
 Сборка **из контекста корня монорепозитория** (чтобы видеть `packages/`):
 
 ```bash
-docker build -f apps/frontend/Dockerfile -t my-website-frontend .
-docker build -f apps/backend/Dockerfile -t my-website-backend . \
+docker build -f apps/frontend/Dockerfile -t my-website-frontend . \
   --build-arg NEXT_PUBLIC_API_URL=https://api.example.com \
   --build-arg NEXT_PUBLIC_SITE_URL=https://example.com
+docker build -f apps/backend/Dockerfile -t my-website-backend .
 
 docker run -p 3000:3000 my-website-frontend
 docker run -p 4000:4000 my-website-backend
 ```
 
-- Frontend: `static-web-server` раздаёт `/app` (`out` + `public`), build-args запекаются в бандл.
+- Frontend: `node:24-alpine`, из `.next/standalone` (+ `.next/static`, `public`), CMD `node apps/frontend/server.js`; healthcheck `GET /api/health`. Build-args `NEXT_PUBLIC_*` запекаются в клиентский бандл; runtime `-e API_URL=...` — URL бэкенда для SSR.
 - Backend: `node:24-alpine`, `node dist/main.js` (Fastify, tRPC).
 - Контекст — корень монорепозитория (не `./apps/frontend`).
 
@@ -131,4 +132,5 @@ docker run -p 4000:4000 my-website-backend
 - Моки: `apps/backend/data/db.json`
 - Nest entry: `apps/backend/src/main.ts` (Fastify + fastifyTRPCPlugin)
 - Frontend клиент: `apps/frontend/src/lib/trpc/`
+- Аналитика/consent: `apps/frontend/src/lib/consent.ts`, `apps/frontend/src/components/gtm-gate/`
 - Общие правила: `AGENTS.md` в корне

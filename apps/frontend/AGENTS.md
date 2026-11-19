@@ -27,7 +27,7 @@ tanstackIntent:
 - **Workspace package**: `frontend` (`apps/frontend/package.json`, private). Устанавливается через корень: `pnpm install --frozen-lockfile`.
 - **Package manager**: pnpm 11 (lockfile: `pnpm-lock.yaml` в корне, pinned как `pnpm@11` в `Dockerfile:6`). Внутри `apps/frontend` используй `pnpm --filter frontend <script>` из корня или `pnpm <script>` внутри директории.
 - **Next.js 16.3** — check `node_modules/next/dist/docs/` for API changes.
-- **Deployment**: Static export (`output: "export"`), Docker-образ `static-web-server` из `apps/frontend/out` через Dokploy. `.github/workflows` удалён. Build-args: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_API_URL` (запекаются в static export, см. `src/lib/site.ts` и `src/lib/trpc/client.ts`).
+- **Deployment**: SSR (`output: "standalone"` в `next.config.ts`), Docker-образ Node-сервера из `apps/frontend/.next/standalone` (CMD `node apps/frontend/server.js`) через Dokploy. `.github/workflows` удалён. Build-args: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_API_URL` (инлайнятся в клиентский бандл при сборке); runtime: `SITE_URL` (`src/lib/site.ts`), `API_URL` (`src/lib/server-api.ts`, перекрывает `NEXT_PUBLIC_API_URL` для SSR).
 - **Tailwind v4**: Uses `@tailwindcss/postcss` plugin. There is no `tailwind.config.js` — config lives in CSS via `@theme` directives and in `components.json`.
 - **shadcn/ui**: Config at `apps/frontend/components.json`. Style: `base-nova`, RSC + TSX, icons from `lucide`. Add components with `pnpm --filter frontend dlx shadcn@latest add <component>` или `npx shadcn@latest add <component>` внутри `apps/frontend`.
 - **Path aliases**: `@/*` → `apps/frontend/src/*` (set in `apps/frontend/tsconfig.json:22-24` + `apps/frontend/components.json:15-21`).
@@ -39,21 +39,22 @@ tanstackIntent:
 - **UI library**: `@base-ui/react` + `class-variance-authority` for component variants.
 - **Design files**: `docs/design/*.pen` (Penpot references for portfolio/shadcn designs) — в корне.
 - **Theme**: Dark-only — светлой темы нет. `src/app/globals.css:67-161` defines `:root` and `.dark` with identical dark tokens (`--background: #0C0D0A`, `color-scheme: dark`). Не добавлять светлую тему, переключатель темы или `light` варианты — сайт всегда в тёмной теме.
+- **Аналитика**: GTM (`GTM-5PLT35CF` = `GTM_ID` в `src/lib/site.ts`) через `@next/third-parties`. Загрузку гейтит `src/components/gtm-gate` — `gtm.js` инжектится только после cookie-согласия (`src/lib/consent.ts` + `CookieBanner`; «OK» → `accepted`, «X»/«DECLINE» → `declined`). Не рендерить `GoogleTagManager` в layout напрямую — только через `GtmGate`; в SSR HTML `gtm.js` не попадает.
 
 ## Monorepo notes
 
 - Код фронтенда живёт **только** в `apps/frontend/`. Импорты `@/` резолвятся внутри этого пакета, а не из корня.
 - `next.config.ts:sassOptions.includePaths` указывает на `["./src/styles", "./src"]` относительно `apps/frontend/`.
-- Статический билд: `pnpm --filter frontend build` → `apps/frontend/out`. Локально: `pnpm dev:frontend` из корня или `pnpm dev` внутри `apps/frontend`. Env: `NEXT_PUBLIC_SITE_URL` (дефолт `https://letnull19a.github.io/my-website`), `NEXT_PUBLIC_API_URL` (дефолт `http://localhost:4000`) — см. `src/lib/site.ts`.
-- Docker: **контекст — корень монорепозитория** (`docker build -f apps/frontend/Dockerfile -t my-website-frontend .`). Builder копирует `packages/` и `apps/frontend/package.json` → `pnpm install` → `pnpm --filter schemas/api build && pnpm --filter frontend build`.
+- SSR-билд: `pnpm --filter frontend build` → `apps/frontend/.next` (standalone-сервер: `.next/standalone/server.js` + `.next/static` — копируются Dockerfile'ом). Локально: `pnpm dev:frontend` из корня или `pnpm dev` внутри `apps/frontend`. Env: build-args `NEXT_PUBLIC_SITE_URL` / `NEXT_PUBLIC_API_URL`; runtime `SITE_URL` / `API_URL` — см. Dockerfile.
+- Docker: **контекст — корень монорепозитория** (`docker build -f apps/frontend/Dockerfile -t my-website-frontend .`; Dockerfile поддерживает и app-context — тогда клонирует репо по `GIT_REPO`/`GIT_REF`). Builder: `pnpm install` → `pnpm --filter schemas/api build` → `next build --webpack` (Turbopack требует >1.3 ГБ RAM и падает на небольших билд-хостах). Runner: `.next/standalone` + static + public, `node apps/frontend/server.js`, healthcheck `GET /api/health`, runtime `-e API_URL=...`.
 - Backend: не импортировать напрямую `apps/backend` в frontend-коде. Взаимодействие — только tRPC (`@trpc/client` → `/trpc` + superjson, queries — `GET`) через `src/lib/trpc/`.
 
 ## Commands
 
 ```bash
 pnpm dev          # внутри apps/frontend — Start dev server (http://localhost:3000)
-pnpm build        # внутри apps/frontend — Build static export to ./out (фактически apps/frontend/out)
-pnpm start        # Serve production build (not used in Pages deploy)
+pnpm build        # внутри apps/frontend — SSR-билд (next build → .next, standalone)
+pnpm start        # next start — локальный запуск production SSR-сервера (порт 3000)
 pnpm lint         # ESLint (flat config in eslint.config.mjs)
 pnpm storybook    # Storybook on http://localhost:6006
 
@@ -69,12 +70,13 @@ pnpm lint:frontend
 - Shared utilities in `src/lib/utils.ts` (`cn` helper using `clsx` + `tailwind-merge`).
 - ESLint uses flat config (`eslint.config.mjs`) with `eslint-config-next/core-web-vitals` and `eslint-config-next/typescript`.
 - TypeScript: strict mode, no emit, incremental builds (`tsconfig.tsbuildinfo`).
-- Не добавлять серверные зависимости, которые ломают `output: "export"`.
+- Серверные зависимости допустимы (SSR); серверное чтение данных — только через `src/lib/server-api.ts` из Server Components / Route Handlers / `generateMetadata`.
 
 ## API
 
 - Источник правды: `packages/schemas` (zod) + `packages/api` (AppRouter). `docs/api-data-spec.md` deprecated.
-- tRPC-клиент: `src/lib/trpc/client.ts` (`httpBatchLink` → `/trpc`, superjson, `createTRPCOptionsProxy` → `trpc`), `src/lib/trpc/provider.tsx` (QueryClient). Секции `articles`/`cases` используют `useQuery(trpc.<router>.list.queryOptions())` с фолбэком на `src/config/` моки (static export остаётся рабочим без бэкенда в рантайме).
+- tRPC-клиент: `src/lib/trpc/client.ts` (`httpBatchLink` → `/trpc`, superjson, `createTRPCOptionsProxy` → `trpc`), `src/lib/trpc/provider.tsx` (QueryClient) — для клиентских компонентов.
+- SSR-данные: страницы читают `articles`/`cases` через `src/lib/server-api.ts` — tRPC-запрос в рантайме (`API_URL` → `BACKEND_URL` → `NEXT_PUBLIC_API_URL` → `http://localhost:4000`), `no-store`, таймаут 5 c; при ошибке — фолбэк «данные недоступны», подмены моками нет. `src/config/` — только `social.ts` (соц-ссылки).
 - Ответы без конвертов: `articles.list` → `Article[]`, `cases.list` → `Case[]` — `data` сразу массив, не `data.items`.
 - `Case.actions[].emphasis: 'primary' | 'secondary'` — семантика из API; маппинг в варианты кнопок — в `case-card.tsx` (`resolveVariant`), UI-варианты в контракт не приходят.
-- Build-args запекаются в static export: `NEXT_PUBLIC_SITE_URL` (`src/lib/site.ts`), `NEXT_PUBLIC_API_URL` (`src/lib/trpc/client.ts`).
+- Build-args запекаются в клиентский бандл при сборке: `NEXT_PUBLIC_SITE_URL` (`src/lib/site.ts`), `NEXT_PUBLIC_API_URL` (`src/lib/trpc/client.ts`); runtime-переменные `SITE_URL` / `API_URL` перекрывают их на сервере.
