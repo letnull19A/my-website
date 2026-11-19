@@ -58,3 +58,6 @@ opencode.json
 *.tsbuildinfo
 next-env.d.ts
 apps/frontend/next-env.d.ts
+
+# playwright mcp session artifacts (screenshots, snapshots, console logs)
+.playwright-mcp/
